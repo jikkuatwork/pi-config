@@ -14,11 +14,12 @@ _Last updated: 2026-05-16_
 - Added project-level pi skills for session lifecycle:
   - `/skill:open` reads this file and summarizes repo state.
   - `/skill:close` updates this file, commits work, and leaves git clean.
+- Initialized git and committed the initial hand-off setup as `9efe22c`.
 - Recent non-repo context: the global pi modal editor extension at `~/.pi/agent/extensions/modal-editor.ts` was expanded with vim-like commands including `a`, `A`, `I`, `o`, `O`, `c`, `C`, `cc`, `d`, `D`, `dd`, `E`, `gg`, and `G`.
 
 ## Present
 
-- This repo currently contains lifecycle documentation/skills only.
+- This repo currently contains lifecycle documentation/skills only; no product code exists yet.
 - Project skills live under `.pi/skills/` and are intended to be loaded by pi from this project.
 - No application source, package manager, test suite, or build system has been established yet.
 
