@@ -1,7 +1,7 @@
 /**
- * Modal Editor - vim-like modal editing example
+ * Vim Editor - vim-like modal editing
  *
- * Usage: pi --extension ./examples/extensions/modal-editor.ts
+ * Usage: pi --extension ./examples/extensions/vim.ts
  *
  * - Escape: insert → normal mode (in normal mode, aborts agent)
  * - i/a/A/I/o/O: enter insert / append / append-at-line-end / insert-at-line-start / open-line-below / open-line-above
@@ -39,6 +39,15 @@ const NORMAL_KEYS: Record<string, string> = {
 	$: "\x05", // line end
 	x: "\x1b[3~", // delete char
 };
+
+// Colors aligned with your Neovim colorscheme (Tomorrow-Night-Bright).
+const ANSI_RESET = "\x1b[0m";
+const FG_BLACK = "\x1b[38;2;0;0;0m";
+const FG_BLUE = "\x1b[38;2;122;166;218m"; // s:blue
+const FG_GREEN = "\x1b[38;2;185;202;74m"; // s:green
+const BG_BLUE = "\x1b[48;2;122;166;218m"; // s:blue
+const BG_GREEN = "\x1b[48;2;185;202;74m"; // s:green
+const BG_ORANGE = "\x1b[48;2;231;140;69m"; // s:orange
 
 class ModalEditor extends CustomEditor {
 	private mode: "normal" | "insert" = "insert";
@@ -182,20 +191,35 @@ class ModalEditor extends CustomEditor {
 	}
 
 	render(width: number): string[] {
+		const borderFg = this.mode === "normal" ? FG_BLUE : FG_GREEN;
+		this.borderColor = (text: string) => `${borderFg}${text}${ANSI_RESET}`;
+
 		const lines = super.render(width);
 		if (lines.length === 0) return lines;
 
-		// Add mode indicator to bottom border.
-		let label = this.mode === "normal" ? " NORMAL " : " INSERT ";
-		if (this.pendingOperator) label = ` ${this.pendingOperator}… `;
-		if (this.pendingFind) label = ` ${this.pendingFind === "forward" ? "f" : "F"}… `;
-		if (this.pendingGoto) label = " g… ";
-
-		const last = lines.length - 1;
-		if (visibleWidth(lines[last]!) >= label.length) {
-			lines[last] = truncateToWidth(lines[last]!, width - label.length, "") + label;
+		// Keep the editor content untouched, and render mode on its own line so
+		// prompt text never touches the mode block.
+		let rawLabel = this.mode === "normal" ? " NORMAL " : " INSERT ";
+		let bg = this.mode === "normal" ? BG_BLUE : BG_GREEN;
+		if (this.pendingOperator) {
+			rawLabel = ` ${this.pendingOperator}… `;
+			bg = BG_ORANGE;
 		}
-		return lines;
+		if (this.pendingFind) {
+			rawLabel = ` ${this.pendingFind === "forward" ? "f" : "F"}… `;
+			bg = BG_ORANGE;
+		}
+		if (this.pendingGoto) {
+			rawLabel = " g… ";
+			bg = BG_ORANGE;
+		}
+
+		const styledLabel = `${bg}${FG_BLACK}${rawLabel}${ANSI_RESET}`;
+		const clipped = truncateToWidth(styledLabel, width, "");
+		const pad = " ".repeat(Math.max(0, width - visibleWidth(clipped)));
+		const statusLine = `${clipped}${pad}`;
+
+		return [...lines, statusLine];
 	}
 
 	private get privateEditor(): PrivateEditor {

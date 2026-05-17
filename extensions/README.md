@@ -11,7 +11,7 @@ This directory is the source-of-truth for global pi extensions on this machine.
 
 ## Included extensions
 
-- `modal-editor.ts` - custom modal editing keybindings/behavior.
+- `vim.ts` - custom Vim-style modal editing keybindings/behavior.
 - `azure-retry-normalizer.ts` - rewrites opaque Azure stream failures
   (`Unknown error (no error details in response)`) into a transient error shape so pi auto-retry can trigger, and logs retry start/end in UI status/notifications.
 

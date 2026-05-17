@@ -12,23 +12,21 @@ _Last updated: 2026-05-17_
 
 - Established session lifecycle skills and hand-off flow (`/skill:open`, `/skill:close`, `koder/STATE.md`).
 - Migrated extension source-of-truth into this repo under `extensions/`.
-- Added `extensions/modal-editor.ts` (repo-managed copy of the customized modal editor extension).
 - Added `extensions/azure-retry-normalizer.ts` to normalize opaque Azure errors (`Unknown error (no error details in response)`) into a retryable transient shape and show retry start/end UI signals.
-- Added `extensions/README.md` documenting the extension workflow.
+- Renamed modal editor extension to `extensions/vim.ts` and updated docs/references.
+- Updated Vim extension UI: mode badge moved to the left on its own line, colorized to match Neovim `Tomorrow-Night-Bright`, and editor border color now tracks mode (NORMAL blue / INSERT green).
 
 ## Present
 
-- Repo now contains lifecycle skills plus repo-managed global extension source under `extensions/`.
-- No app/package/test/build system exists in this repo yet.
-- Global pi settings were updated outside this repo (`~/.pi/agent/settings.json`) to:
-  - load `/home/glasscube/Projects/pi/extensions`
-  - tune retry settings for Azure reliability.
+- Repo contains lifecycle skills plus repo-managed global extensions under `extensions/` (`vim.ts`, `azure-retry-normalizer.ts`).
+- No app/package/test/build system exists in this repo.
+- Global pi settings outside this repo (`~/.pi/agent/settings.json`) load `/home/glasscube/Projects/pi/extensions`.
 
 ## Future
 
-- Keep editing global extensions in `extensions/` (not directly in `~/.pi/agent/extensions/`).
-- After extension edits, run `/reload` (or restart pi) and validate behavior.
-- If Azure still stalls, expand normalizer matching and/or add more provider-response diagnostics.
+- Continue editing extensions here (not in `~/.pi/agent/extensions/`) and `/reload` after changes.
+- Tune Vim extension visuals/behavior further if desired (e.g., operator-pending border color or status text style).
+- If Azure retry behavior still stalls, expand error normalization patterns and add diagnostics.
 - If product code is added later, document build/test commands here.
 
 ## Commands
