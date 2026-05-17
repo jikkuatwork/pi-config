@@ -1,6 +1,6 @@
 # Koder State
 
-_Last updated: 2026-05-16_
+_Last updated: 2026-05-17_
 
 ## Purpose
 
@@ -10,27 +10,29 @@ _Last updated: 2026-05-16_
 
 ## Past
 
-- Created the `koder/STATE.md` hand-off convention.
-- Added project-level pi skills for session lifecycle:
-  - `/skill:open` reads this file and summarizes repo state.
-  - `/skill:close` updates this file, commits work, and leaves git clean.
-- Initialized git and committed the initial hand-off setup as `9efe22c`.
-- Recent non-repo context: the global pi modal editor extension at `~/.pi/agent/extensions/modal-editor.ts` was expanded with vim-like commands including `a`, `A`, `I`, `o`, `O`, `c`, `C`, `cc`, `d`, `D`, `dd`, `E`, `gg`, and `G`.
+- Established session lifecycle skills and hand-off flow (`/skill:open`, `/skill:close`, `koder/STATE.md`).
+- Migrated extension source-of-truth into this repo under `extensions/`.
+- Added `extensions/modal-editor.ts` (repo-managed copy of the customized modal editor extension).
+- Added `extensions/azure-retry-normalizer.ts` to normalize opaque Azure errors (`Unknown error (no error details in response)`) into a retryable transient shape and show retry start/end UI signals.
+- Added `extensions/README.md` documenting the extension workflow.
 
 ## Present
 
-- This repo currently contains lifecycle documentation/skills only; no product code exists yet.
-- Project skills live under `.pi/skills/` and are intended to be loaded by pi from this project.
-- No application source, package manager, test suite, or build system has been established yet.
+- Repo now contains lifecycle skills plus repo-managed global extension source under `extensions/`.
+- No app/package/test/build system exists in this repo yet.
+- Global pi settings were updated outside this repo (`~/.pi/agent/settings.json`) to:
+  - load `/home/glasscube/Projects/pi/extensions`
+  - tune retry settings for Azure reliability.
 
 ## Future
 
-- At the start of each session, run `/skill:open` or manually read this file before making changes.
-- At the end of each session, run `/skill:close` to update this file and commit all work.
-- Keep future entries concise; archive details elsewhere if this file approaches 100 lines.
-- If source code is added later, document build/test commands here.
+- Keep editing global extensions in `extensions/` (not directly in `~/.pi/agent/extensions/`).
+- After extension edits, run `/reload` (or restart pi) and validate behavior.
+- If Azure still stalls, expand normalizer matching and/or add more provider-response diagnostics.
+- If product code is added later, document build/test commands here.
 
 ## Commands
 
 - Check repo status: `git status --short`
+- Diff summary: `git diff --stat`
 - Count this file's lines: `wc -l koder/STATE.md`
