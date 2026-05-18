@@ -11,11 +11,12 @@ This directory is the source-of-truth for global pi extensions on this machine.
 
 ## Included extensions
 
-- `vim.ts` - custom Vim-style modal editing keybindings/behavior.
-- `azure-retry-normalizer.ts` - rewrites opaque Azure stream failures
-  (`Unknown error (no error details in response)`) into a transient error shape so pi auto-retry can trigger, and logs retry start/end in UI status/notifications.
+- `vim.ts` - custom Vim-style modal editing keybindings/behavior, including normal-mode model/thinking quick-switch (`tab`, `↑/↓`, `enter`, `esc`). Supports optional config via `~/.pi/agent/vim-model-switch.json` (and project override `.pi/vim-model-switch.json`).
+- `azure-retry-normalizer.ts` - rewrites Azure transient failure shapes into retryable errors (opaque `Unknown error (no error details in response)` and generic refusal placeholder responses), and logs retry start/end in UI status/notifications.
+- `footer-highlights.ts` - replaces the footer with colorized stats so cost and context usage are easier to scan.
 
 ## Notes
 
+- Vim quick-switch config file format example: `extensions/vim-model-switch.example.json`
 - Avoid editing installed extension files under `~/.pi/agent/extensions/` directly.
 - Keep extension changes committed here for reproducibility.

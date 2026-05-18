@@ -8,9 +8,13 @@
  * - hjkl, 0/$, gg/G, w/b/E, f/F: navigation in normal mode
  * - x, c/C/cc, d/D/dd, dw/db/d0/d$, cw/cb/c0/c$: basic edits
  * - ctrl+c, ctrl+d, etc. work in both modes
+ * - normal mode quick switch: tab (cycle model), ↑/↓ (thinking level), enter (apply), esc (cancel), i (cancel + insert)
  */
 
-import { CustomEditor, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import type { Api, Model } from "@earendil-works/pi-ai";
+import { CustomEditor, getAgentDir, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { matchesKey, truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
 
 type EditorState = {
@@ -28,6 +32,28 @@ type PrivateEditor = {
 type Position = { line: number; col: number };
 type Operator = "c" | "d";
 type FindDirection = "forward" | "backward";
+type ThinkingLevel = "off" | "minimal" | "low" | "medium" | "high" | "xhigh";
+type QuickModelOption = { provider: string; id: string; label: string };
+type QuickSwitchConfig = {
+	modelPatterns: string[];
+	thinkingLevels: ThinkingLevel[];
+	showProviderInLabel: boolean;
+};
+type QuickSwitcherCallbacks = {
+	getOptions: () => QuickModelOption[];
+	getCurrentModel: () => QuickModelOption | undefined;
+	getCurrentThinking: () => ThinkingLevel;
+	getThinkingLevels: () => ThinkingLevel[];
+	apply: (model: QuickModelOption, thinking: ThinkingLevel) => Promise<{ success: boolean; message: string }>;
+	notify: (message: string, type: "info" | "warning" | "error") => void;
+};
+
+const ALL_THINKING_LEVELS: ThinkingLevel[] = ["off", "minimal", "low", "medium", "high", "xhigh"];
+const DEFAULT_QUICK_SWITCH_CONFIG: QuickSwitchConfig = {
+	modelPatterns: ["gpt-5.5", "gpt-5.3-codex"],
+	thinkingLevels: [...ALL_THINKING_LEVELS],
+	showProviderInLabel: false,
+};
 
 // Normal mode key mappings: key -> escape sequence.
 const NORMAL_KEYS: Record<string, string> = {
@@ -54,8 +80,56 @@ class ModalEditor extends CustomEditor {
 	private pendingOperator: Operator | null = null;
 	private pendingFind: FindDirection | null = null;
 	private pendingGoto = false;
+	private quickSwitcher: QuickSwitcherCallbacks | null = null;
+	private quickSwitch = {
+		active: false,
+		applying: false,
+		modelIndex: 0,
+		thinkingIndex: 0,
+		candidates: [] as QuickModelOption[],
+		thinkingLevels: [...DEFAULT_QUICK_SWITCH_CONFIG.thinkingLevels] as ThinkingLevel[],
+	};
+
+	setQuickSwitcher(quickSwitcher: QuickSwitcherCallbacks): void {
+		this.quickSwitcher = quickSwitcher;
+	}
 
 	handleInput(data: string): void {
+		if (this.quickSwitch.active) {
+			if (matchesKey(data, "escape")) {
+				this.quickSwitch.active = false;
+				this.requestRender();
+				return;
+			}
+			if (data === "i") {
+				this.quickSwitch.active = false;
+				this.mode = "insert";
+				this.requestRender();
+				return;
+			}
+			if (matchesKey(data, "enter")) {
+				this.applyQuickSwitchSelection();
+				return;
+			}
+			if (matchesKey(data, "tab")) {
+				this.cycleQuickSwitchModel(1);
+				return;
+			}
+			if (matchesKey(data, "shift+tab")) {
+				this.cycleQuickSwitchModel(-1);
+				return;
+			}
+			if (matchesKey(data, "up")) {
+				this.cycleQuickSwitchThinking(1);
+				return;
+			}
+			if (matchesKey(data, "down")) {
+				this.cycleQuickSwitchThinking(-1);
+				return;
+			}
+			return;
+		}
+
 		// Escape toggles to normal mode, cancels pending vim commands, or passes
 		// through for app handling (abort agent, etc.) when already idle in normal.
 		if (matchesKey(data, "escape")) {
@@ -75,6 +149,11 @@ class ModalEditor extends CustomEditor {
 		// Insert mode: pass everything through.
 		if (this.mode === "insert") {
 			super.handleInput(data);
+			return;
+		}
+
+		if (matchesKey(data, "tab")) {
+			this.openQuickSwitch();
 			return;
 		}
 
@@ -190,6 +269,83 @@ class ModalEditor extends CustomEditor {
 		super.handleInput(data);
 	}
 
+	private openQuickSwitch(): void {
+		const quickSwitcher = this.quickSwitcher;
+		if (!quickSwitcher) return;
+
+		const candidates = quickSwitcher.getOptions();
+		if (candidates.length === 0) {
+			quickSwitcher.notify("No quick-switch models configured.", "warning");
+			return;
+		}
+
+		const thinkingLevels = quickSwitcher.getThinkingLevels();
+		if (thinkingLevels.length === 0) {
+			quickSwitcher.notify("No quick-switch thinking levels configured.", "warning");
+			return;
+		}
+
+		const currentModel = quickSwitcher.getCurrentModel();
+		const currentThinking = quickSwitcher.getCurrentThinking();
+		const foundIndex =
+			currentModel !== undefined
+				? candidates.findIndex(
+					(candidate) => candidate.provider === currentModel.provider && candidate.id === currentModel.id,
+				)
+				: -1;
+		const modelIndex = foundIndex >= 0 ? foundIndex : 0;
+		const thinkingIndex = Math.max(0, thinkingLevels.indexOf(currentThinking));
+
+		this.quickSwitch.active = true;
+		this.quickSwitch.applying = false;
+		this.quickSwitch.candidates = candidates;
+		this.quickSwitch.thinkingLevels = [...thinkingLevels];
+		this.quickSwitch.modelIndex = modelIndex;
+		this.quickSwitch.thinkingIndex = thinkingIndex;
+		this.requestRender();
+	}
+
+	private currentQuickSwitchModel(): QuickModelOption | undefined {
+		if (this.quickSwitch.candidates.length === 0) return undefined;
+		const index = Math.max(0, Math.min(this.quickSwitch.modelIndex, this.quickSwitch.candidates.length - 1));
+		return this.quickSwitch.candidates[index];
+	}
+
+	private cycleQuickSwitchModel(delta: number): void {
+		const count = this.quickSwitch.candidates.length;
+		if (count === 0) return;
+		this.quickSwitch.modelIndex = (this.quickSwitch.modelIndex + delta + count) % count;
+		this.requestRender();
+	}
+
+	private cycleQuickSwitchThinking(delta: number): void {
+		const count = this.quickSwitch.thinkingLevels.length;
+		if (count === 0) return;
+		this.quickSwitch.thinkingIndex = (this.quickSwitch.thinkingIndex + delta + count) % count;
+		this.requestRender();
+	}
+
+	private applyQuickSwitchSelection(): void {
+		const quickSwitcher = this.quickSwitcher;
+		const selectedModel = this.currentQuickSwitchModel();
+		if (!quickSwitcher || !selectedModel) {
+			this.quickSwitch.active = false;
+			this.requestRender();
+			return;
+		}
+
+		const thinkingLevel = this.quickSwitch.thinkingLevels[this.quickSwitch.thinkingIndex] ?? "high";
+		this.quickSwitch.active = false;
+		this.quickSwitch.applying = true;
+		this.requestRender();
+
+		void quickSwitcher.apply(selectedModel, thinkingLevel).then(({ success, message }) => {
+			this.quickSwitch.applying = false;
+			quickSwitcher.notify(message, success ? "info" : "error");
+			this.requestRender();
+		});
+	}
+
 	render(width: number): string[] {
 		const borderFg = this.mode === "normal" ? FG_BLUE : FG_GREEN;
 		this.borderColor = (text: string) => `${borderFg}${text}${ANSI_RESET}`;
@@ -201,15 +357,19 @@ class ModalEditor extends CustomEditor {
 		// prompt text never touches the mode block.
 		let rawLabel = this.mode === "normal" ? " NORMAL " : " INSERT ";
 		let bg = this.mode === "normal" ? BG_BLUE : BG_GREEN;
-		if (this.pendingOperator) {
+		if (this.quickSwitch.active) {
+			rawLabel = " MODEL ";
+			bg = BG_ORANGE;
+		} else if (this.quickSwitch.applying) {
+			rawLabel = " APPLY… ";
+			bg = BG_ORANGE;
+		} else if (this.pendingOperator) {
 			rawLabel = ` ${this.pendingOperator}… `;
 			bg = BG_ORANGE;
-		}
-		if (this.pendingFind) {
+		} else if (this.pendingFind) {
 			rawLabel = ` ${this.pendingFind === "forward" ? "f" : "F"}… `;
 			bg = BG_ORANGE;
-		}
-		if (this.pendingGoto) {
+		} else if (this.pendingGoto) {
 			rawLabel = " g… ";
 			bg = BG_ORANGE;
 		}
@@ -219,7 +379,18 @@ class ModalEditor extends CustomEditor {
 		const pad = " ".repeat(Math.max(0, width - visibleWidth(clipped)));
 		const statusLine = `${clipped}${pad}`;
 
-		return [...lines, statusLine];
+		const extraLines: string[] = [];
+		if (this.quickSwitch.active) {
+			const selectedModel = this.currentQuickSwitchModel();
+			const thinkingLevel = this.quickSwitch.thinkingLevels[this.quickSwitch.thinkingIndex] ?? "high";
+			const details = selectedModel ? ` ${selectedModel.label} [${thinkingLevel}] ` : " model unavailable ";
+			const detailsStyled = `${FG_BLUE}${details}${ANSI_RESET}`;
+			const detailsClipped = truncateToWidth(detailsStyled, width, "");
+			const detailsPad = " ".repeat(Math.max(0, width - visibleWidth(detailsClipped)));
+			extraLines.push(`${detailsClipped}${detailsPad}`);
+		}
+
+		return [...lines, statusLine, ...extraLines];
 	}
 
 	private get privateEditor(): PrivateEditor {
@@ -465,8 +636,196 @@ class ModalEditor extends CustomEditor {
 	}
 }
 
+function quickSwitchMatchScore(model: Model<Api>, pattern: string): number {
+	const [providerPattern, idPattern] = pattern.includes("/")
+		? (pattern.split("/", 2) as [string, string])
+		: (["", pattern] as const);
+
+	if (providerPattern && model.provider.toLowerCase() !== providerPattern.toLowerCase()) {
+		return 0;
+	}
+
+	const modelId = model.id.toLowerCase();
+	const candidate = idPattern.toLowerCase();
+	if (modelId === candidate) return 30;
+	if (modelId.startsWith(candidate)) return 20;
+	if (modelId.includes(candidate)) return 10;
+	return 0;
+}
+
+function pickQuickModelForPattern(
+	models: Model<Api>[],
+	pattern: string,
+	preferredProvider: string | undefined,
+): Model<Api> | undefined {
+	const matches = models
+		.map((model) => ({
+			model,
+			score: quickSwitchMatchScore(model, pattern),
+			preferredProviderBoost: preferredProvider && model.provider === preferredProvider ? 1 : 0,
+		}))
+		.filter((item) => item.score > 0)
+		.sort((a, b) => {
+			if (b.preferredProviderBoost !== a.preferredProviderBoost) {
+				return b.preferredProviderBoost - a.preferredProviderBoost;
+			}
+			return b.score - a.score;
+		});
+
+	return matches[0]?.model;
+}
+
+function toQuickModelOption(model: Model<Api>, includeProviderInLabel: boolean): QuickModelOption {
+	return {
+		provider: model.provider,
+		id: model.id,
+		label: includeProviderInLabel ? `${model.id} @ ${model.provider}` : model.id,
+	};
+}
+
+function parseQuickSwitchConfigFile(path: string): unknown | undefined {
+	if (!existsSync(path)) return undefined;
+	try {
+		return JSON.parse(readFileSync(path, "utf-8"));
+	} catch (error) {
+		console.error(`[vim] failed to parse quick-switch config at ${path}: ${String(error)}`);
+		return undefined;
+	}
+}
+
+function normalizeThinkingLevels(value: unknown): ThinkingLevel[] {
+	if (!Array.isArray(value)) return [];
+	return value
+		.filter((item): item is string => typeof item === "string")
+		.map((item) => item.trim())
+		.filter((item): item is ThinkingLevel => (ALL_THINKING_LEVELS as string[]).includes(item));
+}
+
+function normalizeModelPatterns(value: unknown): string[] {
+	if (!Array.isArray(value)) return [];
+	const patterns = value
+		.filter((item): item is string => typeof item === "string")
+		.map((item) => item.trim())
+		.filter((item) => item.length > 0);
+	return Array.from(new Set(patterns));
+}
+
+function mergeQuickSwitchConfig(base: QuickSwitchConfig, patch: unknown): QuickSwitchConfig {
+	if (!patch || typeof patch !== "object") return base;
+	const input = patch as {
+		modelPatterns?: unknown;
+		thinkingLevels?: unknown;
+		showProviderInLabel?: unknown;
+	};
+
+	const next: QuickSwitchConfig = {
+		modelPatterns: [...base.modelPatterns],
+		thinkingLevels: [...base.thinkingLevels],
+		showProviderInLabel: base.showProviderInLabel,
+	};
+
+	const modelPatterns = normalizeModelPatterns(input.modelPatterns);
+	if (modelPatterns.length > 0) next.modelPatterns = modelPatterns;
+
+	const thinkingLevels = normalizeThinkingLevels(input.thinkingLevels);
+	if (thinkingLevels.length > 0) next.thinkingLevels = thinkingLevels;
+
+	if (typeof input.showProviderInLabel === "boolean") {
+		next.showProviderInLabel = input.showProviderInLabel;
+	}
+
+	return next;
+}
+
+function loadQuickSwitchConfig(cwd: string): QuickSwitchConfig {
+	const globalPath = join(getAgentDir(), "vim-model-switch.json");
+	const projectPath = join(cwd, ".pi", "vim-model-switch.json");
+
+	let config = {
+		modelPatterns: [...DEFAULT_QUICK_SWITCH_CONFIG.modelPatterns],
+		thinkingLevels: [...DEFAULT_QUICK_SWITCH_CONFIG.thinkingLevels],
+		showProviderInLabel: DEFAULT_QUICK_SWITCH_CONFIG.showProviderInLabel,
+	};
+
+	config = mergeQuickSwitchConfig(config, parseQuickSwitchConfigFile(globalPath));
+	config = mergeQuickSwitchConfig(config, parseQuickSwitchConfigFile(projectPath));
+	return config;
+}
+
 export default function (pi: ExtensionAPI) {
+	let latestModel: Model<Api> | undefined;
+	let quickSwitchConfig: QuickSwitchConfig = {
+		modelPatterns: [...DEFAULT_QUICK_SWITCH_CONFIG.modelPatterns],
+		thinkingLevels: [...DEFAULT_QUICK_SWITCH_CONFIG.thinkingLevels],
+		showProviderInLabel: DEFAULT_QUICK_SWITCH_CONFIG.showProviderInLabel,
+	};
+
+	pi.on("model_select", (event) => {
+		latestModel = event.model;
+	});
+
 	pi.on("session_start", (_event, ctx) => {
-		ctx.ui.setEditorComponent((tui, theme, kb) => new ModalEditor(tui, theme, kb));
+		latestModel = ctx.model;
+		quickSwitchConfig = loadQuickSwitchConfig(ctx.cwd);
+
+		ctx.ui.setEditorComponent((tui, theme, kb) => {
+			const editor = new ModalEditor(tui, theme, kb);
+			editor.setQuickSwitcher({
+				getOptions: () => {
+					const available = ctx.modelRegistry.getAvailable();
+					const models = available.length > 0 ? available : ctx.modelRegistry.getAll();
+					const preferredProvider = latestModel?.provider;
+					const selected: Model<Api>[] = [];
+
+					for (const pattern of quickSwitchConfig.modelPatterns) {
+						const picked = pickQuickModelForPattern(models, pattern, preferredProvider);
+						if (!picked) continue;
+						const alreadySelected = selected.some(
+							(model) => model.provider === picked.provider && model.id === picked.id,
+						);
+						if (!alreadySelected) selected.push(picked);
+					}
+
+					if (selected.length === 0 && latestModel) {
+						const fallback = ctx.modelRegistry.find(latestModel.provider, latestModel.id);
+						if (fallback) selected.push(fallback);
+					}
+
+					return selected.map((model) => toQuickModelOption(model, quickSwitchConfig.showProviderInLabel));
+				},
+				getCurrentModel: () => {
+					if (!latestModel) return undefined;
+					return toQuickModelOption(latestModel, quickSwitchConfig.showProviderInLabel);
+				},
+				getCurrentThinking: () => pi.getThinkingLevel(),
+				getThinkingLevels: () => [...quickSwitchConfig.thinkingLevels],
+				apply: async (modelOption, thinkingLevel) => {
+					const model = ctx.modelRegistry.find(modelOption.provider, modelOption.id);
+					if (!model) {
+						return {
+							success: false,
+							message: `Model not found: ${modelOption.id}`,
+						};
+					}
+
+					const selected = await pi.setModel(model);
+					if (!selected) {
+						return {
+							success: false,
+							message: `No API key configured for ${modelOption.id}`,
+						};
+					}
+
+					pi.setThinkingLevel(thinkingLevel);
+					latestModel = model;
+					return {
+						success: true,
+						message: `Model: ${modelOption.id} (${thinkingLevel})`,
+					};
+				},
+				notify: (message, type) => ctx.ui.notify(message, type),
+			});
+			return editor;
+		});
 	});
 }

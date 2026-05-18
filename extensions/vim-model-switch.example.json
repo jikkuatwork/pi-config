@@ -1,0 +1,15 @@
+{
+  "modelPatterns": [
+    "gpt-5.5",
+    "gpt-5.3-codex"
+  ],
+  "thinkingLevels": [
+    "off",
+    "minimal",
+    "low",
+    "medium",
+    "high",
+    "xhigh"
+  ],
+  "showProviderInLabel": false
+}
