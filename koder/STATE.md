@@ -27,7 +27,8 @@ _Last updated: 2026-05-19_
   - `.pi/vim-model-switch.json` (project override)
   - example: `extensions/vim-model-switch.example.json`
 - Added Vim normal-mode `e` motion.
-- Added local review skills: `golang-pro`, `gpt-image2`, and `grill-me`; `gpt-image2` requires user-provided ImgBB keys (no embedded secret committed).
+- Added local review skills: `golang-pro`, `gpt-image2`, `grill-me`, and `find-skills`; `gpt-image2` requires user-provided ImgBB keys (no embedded secret committed).
+- Added repo-level agent guidance (`AGENTS.md`) and skill import workflow (`knowledge-base/workflows/skill-import.md`): no Skills CLI, manual vendoring, executable review, and umbrella-skill structure.
 
 ## Present
 
@@ -41,13 +42,15 @@ _Last updated: 2026-05-19_
   - `golang-pro` for Go implementation/review guidance
   - `gpt-image2` (tuned defaults: 16:9-friendly size, high quality, Desktop `gi-*` output, Azure/cloma bootstrap; requires env/flag credentials)
   - `grill-me`
-- Operator preference: do **not** install third-party skills globally unless explicitly requested; review/stage in this repo first, then promote if approved.
+  - `find-skills` for local skills discovery/vendoring without the Skills CLI
+- Operator preference for skills: never use Vercel Skills CLI (`npx skills`); always manually copy/vendor locally, review for executables/installers, ask permission before running/installing anything, and use umbrella skills for large domains. Do not install third-party skills globally unless explicitly requested.
 - Global pi settings outside this repo (`~/.pi/agent/settings.json`) load `/home/glasscube/Projects/pi/extensions`.
 - No root app/build system exists; `gpt-image2` skill has local `npm run check` and `npm run smoke` scripts.
 
 ## Future
 
 - Continue editing extensions here (not in `~/.pi/agent/extensions/`) and `/reload` after changes.
+- Next likely skill: build one top-level `azure` umbrella skill, docs-only, with Microsoft Azure modules converted to `references/modules/*/GUIDE.md`; keep credentials/guardrails in `AGENTS.md` and cloma/`~/.cloma`, not in the skill.
 - If desired, promote reviewed local skills (`golang-pro`, `gpt-image2`, `grill-me`) to global scope explicitly, one-by-one.
 - Keep tuning Vim quick-switch UX (labels, ordering, additional keybindings) as model lineup changes.
 - If Azure failures still bypass retry, add more normalization patterns with diagnostics.
