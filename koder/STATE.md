@@ -1,6 +1,6 @@
 # Koder State
 
-_Last updated: 2026-05-18_
+_Last updated: 2026-05-19_
 
 ## Purpose
 
@@ -26,21 +26,29 @@ _Last updated: 2026-05-18_
   - `~/.pi/agent/vim-model-switch.json` (global)
   - `.pi/vim-model-switch.json` (project override)
   - example: `extensions/vim-model-switch.example.json`
+- Added Vim normal-mode `e` motion.
+- Added local review skills: `golang-pro`, `gpt-image2`, and `grill-me`; `gpt-image2` requires user-provided ImgBB keys (no embedded secret committed).
 
 ## Present
 
 - Repo contains lifecycle skills and repo-managed global extensions under `extensions/`:
-  - `vim.ts`
+  - `vim.ts` (now includes normal-mode `e` motion)
   - `azure-retry-normalizer.ts`
   - `footer-highlights.ts`
-- Repo also contains project skill `.pi/skills/deep-research/SKILL.md`.
+  - `output-anchor.ts` (prefixes assistant outputs with searchable marker)
+- Repo also contains project skills under `.pi/skills/` including:
+  - `deep-research`
+  - `golang-pro` for Go implementation/review guidance
+  - `gpt-image2` (tuned defaults: 16:9-friendly size, high quality, Desktop `gi-*` output, Azure/cloma bootstrap; requires env/flag credentials)
+  - `grill-me`
+- Operator preference: do **not** install third-party skills globally unless explicitly requested; review/stage in this repo first, then promote if approved.
 - Global pi settings outside this repo (`~/.pi/agent/settings.json`) load `/home/glasscube/Projects/pi/extensions`.
-- No app/package/test/build system exists in this repo (extension-only workflow).
+- No root app/build system exists; `gpt-image2` skill has local `npm run check` and `npm run smoke` scripts.
 
 ## Future
 
 - Continue editing extensions here (not in `~/.pi/agent/extensions/`) and `/reload` after changes.
-- If desired, move `deep-research` from project-local skill to global skill path.
+- If desired, promote reviewed local skills (`golang-pro`, `gpt-image2`, `grill-me`) to global scope explicitly, one-by-one.
 - Keep tuning Vim quick-switch UX (labels, ordering, additional keybindings) as model lineup changes.
 - If Azure failures still bypass retry, add more normalization patterns with diagnostics.
 - If product code is added later, document build/test commands in this file.

@@ -5,7 +5,7 @@
  *
  * - Escape: insert → normal mode (in normal mode, aborts agent)
  * - i/a/A/I/o/O: enter insert / append / append-at-line-end / insert-at-line-start / open-line-below / open-line-above
- * - hjkl, 0/$, gg/G, w/b/E, f/F: navigation in normal mode
+ * - hjkl, 0/$, gg/G, w/b/e/E, f/F: navigation in normal mode
  * - x, c/C/cc, d/D/dd, dw/db/d0/d$, cw/cb/c0/c$: basic edits
  * - ctrl+c, ctrl+d, etc. work in both modes
  * - normal mode quick switch: tab (cycle model), ↑/↓ (thinking level), enter (apply), esc (cancel), i (cancel + insert)
@@ -219,6 +219,10 @@ class ModalEditor extends CustomEditor {
 		}
 		if (data === "b") {
 			this.setCursor(this.previousWordPosition());
+			return;
+		}
+		if (data === "e") {
+			this.setCursor(this.endWordPosition());
 			return;
 		}
 		if (data === "E") {
@@ -596,6 +600,35 @@ class ModalEditor extends CustomEditor {
 		}
 
 		return { line: 0, col: 0 };
+	}
+
+	private endWordPosition(): Position {
+		const lines = this.getLines();
+		let { line, col } = this.getCursor();
+
+		while (line < lines.length) {
+			const text = lines[line] ?? "";
+			if (col >= text.length) {
+				if (line >= lines.length - 1) return { line, col: text.length };
+				line++;
+				col = 0;
+				continue;
+			}
+
+			while (col < text.length && this.charKind(text[col]) === "space") col++;
+			if (col < text.length) {
+				const kind = this.charKind(text[col]);
+				while (col + 1 < text.length && this.charKind(text[col + 1]) === kind) col++;
+				return { line, col };
+			}
+
+			if (line >= lines.length - 1) return { line, col: text.length };
+			line++;
+			col = 0;
+		}
+
+		const lastLine = lines.length - 1;
+		return { line: lastLine, col: (lines[lastLine] ?? "").length };
 	}
 
 	private endWORDPosition(): Position {
