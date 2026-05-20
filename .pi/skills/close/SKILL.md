@@ -14,26 +14,33 @@ Use this skill at the end of a work session in this repository.
    git status --short
    git diff --stat
    ```
-2. Update `koder/STATE.md` so it remains under 100 lines and accurately captures:
+2. Refresh `koder/STATE.md` frontmatter timestamp:
+   - Ensure the file starts with YAML frontmatter containing `updated_at`.
+   - Set `updated_at` to current India time in this exact format: `DD Mon YYYY | HH:MM AM IST`.
+   - Use:
+     ```bash
+     TZ='Asia/Kolkata' date '+%d %b %Y | %I:%M %p IST'
+     ```
+3. Update `koder/STATE.md` so it remains under 100 lines and accurately captures:
    - Past: durable completed work from this session.
    - Present: current repo structure/state and any important caveats.
    - Future: concise next steps for the next session.
-3. Verify line count:
+4. Verify line count:
    ```bash
    wc -l koder/STATE.md
    ```
    If it is 100 lines or more, compress it before continuing.
-4. Run relevant checks/tests if the repo defines any. If none exist, note that no test suite is present.
-5. Review final changes:
+5. Run relevant checks/tests if the repo defines any. If none exist, note that no test suite is present.
+6. Review final changes:
    ```bash
    git status --short
    git diff --stat
    ```
-6. Commit all work:
+7. Commit all work:
    - If this is not a git repository, initialize it with `git init`.
    - Stage all intentional changes with `git add -A`.
    - Commit with a concise descriptive message, e.g. `chore: update session handoff`.
-7. Confirm the repo is clean:
+8. Confirm the repo is clean:
    ```bash
    git status --short
    ```
@@ -44,3 +51,4 @@ Use this skill at the end of a work session in this repository.
 - Do not commit secrets, credentials, caches, build outputs, or unrelated generated files.
 - If a commit cannot be made, explain exactly why and what remains dirty.
 - Keep `koder/STATE.md` concise; it is a hand-off, not a changelog.
+- Always update `updated_at` in `koder/STATE.md` frontmatter using India time format: `DD Mon YYYY | HH:MM AM IST`.

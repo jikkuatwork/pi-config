@@ -1,6 +1,8 @@
-# Koder State
+---
+updated_at: "20 May 2026 | 12:57 PM IST"
+---
 
-_Last updated: 2026-05-19_
+# Koder State
 
 ## Purpose
 
@@ -23,6 +25,8 @@ _Last updated: 2026-05-19_
   - `.pi/skills/create-skill/references/upstream/mattpocock-write-a-skill.GUIDE.md`
   - `.pi/skills/create-skill/references/upstream/README.md`
 - Rewrote `create-skill` as an opinionated workflow with default Vibe Mode, strict SKILL template, mandatory eval checklist, and minimal-diff iteration guidance.
+- Added YAML frontmatter to `koder/STATE.md` with `updated_at` timestamp metadata.
+- Updated `.pi/skills/close/SKILL.md` to require refreshing `updated_at` in IST format at session close.
 
 ## Present
 
@@ -31,6 +35,7 @@ _Last updated: 2026-05-19_
 - Current discoverable local skills now include: `open`, `close`, `find-skills`, `deep-research`, `golang-pro`, `gpt-image2`, `grill-me`, and `create-skill`.
 - `create-skill` is docs-first; upstream runnable tooling from Anthropics was intentionally **not** vendored.
 - No root app/build/test system exists in this repo.
+- `koder/STATE.md` now uses frontmatter for metadata (`updated_at`) instead of inline "Last updated" text.
 
 ## Future
 
