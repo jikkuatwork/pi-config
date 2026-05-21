@@ -1,17 +1,19 @@
 # Pi Config
 
-My personal pi setup.
+Why I prefer pi: its extensions.
 
-A small, opinionated collection of:
+A coding harness that can change itself feels like a superpower.
 
-- extensions I use
-- skills I trust or am reviewing
-- workflows that keep pi predictable
-- notes from learning pi by changing it
+Ask what needs to change.
+It appears.
+Then it gets refined.
+Again and again.
 
-Not a framework.
-Not a starter kit.
-Not official guidance.
+That is the joy here:
+
+- tools shaped by real use
+- small tweaks that compound
+- a setup that keeps getting sharper
 
 ## Extensions
 
