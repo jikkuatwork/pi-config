@@ -6,7 +6,7 @@
  * - Escape: insert → normal mode (in normal mode, aborts agent)
  * - i/a/A/I/o/O: enter insert / append / append-at-line-end / insert-at-line-start / open-line-below / open-line-above
  * - hjkl, 0/$, gg/G, w/b/e/E, f/F: navigation in normal mode
- * - x, c/C/cc, d/D/dd, dw/db/d0/d$, cw/cb/c0/c$: basic edits
+ * - x, c/C/cc, d/D/dd, dw/db/de/dE/d0/d$, cw/cb/ce/cE/c0/c$: basic edits
  * - ctrl+c, ctrl+d, etc. work in both modes
  * - normal mode quick switch: tab (cycle model), ↑/↓ (thinking level), enter (apply), esc (cancel), i (cancel + insert)
  */
@@ -174,7 +174,7 @@ class ModalEditor extends CustomEditor {
 			return;
 		}
 
-		// Normal mode c/d operators (cc, dd, cw, dw, c$, d$, etc.).
+		// Normal mode c/d operators (cc, dd, cw, ce, dw, de, c$, d$, etc.).
 		if (this.pendingOperator) {
 			const operator = this.pendingOperator;
 			this.pendingOperator = null;
@@ -510,14 +510,36 @@ class ModalEditor extends CustomEditor {
 
 		const start = this.getCursor();
 		let end: Position | null = null;
-		if (motion === "w") end = this.nextWordPosition();
+		if (motion === "w") end = operator === "c" ? this.changeWordPosition() : this.nextWordPosition();
 		else if (motion === "b") end = this.previousWordPosition();
+		else if (motion === "e") end = this.positionAfter(this.endWordPosition());
+		else if (motion === "E") end = this.positionAfter(this.endWORDPosition());
 		else if (motion === "$") end = { line: start.line, col: (this.getLines()[start.line] ?? "").length };
 		else if (motion === "0") end = { line: start.line, col: 0 };
 
 		if (!end) return;
 		this.deleteRange(start, end);
 		if (operator === "c") this.mode = "insert";
+	}
+
+	private charAt(position: Position): string | undefined {
+		const text = this.getLines()[position.line] ?? "";
+		if (position.col < 0 || position.col >= text.length) return undefined;
+		return text[position.col];
+	}
+
+	private positionAfter(position: Position): Position {
+		const lines = this.getLines();
+		const text = lines[position.line] ?? "";
+		if (position.col < text.length) return { line: position.line, col: position.col + 1 };
+		if (position.line < lines.length - 1) return { line: position.line + 1, col: 0 };
+		return { line: position.line, col: text.length };
+	}
+
+	private changeWordPosition(): Position {
+		const start = this.getCursor();
+		if (this.charKind(this.charAt(start)) === "space") return this.nextWordPosition();
+		return this.positionAfter(this.endWordPosition());
 	}
 
 	private deleteRange(a: Position, b: Position): void {
