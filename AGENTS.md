@@ -2,6 +2,13 @@
 
 This repo is the staging area for pi configuration, extensions, and locally reviewed skills.
 
+## Holm context
+
+- For Holm platform/app context, read `HOLM.md`.
+- Use the local `.pi/skills/holm-app/` skill when building or reviewing Holm apps from the Zippy boilerplate.
+- The reviewed Holm source lives at `/home/glasscube/Projects/holmhq/holm/master`; trust live source over cached notes when details drift.
+- Ask before running mutating Holm commands such as deploy, restart, upgrade, secret/provider writes, member/user changes, schedules, app removal, or package installs.
+
 ## Session hand-off
 
 - Read `koder/STATE.md` at the start of a session.
