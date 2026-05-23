@@ -95,6 +95,18 @@ Polished Holm apps should be usable without fragile browser state:
 - filters/search/sort/pagination are explicit for large lists;
 - tables collapse to mobile cards or horizontal scroll intentionally.
 
+## Themes, motion, sounds, and PWA polish
+
+For apps that request themes, animations, sounds, or native/mobile feel:
+
+- keep theme implementation token-based; no raw Tailwind colors in product UI;
+- persist theme/motion/sound preferences intentionally, using member-private storage when the preference is private and cross-device;
+- respect `prefers-reduced-motion` and keep animations under 300ms;
+- never autoplay sounds; trigger subtle synthesized or local sounds only after user interaction and provide a visible mute control;
+- keep sound feedback non-essential: all success/error/status information must also be visual and accessible;
+- add PWA artifacts deliberately (`manifest.webmanifest`, root `sw.js`, icons, safe-area shell) and document install/offline/update smoke status;
+- for strict offline/sovereign apps, self-host fonts and all runtime/PWA assets.
+
 ## Realtime and async UX
 
 For live apps:

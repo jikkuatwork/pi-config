@@ -204,6 +204,21 @@ Generated app README or final answer should include:
 - logs/debug commands
 - provider/secret setup placeholders with no secret values
 
+## Ready gate
+
+Before saying a serious app is ready, run a self-QA pass against the original user prompt:
+
+- build a request traceability checklist from the prompt and mark each requested feature implemented/tested;
+- check auth UI basics: signed-in avatar/fallback, signed-out login, logout path, forbidden states;
+- check settings/theme/sound/motion routes and persistence if any of those features exist;
+- prove durable save/reload behavior for every visible write action;
+- prove Alice/Bob/non-member privacy expectations for member-private and workspace-private data;
+- verify every nav/menu/sidebar route resolves and stale Zippy/demo surfaces are pruned;
+- run the no-browser walkthrough and any safe local syntax/build checks;
+- document manual/live-only smoke that cannot be automated, without claiming it is fully proven.
+
+Do not rely on a human to find missing basics such as broken auth avatar, missing settings route, non-persistent data, theme toggles that do nothing, or privacy leaks.
+
 ## Done means
 
 - raw app works without npm install/build

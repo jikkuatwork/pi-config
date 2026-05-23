@@ -35,6 +35,7 @@ Do not use for Holm platform internals, generic frontend/Go work, or node/cloud 
 | Explain Holm or choose app fit | `holm-overview.md` |
 | New full-stack app or visual scaffold | `zippy-boilerplate.md` |
 | Serious app contracts/handoff/audit | `app-quality-and-contracts.md` |
+| Maximal/multi-surface app or single-shot quality pass | `complex-app-single-shot.md` |
 | Multi-member realtime/collab/chat/presence/boards | `collaboration-production.md` |
 | Polished/showcase/production UI/UX | `ui-excellence.md` |
 | `api/main.js`, `holm.*`, auth/storage/tasks/uploads | `runtime-and-storage.md` |
@@ -50,6 +51,8 @@ Do not use for Holm platform internals, generic frontend/Go work, or node/cloud 
 - Make serious apps CLI-walkable: UI action -> API route -> durable state/task ID -> status/result/log route/check.
 - Use `holm.app.member.*` for one-member-private data; use app-level membership guards for team/workspace privacy.
 - For realtime/collab, realtime is notification, not authorization; use compact events plus authorized reconciliation routes and a two-client smoke path.
+- For maximal multi-surface apps, load `complex-app-single-shot.md`, complete its build brief/feature ledger before editing, and pass its readiness gate before saying ready.
+- For serious apps, do not offload basic acceptance testing to the human; self-check requested features, auth UI, settings/theme persistence, durable saves, route links, and privacy probes.
 - For polished apps, build the product workflow first and prune stale Zippy demos/agents unless intentionally showcasing.
 
 ## Permission gates

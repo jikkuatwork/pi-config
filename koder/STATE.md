@@ -1,5 +1,5 @@
 ---
-updated_at: "23 May 2026 | 06:05 PM IST"
+updated_at: "24 May 2026 | 12:19 AM IST"
 ---
 
 # Koder State
@@ -14,28 +14,27 @@ updated_at: "23 May 2026 | 06:05 PM IST"
 
 - Session lifecycle flow is active (`open` / `close` with `koder/STATE.md`).
 - Repo remains source-of-truth for personal pi extensions, reviewed skills, and workflow notes.
-- Earlier work includes Vim modal editing upgrades, vendored `visual-explainer`, and the local `holm-app` skill plus Holm context docs.
-- Previous Holm refresh made `holm-app` self-contained with `references/holm-inventory.md`, BFBB/no-npm policy, CLI-walkable app contracts, runtime/storage/auth/realtime/deploy/agent docs, and root `HOLM.md` as a pointer.
-- This session re-audited `holm-app` for complex multi-member production realtime apps and patched generic gaps, not a one-off simulated app.
-- Added `references/collaboration-production.md` for realtime-as-notification, channel privacy, membership guards, revision/idempotency/conflicts, reconnect, presence, and two-client smoke expectations.
-- Added `references/ui-excellence.md` for polished product UX, required states, visual polish, responsive/PWA/layout/accessibility guidance, and stale Zippy pruning.
-- Added `references/INDEX.md` as the skill router/load map and shrank `SKILL.md` to a tiny direct-use-only pointer for possible global promotion.
-- Updated Holm quality/runtime/deploy/eval/inventory refs with DS result-shape clarification, JSON API auth guard guidance, worker task shape, admin capability notes, and realtime smoke caveats.
+- `holm-app` is self-contained/direct-use, routed through `references/INDEX.md`, and grounded in live Holm/Zippy docs when generating apps.
+- Earlier Holm refresh added BFBB/no-npm policy, CLI-walkable contracts, runtime/storage/auth/realtime/deploy/agent refs, collaboration-production guidance, and UI excellence guidance.
+- This session stress-tested `holm-app` against a maximal single-attempt app: multi-member realtime, agentic workflows, media/uploads/blob links, async AI/tasks, PWA, responsive UI, themes, motion, and sounds.
+- Added `references/complex-app-single-shot.md` with a build brief, feature ledger, readiness contract, verification gate, and “human-discovered-basics” prevention checklist.
+- Hardened `app-quality-and-contracts.md`, `ui-excellence.md`, `INDEX.md`, and eval prompts around prompt traceability, auth/avatar, settings/theme/sound persistence, durable saves, route links, privacy probes, PWA, and manual/live-only caveats.
+- Filed Holm file-based issue `#340 App Builder Readiness Pipeline` in `/home/glasscube/Projects/holmhq/holm/master/koder/issues/340_app_builder_readiness_pipeline/INDEX.md`, validated metadata, and committed it in Holm as `3775fd8e`.
 
 ## Present
 
 - This repo is the canonical workspace for pi config, extensions, and local skills.
 - No root build/test harness or package manager project is defined in this repo.
-- `holm-app/SKILL.md` is intentionally minimal and direct-use only; invocation should read `references/INDEX.md`, then task-relevant refs.
-- The reviewed Holm source baseline in docs is `/home/glasscube/Projects/holmhq/holm/master` at Holm `0.119.3`, commit `de9e73f4`; live Holm source may be active/WIP and should be checked/trusted when building apps.
-- `holm-app` now favors low ambient context cost for global use; implicit trigger quality is intentionally less important than explicit “use holm-app” invocation.
+- `holm-app/SKILL.md` is intentionally tiny; invocation should read `references/INDEX.md`, then task-relevant refs.
+- `holm-app` now includes an explicit single-attempt readiness gate for complex apps; agents should not say ready until safe self-QA/tests pass or unproven live-only items are named.
+- Live Holm source checked this session was clean at commit `0bb93bf5`; cached skill refs still note reviewed Holm `0.119.3`/`de9e73f4` and should defer to live source when details drift.
 
 ## Future
 
 - Reload/restart pi so refreshed skill docs are picked up.
-- If promoting globally, copy the whole `.pi/skills/holm-app/` directory so `SKILL.md` can reach `references/INDEX.md` and all topic refs.
-- For future Holm app builds, explicitly invoke `holm-app`, read `references/INDEX.md`, then load only refs matching the requested surfaces.
-- If Holm/Zippy changes, refresh skill-local frontmatter (`updated`, `holm_version`, `holm_source_commit`) and inventory from live source.
+- If promoting globally, copy the whole `.pi/skills/holm-app/` directory including all `references/` files.
+- For future complex Holm app builds, explicitly invoke `holm-app`, read `references/INDEX.md`, then load `complex-app-single-shot.md` plus task refs before editing.
+- In Holm repo, issue #340 can drive design for `holm app doctor`, app contracts, richer scenarios, n-client realtime tests, app scopes, authorized realtime, R/I/C primitives, PWA doctor, agent validation, and ESM worker checks.
 - Continue planned docs-only Azure umbrella skill structure under `.pi/skills/azure/references/modules/*/GUIDE.md`.
 
 ## Commands
