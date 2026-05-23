@@ -1,5 +1,5 @@
 ---
-updated_at: "23 May 2026 | 04:23 PM IST"
+updated_at: "23 May 2026 | 06:05 PM IST"
 ---
 
 # Koder State
@@ -15,25 +15,27 @@ updated_at: "23 May 2026 | 04:23 PM IST"
 - Session lifecycle flow is active (`open` / `close` with `koder/STATE.md`).
 - Repo remains source-of-truth for personal pi extensions, reviewed skills, and workflow notes.
 - Earlier work includes Vim modal editing upgrades, vendored `visual-explainer`, and the local `holm-app` skill plus Holm context docs.
-- This session audited whether `holm-app` can build nice Zippy/BFBB Holm apps, then refreshed it instead of only reporting gaps.
-- `holm-app` is now self-contained: detailed Holm inventory moved to `.pi/skills/holm-app/references/holm-inventory.md`; root `HOLM.md` is a pointer.
-- Added/updated Holm skill docs for BFBB/no-npm policy, CLI-walkable app contracts, UI quality, member-private storage, deployment, agents, and eval prompts.
-- Added `updated`, `holm_version`, and source commit frontmatter across Holm skill docs.
-- `AGENTS.md` now points to the skill-local Holm inventory.
+- Previous Holm refresh made `holm-app` self-contained with `references/holm-inventory.md`, BFBB/no-npm policy, CLI-walkable app contracts, runtime/storage/auth/realtime/deploy/agent docs, and root `HOLM.md` as a pointer.
+- This session re-audited `holm-app` for complex multi-member production realtime apps and patched generic gaps, not a one-off simulated app.
+- Added `references/collaboration-production.md` for realtime-as-notification, channel privacy, membership guards, revision/idempotency/conflicts, reconnect, presence, and two-client smoke expectations.
+- Added `references/ui-excellence.md` for polished product UX, required states, visual polish, responsive/PWA/layout/accessibility guidance, and stale Zippy pruning.
+- Added `references/INDEX.md` as the skill router/load map and shrank `SKILL.md` to a tiny direct-use-only pointer for possible global promotion.
+- Updated Holm quality/runtime/deploy/eval/inventory refs with DS result-shape clarification, JSON API auth guard guidance, worker task shape, admin capability notes, and realtime smoke caveats.
 
 ## Present
 
 - This repo is the canonical workspace for pi config, extensions, and local skills.
 - No root build/test harness or package manager project is defined in this repo.
-- The reviewed Holm source was `/home/glasscube/Projects/holmhq/holm/master` at Holm `0.119.3`, commit `de9e73f4`, clean at review time.
-- `holm-app` docs emphasize: primary BFBB/raw apps must not require `npm install`, build, or public runtime CDN dependencies; npm/Vite are optional tooling only.
-- `extensions/vim.ts` had pre-existing uncommitted edits at open; close commits them together with this session's docs per close workflow.
+- `holm-app/SKILL.md` is intentionally minimal and direct-use only; invocation should read `references/INDEX.md`, then task-relevant refs.
+- The reviewed Holm source baseline in docs is `/home/glasscube/Projects/holmhq/holm/master` at Holm `0.119.3`, commit `de9e73f4`; live Holm source may be active/WIP and should be checked/trusted when building apps.
+- `holm-app` now favors low ambient context cost for global use; implicit trigger quality is intentionally less important than explicit “use holm-app” invocation.
 
 ## Future
 
-- Reload/restart pi so refreshed local skill docs are picked up.
-- For future Holm app builds, load `.pi/skills/holm-app/SKILL.md` and its `references/holm-inventory.md` / `app-quality-and-contracts.md` before coding.
-- If Holm/Zippy changes, refresh the skill-local frontmatter (`updated`, `holm_version`, `holm_source_commit`) and inventory from live source.
+- Reload/restart pi so refreshed skill docs are picked up.
+- If promoting globally, copy the whole `.pi/skills/holm-app/` directory so `SKILL.md` can reach `references/INDEX.md` and all topic refs.
+- For future Holm app builds, explicitly invoke `holm-app`, read `references/INDEX.md`, then load only refs matching the requested surfaces.
+- If Holm/Zippy changes, refresh skill-local frontmatter (`updated`, `holm_version`, `holm_source_commit`) and inventory from live source.
 - Continue planned docs-only Azure umbrella skill structure under `.pi/skills/azure/references/modules/*/GUIDE.md`.
 
 ## Commands

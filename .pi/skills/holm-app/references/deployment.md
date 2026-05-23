@@ -126,6 +126,8 @@ holm test run api/main.js /api/hello
 holm test run api/main.js /api/me -u alice@example.com
 ```
 
+For realtime/collaboration apps, `holm test run` proves API state transitions but not connected WebSocket delivery. Also run or document a local/deployed two-client WebSocket smoke that subscribes, mutates through the API, observes compact events, reconnects, and reconciles through an authorized state route.
+
 If optional npm/build tooling is intentionally present:
 
 ```bash
@@ -145,6 +147,7 @@ Serious apps should prove at least:
 - one write route
 - one expected error/unauthorized route
 - realtime-adjacent state mutation if applicable
+- two-client WebSocket delivery/reconnect smoke when realtime matters
 - async job start/status/result if applicable
 
 Prefer temp DB tests for local route proof and deployed curl/SDK smoke for final host proof.
@@ -174,4 +177,5 @@ When preparing deploys, state clearly:
 - whether commands were run
 - whether `private/` is included and why
 - validation commands and results
+- realtime smoke status when applicable
 - rollback/retarget command when relevant

@@ -37,6 +37,7 @@ Rules:
 - Keep imports sandboxed under `api/`; do not escape the deployed API tree.
 - Top-level `await` and dynamic relative `import()` are supported.
 - Do not assume Node built-ins, arbitrary npm imports, timers, or filesystem access.
+- Use bundled server stdlib bare imports only when the current runtime/docs list them; app-local modules should still use relative imports under `api/`.
 - Legacy `respond(...)` scripts exist for migration/tiny handlers, but are not the default for new apps.
 
 ## Request and response
@@ -123,7 +124,7 @@ const count = holm.app.kv.increment('metrics:visits')
 holm.app.kv.set('cache:home', { count }, 60_000)
 ```
 
-`holm.app.ds.find(...)` returns an array in app serverless bindings. Admin app read helpers return paged objects such as `{ rows, cursor }`.
+`holm.app.ds.find(...)` and `holm.app.member.ds.find(...)` return arrays in app serverless bindings. Do not call `.rows` on these app/member results. Admin app read helpers such as `holm.admin.app.ds.find(...)` return paged objects such as `{ rows, cursor }`.
 
 DS query operators include equality, `$eq`, `$ne`, `$gt`, `$lt`, `$gte`, `$lte`, `$in`, `$nin`, `$contains`, and `$or`. Updates support direct assignment, `$set`, `$unset`, and `$inc`.
 
@@ -162,6 +163,8 @@ Use member blob links only when the underlying blob is member-private and the sh
 
 ## Auth
 
+For JSON API routes, prefer explicit guards that return the route contract's machine-readable `401`/`403` responses. `requireLogin()`/`requireAdmin()` are useful, but may produce thrown/redirect-style behavior unless wrapped by your HTTP helpers.
+
 Server:
 
 ```js
@@ -186,6 +189,8 @@ await app.auth.logout()
 
 Production OAuth providers are node-level configuration, not per-app source code. Do not build ad hoc email/password auth into apps unless the task and current Holm source explicitly call for it.
 
+For workspace/team privacy, use shared app records plus app-level `memberships`/roles checked in every route. `holm.app.member.*` is for one member's private data; it is not a group-private storage scope.
+
 ## Realtime pattern
 
 Use storage as truth and realtime as notification:
@@ -194,6 +199,8 @@ Use storage as truth and realtime as notification:
 2. Mutate `holm.app.ds` or `holm.app.kv`.
 3. Broadcast compact event with `holm.realtime.broadcast(channel, data)`.
 4. Browser reconciles from storage/API when needed.
+
+Treat channels as notification labels, not ACLs, unless current Holm source proves server-enforced channel authorization for the target app. For private rooms/workspaces, broadcast IDs/revisions and fetch full state through authorized API routes.
 
 ```js
 holm.app.ds.insert('messages', message)
@@ -216,6 +223,34 @@ Routes should return quickly. For slow provider calls, retries, polling, AI, or 
 
 `holm.ai.chat(...)` is for small synchronous calls. If budget may be tight, default to `holm.ai.job(...)`.
 
+For non-AI background work, `holm.task.spawn(handlerPath, options)` expects a deployed app file path such as `workers/summarize.js`. Current JS worker handlers are not `api/main.js` ESM handlers; use the worker shape accepted by Holm:
+
+```js
+// workers/summarize.js
+module.exports = function handler(job) {
+  job.log(`starting ${job.id}`)
+  job.progress(10)
+  const input = job.data || {}
+  // do slow work, use injected holm.* namespaces where available
+  job.progress(100)
+  return { ok: true, inputId: input.id }
+}
+```
+
+Spawn with durable data and idempotency:
+
+```js
+const task = holm.task.spawn('workers/summarize.js', {
+  data: { workspaceId, requestId },
+  idempotencyKey: `summary:${workspaceId}:${requestId}`,
+  retry: 2,
+  retryDelay: '10s',
+  timeout: '2m'
+})
+```
+
+Worker files are deployed app content; do not put secrets in them. Use Holm secrets/providers and `private/` files intentionally.
+
 ## Private files
 
 Use `private/` for server-only templates/config examples/agent source that must deploy with the app. Runtime helpers:
@@ -229,4 +264,13 @@ Use `private/` for server-only templates/config examples/agent source that must 
 
 ## Admin app/member surfaces
 
-App admin query helpers exist under `holm.admin.app.*` and explicit member helpers under `holm.admin.member(id).*`. Use them only when the app declares/uses the relevant capabilities and the feature is truly admin-facing. Keep normal member-facing state on `holm.app.*` / `holm.app.member.*`.
+App admin query helpers exist under `holm.admin.app.*` and explicit member helpers under `holm.admin.member(id).*`. Use them only when the app declares/uses the relevant manifest capabilities and the feature is truly admin-facing.
+
+Common capabilities:
+
+- `app-admin` for app-admin role behavior.
+- `admin-app-read` for cross-member app read/list helpers.
+- `admin-member-read` for admin member read helpers.
+- `admin-member-write` for admin member write helpers; it implies member read but not `admin-app-read`.
+
+Keep normal member-facing state on `holm.app.*` / `holm.app.member.*`.

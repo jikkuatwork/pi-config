@@ -17,6 +17,7 @@ Use these prompts when checking trigger boundaries and output quality for the `h
 4. "Review this Holm app's `api/main.js` and tell me whether it follows the current ESM runtime/storage/auth patterns."
 5. "Make this Zippy-derived app BFBB-compatible again; it currently only works after `npm run build`."
 6. "Design a Holm app with member-private uploads, blob links, and async AI jobs, then give me the route contract and deploy plan."
+7. "Build a polished multi-member Holm app with realtime rooms, shared boards, comments, presence, conflict handling, and a two-client smoke test."
 
 ## Should not trigger
 
@@ -33,6 +34,8 @@ Use these prompts when checking trigger boundaries and output quality for the `h
 - User asks for fastest prototype: still keep BFBB raw deploy working unless explicitly told to make build-only output.
 - User asks about npm dependency: say npm is optional for Vite dev/build/test wrappers; raw BFBB must not require npm install/build.
 - User asks for private user data: require `holm.app.member.*`, not shared keys by user ID.
+- User asks for private rooms/workspaces over realtime: treat channels as notification labels, enforce access in API routes, and avoid confidential broadcasts unless channel auth is proven.
+- User asks for production collaboration: require idempotency/revision/conflict/reconnect design and a two-client realtime smoke plan.
 - Holm docs conflict: read the live source repo and follow source over this skill.
 
 ## Output quality checklist
@@ -40,8 +43,9 @@ Use these prompts when checking trigger boundaries and output quality for the `h
 - [x] App-shape summary and starting point.
 - [x] BFBB/raw compatibility statement and optional npm/tooling distinction.
 - [x] Route contract, data model/storage scope, auth matrix, realtime map for serious apps.
-- [x] UI state checklist or summary for generated app surfaces.
-- [x] Validation commands, including CLI-walkable checks where available.
+- [x] Collaboration safety summary for multi-member apps: channel privacy, membership guards, revision/idempotency/conflict/reconcile model.
+- [x] UI state checklist or summary for generated app surfaces, with UI excellence notes for polished apps.
+- [x] Validation commands, including CLI-walkable checks and realtime smoke status where applicable.
 - [x] Deploy commands with exact host routes and clear run/not-run status.
 - [x] Permission gates for package installs and live Holm mutations.
 

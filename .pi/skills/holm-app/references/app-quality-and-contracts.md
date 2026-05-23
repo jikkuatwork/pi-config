@@ -14,7 +14,8 @@ Use this before and during serious Holm app builds. The goal is a useful product
 Write a compact app brief before editing:
 
 - User goal and primary workflow.
-- Surfaces needed: static UI, API, auth, storage, realtime, uploads, tasks/AI, agents, operator scripts.
+- Surfaces needed: static UI, API, auth, storage, realtime, collaboration, uploads, tasks/AI, agents, operator scripts.
+- Collaboration/realtime posture: membership scopes, channel privacy, conflict/idempotency model, and realtime verification plan.
 - Raw deploy target and optional built mirror target.
 - What must be pruned from Zippy.
 - Known provider/secret/operator setup that cannot live in source.
@@ -35,6 +36,7 @@ Rules:
 - Workers/tasks are executors: read durable input, do slow work, append progress/logs, write result/error.
 - Errors should be machine-readable and consistent: `{ error, code? }`.
 - List routes need explicit `limit`, `order`, and pagination/offset/cursor decisions.
+- Contested multi-member writes need `client_op_id`/idempotency, revision or ordering, and a conflict/reconcile response.
 
 ## Data model and storage scope
 
@@ -84,6 +86,15 @@ POST intent -> validate/auth -> DS/KV write -> broadcast compact event -> client
 
 Never make WebSocket messages the only durable source of truth.
 
+Realtime safety rules:
+
+- Treat realtime channels as notification routing labels, not privacy boundaries, unless the target Holm runtime explicitly provides server-enforced channel authorization for the app.
+- Enforce member/workspace/role access in every read and write API route.
+- Prefer compact events containing IDs/revisions over confidential payloads.
+- Clients should reconcile through authorized state routes after connect/reconnect/missed events.
+
+For multi-member rooms, docs, boards, chat, presence, or multiplayer, also load `collaboration-production.md` and define the revision/idempotency/conflict model before coding.
+
 ## Async/task contract
 
 Use this when work may be slow, retry-prone, provider-backed, AI/media-heavy, or cancelable.
@@ -102,16 +113,22 @@ Prefer `holm.ai.job(...)` or `holm.task.spawn(...)` over long synchronous route 
 
 ## UI state checklist
 
+For polished, exemplar, showcase, or production-grade UI work, also load `ui-excellence.md` and the live Zippy polish/component/layout references.
+
 For every non-trivial page/component, cover:
 
 - loading/skeleton
 - empty state with next action
 - success/normal state
 - validation errors
-- network/server errors
+- network/server errors with retry path
 - signed-out state
-- forbidden/admin-only state
-- optimistic vs confirmed state, if realtime/collab
+- forbidden/admin-only/read-only state
+- optimistic pending vs confirmed state, if realtime/collab
+- reconnecting/offline/reconciled state, if realtime/collab
+- stale/conflict state, if collaborative writes can race
+- queued/running/succeeded/failed/canceled state, if async jobs exist
+- upload progress/failure state, if uploads exist
 - mobile layout and desktop layout
 - destructive-action confirmation
 - accessible labels/focus states for key controls
@@ -168,6 +185,7 @@ The walkthrough should prove:
 - at least one write
 - one expected auth/error case
 - key realtime-adjacent state mutation if applicable
+- two-client WebSocket smoke instructions/results when realtime delivery matters
 - async status/result if applicable
 
 Prefer a temp DB for local tests. Do not require a live node for baseline route proof.
@@ -193,5 +211,8 @@ Generated app README or final answer should include:
 - CLI/headless route proof exists for core flows
 - build mirror passes if the app keeps build tooling
 - auth/storage/realtime decisions are explicit
+- realtime apps document channel privacy, reconcile behavior, and whether delivery was actually smoke-tested
+- multi-member writes have an idempotency/revision/conflict strategy where needed
+- polished apps follow the UI excellence checklist and prune stale boilerplate
 - private files and agents are intentional
 - deployment commands use exact host routes and current flags

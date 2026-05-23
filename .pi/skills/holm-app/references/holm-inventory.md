@@ -48,6 +48,8 @@ Important constraints:
 - Use `createAppClient()` in the browser.
 - Use exact-FQDN host routes: `holm @peer app deploy . --host app.example.com --spa --no-build`.
 - Build serious apps as CLI-walkable: route contracts, durable IDs, status/log/result endpoints, and `holm test run`/curl/script checks.
+- For collaborative/realtime apps, treat realtime as notification, enforce membership in API routes, use compact events plus reconciliation, and define revision/idempotency/conflict handling for contested writes.
+- For polished/exemplar apps, load the UI excellence/polish references and prune Zippy into a real product workflow rather than leaving a demo hub.
 
 ## App hosting and deploy
 
@@ -190,6 +192,8 @@ Server API:
 - `kick(clientId, reason?)`
 
 Use for chat, collaboration, presence, dashboards, lobbies, notifications, and live feeds.
+
+Production safety default: realtime channels are notification labels, not app-domain ACLs. For private rooms/workspaces, broadcast compact event IDs/revisions and require clients to fetch full state through authorized API routes. For multi-member writes, define idempotency, revisions/conflicts, and reconnect reconciliation before coding.
 
 ## Tasks, workers, and AI
 
