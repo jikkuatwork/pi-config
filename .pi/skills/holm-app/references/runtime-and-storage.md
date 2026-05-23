@@ -1,3 +1,10 @@
+---
+title: Runtime, Storage, Auth, And Realtime
+updated: 2026-05-23
+holm_version: 0.119.3
+holm_source_commit: de9e73f4
+---
+
 # Runtime, Storage, Auth, And Realtime
 
 Source-of-truth path when details matter:
@@ -30,7 +37,7 @@ Rules:
 - Keep imports sandboxed under `api/`; do not escape the deployed API tree.
 - Top-level `await` and dynamic relative `import()` are supported.
 - Do not assume Node built-ins, arbitrary npm imports, timers, or filesystem access.
-- Legacy `respond(...)` scripts exist for old/tiny handlers, but are not the default for new apps.
+- Legacy `respond(...)` scripts exist for migration/tiny handlers, but are not the default for new apps.
 
 ## Request and response
 
@@ -60,6 +67,20 @@ export function json(body = {}, status = 200, headers = {}) {
 }
 ```
 
+## Route contracts first
+
+For non-trivial apps, design route contracts before coding:
+
+- operation name
+- method/path
+- auth/role requirement
+- body/query shape
+- response shape
+- durable DS/KV/S3/task side effect
+- CLI check with `holm test run`, curl, or script
+
+This keeps the app testable without browser state and prevents UI-only flows.
+
 ## Storage choice
 
 Shared app state:
@@ -77,9 +98,11 @@ Member-private state uses the same surfaces under `holm.app.member.*`.
 Practical default:
 
 - Use `holm.app.ds` for records you filter, list, or audit.
-- Use `holm.app.kv` for counters, preferences, feature flags, and compact current state.
+- Use `holm.app.kv` for counters, preferences that are intentionally shared/admin-readable, feature flags, and compact current state.
 - Use `holm.app.s3` for binary uploads/files.
 - Use `holm.app.member.*` when one member's data must not be visible to others.
+
+Privacy rule: shared keys containing `user.id` are not a privacy boundary. For private user preferences, drafts, uploads, or memory, use member-scoped storage.
 
 ## DS and KV snippets
 
@@ -93,12 +116,14 @@ const item = {
 }
 
 holm.app.ds.insert('items', item)
-const rows = holm.app.ds.find('items', { status: 'open' }, { limit: 50 })
-holm.app.ds.update('items', { id: item.id }, { status: 'done' })
+const rows = holm.app.ds.find('items', { status: 'open' }, { limit: 50, order: 'desc', orderBy: 'createdAt' })
+holm.app.ds.update('items', { id: item.id }, { $set: { status: 'done' } })
 
 const count = holm.app.kv.increment('metrics:visits')
 holm.app.kv.set('cache:home', { count }, 60_000)
 ```
+
+`holm.app.ds.find(...)` returns an array in app serverless bindings. Admin app read helpers return paged objects such as `{ rows, cursor }`.
 
 DS query operators include equality, `$eq`, `$ne`, `$gt`, `$lt`, `$gte`, `$lte`, `$in`, `$nin`, `$contains`, and `$or`. Updates support direct assignment, `$set`, `$unset`, and `$inc`.
 
@@ -120,7 +145,20 @@ export default async function handler(request) {
 }
 ```
 
-For remote binary fetches, `holm.net.fetch(url, { responseType: 'file' })` returns a file handle that can be stored via S3 surfaces.
+For remote binary fetches, `holm.net.fetch(url, { responseType: 'file' })` returns a staged file handle that can be stored via S3 surfaces.
+
+Blob links are intentional sharing controls over blobs:
+
+```js
+const link = holm.app.bl.create('public/report.pdf', {
+  ttl: '24h',
+  maxDownloads: 5,
+  download: true,
+  message: 'Temporary report link'
+})
+```
+
+Use member blob links only when the underlying blob is member-private and the sharing policy is deliberate.
 
 ## Auth
 
@@ -132,6 +170,7 @@ if (!member) return { status: 401, body: { error: 'login required' } }
 // or:
 holm.auth.requireLogin()
 holm.auth.requireAdmin()
+holm.auth.requireRole('reviewer')
 ```
 
 Browser:
@@ -170,11 +209,23 @@ Browser clients connect to `/_ws`, subscribe/unsubscribe by channel, respond to 
 
 Routes should return quickly. For slow provider calls, retries, polling, AI, or media pipelines:
 
+- Create durable input/status state.
 - Enqueue with `holm.task.spawn(...)` or `holm.ai.job(...)`.
-- Return `202` and a task ID.
+- Return `202` with a job/task ID and status URL.
 - Provide status/result endpoints using `holm.task.get/list/wait`.
 
 `holm.ai.chat(...)` is for small synchronous calls. If budget may be tight, default to `holm.ai.job(...)`.
+
+## Private files
+
+Use `private/` for server-only templates/config examples/agent source that must deploy with the app. Runtime helpers:
+
+- `holm.private.read(path)`
+- `holm.private.readJSON(path)`
+- `holm.private.exists(path)`
+- `holm.private.list()`
+
+`private/` requires deploy with `--include-private`. Do not put secrets in private files; use Holm secrets/providers.
 
 ## Admin app/member surfaces
 

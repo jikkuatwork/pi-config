@@ -6,11 +6,12 @@
  * - Escape: insert → normal mode (in normal mode, aborts agent)
  * - i/a/A/I/o/O: enter insert / append / append-at-line-end / insert-at-line-start / open-line-below / open-line-above
  * - hjkl, 0/$, gg/G, w/b/e/E, f/F: navigation in normal mode
- * - x, c/C/cc, d/D/dd, dw/db/de/dE/d0/d$, cw/cb/ce/cE/c0/c$: basic edits
+ * - x, r, s/S, yy (copies clipboard), dd, p/P, dG/dgg/d{motion}, c{motion}: basic edits
  * - ctrl+c, ctrl+d, etc. work in both modes
  * - normal mode quick switch: tab (cycle model), ↑/↓ (thinking level), enter (apply), esc (cancel), i (cancel + insert)
  */
 
+import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { Api, Model } from "@earendil-works/pi-ai";
@@ -30,8 +31,9 @@ type PrivateEditor = {
 };
 
 type Position = { line: number; col: number };
-type Operator = "c" | "d";
+type Operator = "c" | "d" | "y";
 type FindDirection = "forward" | "backward";
+type YankRegister = { kind: "line"; lines: string[] };
 type ThinkingLevel = "off" | "minimal" | "low" | "medium" | "high" | "xhigh";
 type QuickModelOption = { provider: string; id: string; label: string };
 type QuickSwitchConfig = {
@@ -78,8 +80,11 @@ const BG_ORANGE = "\x1b[48;2;231;140;69m"; // s:orange
 class ModalEditor extends CustomEditor {
 	private mode: "normal" | "insert" = "insert";
 	private pendingOperator: Operator | null = null;
+	private pendingOperatorGoto: Operator | null = null;
 	private pendingFind: FindDirection | null = null;
+	private pendingReplace = false;
 	private pendingGoto = false;
+	private yankRegister: YankRegister | null = null;
 	private quickSwitcher: QuickSwitcherCallbacks | null = null;
 	private quickSwitch = {
 		active: false,
@@ -135,9 +140,11 @@ class ModalEditor extends CustomEditor {
 		if (matchesKey(data, "escape")) {
 			if (this.mode === "insert") {
 				this.mode = "normal";
-			} else if (this.pendingOperator || this.pendingFind || this.pendingGoto) {
+			} else if (this.pendingOperator || this.pendingOperatorGoto || this.pendingFind || this.pendingReplace || this.pendingGoto) {
 				this.pendingOperator = null;
+				this.pendingOperatorGoto = null;
 				this.pendingFind = null;
+				this.pendingReplace = false;
 				this.pendingGoto = false;
 				this.requestRender();
 			} else {
@@ -166,6 +173,24 @@ class ModalEditor extends CustomEditor {
 			return;
 		}
 
+		// Normal mode r: wait for a following printable replacement character.
+		if (this.pendingReplace) {
+			const char = this.printableChar(data);
+			this.pendingReplace = false;
+			if (char !== null) this.replaceChar(char);
+			else this.requestRender();
+			return;
+		}
+
+		// Normal mode dgg/cgg/ygg: wait for the second g after an operator.
+		if (this.pendingOperatorGoto) {
+			const operator = this.pendingOperatorGoto;
+			this.pendingOperatorGoto = null;
+			if (data === "g") this.handleOperator(operator, "gg");
+			else this.requestRender();
+			return;
+		}
+
 		// Normal mode gg: wait for the second g.
 		if (this.pendingGoto) {
 			this.pendingGoto = false;
@@ -174,10 +199,15 @@ class ModalEditor extends CustomEditor {
 			return;
 		}
 
-		// Normal mode c/d operators (cc, dd, cw, ce, dw, de, c$, d$, etc.).
+		// Normal mode c/d/y operators (cc, dd, yy, cw, ce, dG, dgg, etc.).
 		if (this.pendingOperator) {
 			const operator = this.pendingOperator;
 			this.pendingOperator = null;
+			if (data === "g") {
+				this.pendingOperatorGoto = operator;
+				this.requestRender();
+				return;
+			}
 			this.handleOperator(operator, data);
 			return;
 		}
@@ -222,11 +252,11 @@ class ModalEditor extends CustomEditor {
 			return;
 		}
 		if (data === "e") {
-			this.setCursor(this.endWordPosition());
+			this.setCursor(this.endWordPosition({ skipCurrentEnd: true }));
 			return;
 		}
 		if (data === "E") {
-			this.setCursor(this.endWORDPosition());
+			this.setCursor(this.endWORDPosition({ skipCurrentEnd: true }));
 			return;
 		}
 		if (data === "g") {
@@ -256,7 +286,28 @@ class ModalEditor extends CustomEditor {
 			this.deleteToLineEnd();
 			return;
 		}
-		if (data === "c" || data === "d") {
+		if (data === "r") {
+			this.pendingReplace = true;
+			this.requestRender();
+			return;
+		}
+		if (data === "s") {
+			this.substituteChar();
+			return;
+		}
+		if (data === "S") {
+			this.changeLine();
+			return;
+		}
+		if (data === "p") {
+			this.pasteRegister("after");
+			return;
+		}
+		if (data === "P") {
+			this.pasteRegister("before");
+			return;
+		}
+		if (data === "c" || data === "d" || data === "y") {
 			this.pendingOperator = data;
 			this.requestRender();
 			return;
@@ -370,8 +421,14 @@ class ModalEditor extends CustomEditor {
 		} else if (this.pendingOperator) {
 			rawLabel = ` ${this.pendingOperator}… `;
 			bg = BG_ORANGE;
+		} else if (this.pendingOperatorGoto) {
+			rawLabel = ` ${this.pendingOperatorGoto}g… `;
+			bg = BG_ORANGE;
 		} else if (this.pendingFind) {
 			rawLabel = ` ${this.pendingFind === "forward" ? "f" : "F"}… `;
+			bg = BG_ORANGE;
+		} else if (this.pendingReplace) {
+			rawLabel = " r… ";
 			bg = BG_ORANGE;
 		} else if (this.pendingGoto) {
 			rawLabel = " g… ";
@@ -478,15 +535,67 @@ class ModalEditor extends CustomEditor {
 		this.mode = "insert";
 	}
 
+	private setYankRegister(lines: string[], options: { copyToClipboard?: boolean } = {}): void {
+		this.yankRegister = { kind: "line", lines: [...lines] };
+		if (options.copyToClipboard) copyToClipboard(`${lines.join("\n")}\n`);
+	}
+
+	private yankLine(): void {
+		const lines = this.getLines();
+		const { line } = this.getCursor();
+		this.setYankRegister([lines[line] ?? ""], { copyToClipboard: true });
+		this.requestRender();
+	}
+
 	private deleteLine(): void {
 		const lines = this.getLines();
 		const { line } = this.getCursor();
+		this.setYankRegister([lines[line] ?? ""]);
 		if (lines.length <= 1) {
 			this.setLines([""], { line: 0, col: 0 });
 			return;
 		}
 		lines.splice(line, 1);
 		this.setLines(lines, { line: Math.min(line, lines.length - 1), col: 0 });
+	}
+
+	private pasteRegister(position: "before" | "after"): void {
+		if (!this.yankRegister) {
+			this.requestRender();
+			return;
+		}
+
+		const lines = this.getLines();
+		const { line } = this.getCursor();
+		const insertAt = position === "after" ? Math.min(line + 1, lines.length) : line;
+		lines.splice(insertAt, 0, ...this.yankRegister.lines);
+		this.setLines(lines, { line: insertAt, col: 0 });
+	}
+
+	private replaceChar(char: string): void {
+		const lines = this.getLines();
+		const cursor = this.getCursor();
+		const text = lines[cursor.line] ?? "";
+		if (cursor.col >= text.length) {
+			this.requestRender();
+			return;
+		}
+
+		lines[cursor.line] = text.slice(0, cursor.col) + char + text.slice(cursor.col + 1);
+		this.setLines(lines, cursor);
+	}
+
+	private substituteChar(): void {
+		const lines = this.getLines();
+		const cursor = this.getCursor();
+		const text = lines[cursor.line] ?? "";
+		if (cursor.col < text.length) {
+			lines[cursor.line] = text.slice(0, cursor.col) + text.slice(cursor.col + 1);
+		}
+
+		this.setLines(lines, { line: cursor.line, col: Math.min(cursor.col, (lines[cursor.line] ?? "").length) });
+		this.mode = "insert";
+		this.requestRender();
 	}
 
 	private deleteToLineEnd(): void {
@@ -504,7 +613,22 @@ class ModalEditor extends CustomEditor {
 	private handleOperator(operator: Operator, motion: string): void {
 		if (motion === operator) {
 			if (operator === "c") this.changeLine();
-			else this.deleteLine();
+			else if (operator === "d") this.deleteLine();
+			else this.yankLine();
+			return;
+		}
+
+		if (motion === "G") {
+			this.applyLineMotion(operator, this.getLines().length - 1);
+			return;
+		}
+		if (motion === "gg") {
+			this.applyLineMotion(operator, 0);
+			return;
+		}
+
+		if (operator === "y") {
+			this.requestRender();
 			return;
 		}
 
@@ -520,6 +644,35 @@ class ModalEditor extends CustomEditor {
 		if (!end) return;
 		this.deleteRange(start, end);
 		if (operator === "c") this.mode = "insert";
+	}
+
+	private applyLineMotion(operator: Operator, targetLine: number): void {
+		const lines = this.getLines();
+		const { line } = this.getCursor();
+		const startLine = Math.max(0, Math.min(line, targetLine));
+		const endLine = Math.min(lines.length - 1, Math.max(line, targetLine));
+		const affected = lines.slice(startLine, endLine + 1);
+
+		if (operator === "y") {
+			this.setYankRegister(affected, { copyToClipboard: true });
+			this.requestRender();
+			return;
+		}
+
+		this.setYankRegister(affected);
+		if (operator === "d") {
+			if (affected.length >= lines.length) {
+				this.setLines([""], { line: 0, col: 0 });
+				return;
+			}
+			lines.splice(startLine, affected.length);
+			this.setLines(lines, { line: Math.min(startLine, lines.length - 1), col: 0 });
+			return;
+		}
+
+		lines.splice(startLine, affected.length, "");
+		this.setLines(lines, { line: startLine, col: 0 });
+		this.mode = "insert";
 	}
 
 	private charAt(position: Position): string | undefined {
@@ -624,43 +777,31 @@ class ModalEditor extends CustomEditor {
 		return { line: 0, col: 0 };
 	}
 
-	private endWordPosition(): Position {
-		const lines = this.getLines();
-		let { line, col } = this.getCursor();
-
-		while (line < lines.length) {
-			const text = lines[line] ?? "";
-			if (col >= text.length) {
-				if (line >= lines.length - 1) return { line, col: text.length };
-				line++;
-				col = 0;
-				continue;
-			}
-
-			while (col < text.length && this.charKind(text[col]) === "space") col++;
-			if (col < text.length) {
-				const kind = this.charKind(text[col]);
-				while (col + 1 < text.length && this.charKind(text[col + 1]) === kind) col++;
-				return { line, col };
-			}
-
-			if (line >= lines.length - 1) return { line, col: text.length };
-			line++;
-			col = 0;
-		}
-
-		const lastLine = lines.length - 1;
-		return { line: lastLine, col: (lines[lastLine] ?? "").length };
+	private endWordPosition(options: { skipCurrentEnd?: boolean } = {}): Position {
+		return this.endWordPositionFor(false, options);
 	}
 
-	private endWORDPosition(): Position {
+	private endWORDPosition(options: { skipCurrentEnd?: boolean } = {}): Position {
+		return this.endWordPositionFor(true, options);
+	}
+
+	private endWordPositionFor(bigWord: boolean, options: { skipCurrentEnd?: boolean }): Position {
+		const start = this.getCursor();
+		const skippedCurrentEnd = options.skipCurrentEnd === true && this.isAtWordEnd(start, bigWord);
+		const searchStart = skippedCurrentEnd ? this.positionAfter(start) : start;
+		const found = this.findEndWordPosition(searchStart, bigWord);
+
+		if (found) return found;
+		return skippedCurrentEnd ? start : this.endOfBufferPosition();
+	}
+
+	private findEndWordPosition(start: Position, bigWord: boolean): Position | null {
 		const lines = this.getLines();
-		let { line, col } = this.getCursor();
+		let { line, col } = start;
 
 		while (line < lines.length) {
 			const text = lines[line] ?? "";
 			if (col >= text.length) {
-				if (line >= lines.length - 1) return { line, col: text.length };
 				line++;
 				col = 0;
 				continue;
@@ -668,16 +809,35 @@ class ModalEditor extends CustomEditor {
 
 			while (col < text.length && this.charKind(text[col]) === "space") col++;
 			if (col < text.length) {
-				while (col + 1 < text.length && this.charKind(text[col + 1]) !== "space") col++;
+				if (bigWord) {
+					while (col + 1 < text.length && this.charKind(text[col + 1]) !== "space") col++;
+				} else {
+					const kind = this.charKind(text[col]);
+					while (col + 1 < text.length && this.charKind(text[col + 1]) === kind) col++;
+				}
 				return { line, col };
 			}
 
-			if (line >= lines.length - 1) return { line, col: text.length };
 			line++;
 			col = 0;
 		}
 
-		const lastLine = lines.length - 1;
+		return null;
+	}
+
+	private isAtWordEnd(position: Position, bigWord: boolean): boolean {
+		const kind = this.charKind(this.charAt(position));
+		if (kind === "space") return false;
+
+		const text = this.getLines()[position.line] ?? "";
+		const nextKind = this.charKind(text[position.col + 1]);
+		if (nextKind === "space") return true;
+		return bigWord ? false : nextKind !== kind;
+	}
+
+	private endOfBufferPosition(): Position {
+		const lines = this.getLines();
+		const lastLine = Math.max(0, lines.length - 1);
 		return { line: lastLine, col: (lines[lastLine] ?? "").length };
 	}
 
@@ -688,6 +848,46 @@ class ModalEditor extends CustomEditor {
 		const idx = direction === "forward" ? text.indexOf(char, col + 1) : text.lastIndexOf(char, col - 1);
 		if (idx !== -1) this.setCursor({ line, col: idx });
 		else this.requestRender();
+	}
+}
+
+function copyToClipboard(text: string): boolean {
+	if (text.length === 0) return false;
+
+	for (const { command, args } of clipboardCommands()) {
+		const result = spawnSync(command, args, {
+			input: text,
+			encoding: "utf8",
+			stdio: ["pipe", "ignore", "ignore"],
+		});
+		if (!result.error && result.status === 0) return true;
+	}
+
+	return copyToClipboardViaOsc52(text);
+}
+
+function clipboardCommands(): Array<{ command: string; args: string[] }> {
+	if (process.platform === "darwin") return [{ command: "pbcopy", args: [] }];
+	if (process.platform === "win32") return [{ command: "clip.exe", args: [] }];
+
+	const commands: Array<{ command: string; args: string[] }> = [];
+	if (process.env.WAYLAND_DISPLAY) commands.push({ command: "wl-copy", args: [] });
+	if (process.env.DISPLAY) {
+		commands.push({ command: "xclip", args: ["-selection", "clipboard"] });
+		commands.push({ command: "xsel", args: ["--clipboard", "--input"] });
+	}
+	if (process.env.WSL_INTEROP) commands.push({ command: "clip.exe", args: [] });
+	commands.push({ command: "termux-clipboard-set", args: [] });
+	return commands;
+}
+
+function copyToClipboardViaOsc52(text: string): boolean {
+	if (!process.stdout.isTTY) return false;
+	try {
+		process.stdout.write(`\x1b]52;c;${Buffer.from(text, "utf8").toString("base64")}\x07`);
+		return true;
+	} catch {
+		return false;
 	}
 }
 

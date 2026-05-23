@@ -4,7 +4,7 @@ This repo is the staging area for pi configuration, extensions, and locally revi
 
 ## Holm context
 
-- For Holm platform/app context, read `HOLM.md`.
+- For Holm platform/app context, read `HOLM.md`; the detailed canonical inventory now lives inside `.pi/skills/holm-app/references/holm-inventory.md` so the skill is self-contained.
 - Use the local `.pi/skills/holm-app/` skill when building or reviewing Holm apps from the Zippy boilerplate.
 - The reviewed Holm source lives at `/home/glasscube/Projects/holmhq/holm/master`; trust live source over cached notes when details drift.
 - Ask before running mutating Holm commands such as deploy, restart, upgrade, secret/provider writes, member/user changes, schedules, app removal, or package installs.

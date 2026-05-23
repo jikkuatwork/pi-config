@@ -1,3 +1,10 @@
+---
+title: Deployment And Verification
+updated: 2026-05-23
+holm_version: 0.119.3
+holm_source_commit: de9e73f4
+---
+
 # Deployment And Verification
 
 Read live source docs when in doubt:
@@ -6,23 +13,23 @@ Read live source docs when in doubt:
 - `/home/glasscube/Projects/holmhq/holm/master/knowledge-base/skills/app/holm/deployment.md`
 - `/home/glasscube/Projects/holmhq/holm/master/docs/reference/cli.md`
 
-Ask before running commands that mutate a Holm node, deploy an app, restart/upgrade services, install packages, or write secrets.
+Ask before running commands that mutate a Holm node, deploy an app, restart/upgrade services, install packages, write secrets/providers, change members/users/schedules, or remove apps.
 
 ## Current deploy shape
 
 Use `@peer` to choose the target node:
 
 ```bash
-holm app deploy ./app                       # local/default peer
+holm app deploy ./app
 holm @prod app deploy ./app --host app.example.com --spa --no-build
 ```
 
-Current important flags:
+Important flags:
 
 - `--host <fqdn>` — bind an exact full-FQDN host route.
 - `--spa` — clean URL fallback to `index.html`.
 - `--no-build` — deploy source as-is and skip package-manager build detection.
-- `--include-private` — include gitignored `private/` in the deploy.
+- `--include-private` — include gitignored/private files such as `private/agents/*`.
 - `--system` — protected system app flag.
 - `--force` — overwrite/redeploy an existing target.
 - `--from-json <file|->` — deploy a scripted file map.
@@ -30,15 +37,14 @@ Current important flags:
 Do not use removed patterns:
 
 ```bash
-# wrong for current Holm
-holm app deploy ./app --to prod
-holm app deploy ./app --name app
-holm app deploy ./app --alias app
+holm app deploy ./app --to prod      # wrong
+holm app deploy ./app --name app     # wrong
+holm app deploy ./app --alias app    # wrong
 ```
 
 ## BFBB primary deploy
 
-For Zippy-style apps, primary deploy should be raw/source-hosted:
+For Zippy-style apps, primary deploy is raw/source-hosted:
 
 ```bash
 holm @prod app deploy . \
@@ -50,7 +56,7 @@ holm @prod app deploy . \
 
 This preserves BFBB: the app works without `npm install`, `npm run build`, or public runtime CDNs.
 
-## Built mirror
+## Optional built mirror
 
 If a build path exists, verify and deploy it as a mirror, not as the only working path:
 
@@ -63,11 +69,20 @@ holm @prod app deploy dist \
   --force
 ```
 
-Zippy's build script copies `api/`, `vendor/`, `manifest.json`, and key assets into `dist/` after Vite builds.
+The built mirror keeps Vite/tooling honest. It should not be required for the primary app to render or operate.
 
-## Host routes
+## npm policy
 
-Deploying with `--host` binds the returned app to that exact FQDN. For blue/green or inspection-first deploys, deploy hostless and bind/retarget later:
+- No npm install/build requirement for the primary raw app.
+- `npm install` is a package install and needs permission.
+- `npm run build` is optional validation/build output; run it only when the app intentionally keeps build tooling.
+- `npm test` is acceptable only as a wrapper/convenience; serious app docs should also show direct `bash scripts/cli-walkthrough.sh` or `holm test run` commands.
+
+## Host routes and blue/green
+
+Deploying with `--host` binds/redeploys behind that exact FQDN.
+
+For inspection-first or blue/green:
 
 ```bash
 holm @prod app deploy . --spa --no-build
@@ -75,21 +90,25 @@ holm @prod host add app.example.com --app <app_id>
 holm @prod host update app.example.com --app <app_id> --force
 ```
 
-If `--force` against an existing host redeploys the app behind that host, Holm may warn you to deploy hostless then `host update` when you wanted to move only the route.
+If `--force` against an existing host warns about replacing the app behind the host, deploy hostless and retarget with `host update` when you only wanted to move the route.
 
 ## Private files
 
 `private/` is special:
 
-- It may be gitignored.
-- It is excluded from deploy unless `--include-private` is set.
-- Use it for server-only files and native agents, not public assets.
+- it may be gitignored
+- it is excluded unless `--include-private` is set
+- it is for server-only files and native agents, not public assets
 
 ```bash
-holm @prod app deploy . --host app.example.com --spa --no-build --include-private
+holm @prod app deploy . \
+  --host app.example.com \
+  --spa \
+  --no-build \
+  --include-private
 ```
 
-Before using `--include-private`, inspect contents and ensure no secrets are being committed or printed. Prefer Holm secret/provider surfaces for actual secrets.
+Before `--include-private`, inspect contents and ensure no plaintext secrets are included. Prefer Holm secret/provider surfaces for secrets.
 
 ## Validation flow
 
@@ -99,18 +118,36 @@ From the app root:
 # server ESM syntax
 find api -name '*.js' -exec node --check {} \;
 
-# build path, if package.json has build script
-npm run build
-
-# manifest/static shape; useful but can lag current split ESM support
-holm app validate .
+# app walkthrough if present; no browser required
+bash scripts/cli-walkthrough.sh
 
 # runtime-ish serverless smoke
 holm test run api/main.js /api/hello
 holm test run api/main.js /api/me -u alice@example.com
 ```
 
-`holm app validate` may parse API files through an older script-style path. For split ESM modules, `node --check`, successful build, and deployed/runtime smoke tests are stronger signals.
+If optional npm/build tooling is intentionally present:
+
+```bash
+npm test       # only if it wraps/reuses the direct walkthrough
+npm run build  # built mirror validation
+```
+
+`holm app validate` is useful for manifest/static shape checks, but it may parse API files through an older script-style path. For split ESM modules, syntax checks, walkthroughs, builds, and runtime smoke tests are stronger signals.
+
+## CLI-walkable smoke target
+
+Serious apps should prove at least:
+
+- health endpoint
+- auth/me endpoint with a test member
+- one read route
+- one write route
+- one expected error/unauthorized route
+- realtime-adjacent state mutation if applicable
+- async job start/status/result if applicable
+
+Prefer temp DB tests for local route proof and deployed curl/SDK smoke for final host proof.
 
 ## Logs and day-two checks
 
@@ -127,14 +164,14 @@ holm @prod activity list --limit 50
 
 Use `holm restart` / `holm @prod restart` only with permission.
 
-## Package installs
+## Deploy handoff output
 
-Zippy includes `package.json` and `package-lock.json` for the built/HMR path. Installing packages is optional for BFBB raw deploys. Ask before running:
+When preparing deploys, state clearly:
 
-```bash
-npm install
-npm run dev
-npm run build
-```
-
-Never make package install or build a prerequisite for the primary raw deploy unless the user intentionally drops BFBB.
+- target peer and host
+- raw deploy command
+- optional built mirror command
+- whether commands were run
+- whether `private/` is included and why
+- validation commands and results
+- rollback/retarget command when relevant

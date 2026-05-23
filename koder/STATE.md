@@ -1,5 +1,5 @@
 ---
-updated_at: "22 May 2026 | 09:16 PM IST"
+updated_at: "23 May 2026 | 04:23 PM IST"
 ---
 
 # Koder State
@@ -14,24 +14,26 @@ updated_at: "22 May 2026 | 09:16 PM IST"
 
 - Session lifecycle flow is active (`open` / `close` with `koder/STATE.md`).
 - Repo remains source-of-truth for personal pi extensions, reviewed skills, and workflow notes.
-- Earlier completed work includes Vim modal editing upgrades, vendored `visual-explainer`, and the local `holm-app` skill plus `HOLM.md`.
-- This session opened clean on `master` and used the `visual-explainer` skill for an external LENS grant meeting aid.
-- Generated and opened `~/.agent/diagrams/lens-grant-meeting-cheat-map.html`, a self-contained hoverable cheat sheet / mind map / tag cloud / infographic based on `~/Onesource/grants/lens/` distillations and artifacts.
+- Earlier work includes Vim modal editing upgrades, vendored `visual-explainer`, and the local `holm-app` skill plus Holm context docs.
+- This session audited whether `holm-app` can build nice Zippy/BFBB Holm apps, then refreshed it instead of only reporting gaps.
+- `holm-app` is now self-contained: detailed Holm inventory moved to `.pi/skills/holm-app/references/holm-inventory.md`; root `HOLM.md` is a pointer.
+- Added/updated Holm skill docs for BFBB/no-npm policy, CLI-walkable app contracts, UI quality, member-private storage, deployment, agents, and eval prompts.
+- Added `updated`, `holm_version`, and source commit frontmatter across Holm skill docs.
+- `AGENTS.md` now points to the skill-local Holm inventory.
 
 ## Present
 
-- This repo is still the canonical workspace for pi config, extensions, and local skills.
+- This repo is the canonical workspace for pi config, extensions, and local skills.
 - No root build/test harness or package manager project is defined in this repo.
-- The LENS visual HTML lives outside this repo under `~/.agent/diagrams/`; no LENS repo files were intentionally modified from this pi session.
-- `HOLM.md` still notes Holm source was dirty at its review time due to Zippy recipe changes in the Holm repo.
-- The `holm-app` skill is docs-only; it does not vendor executable Holm code or secrets.
+- The reviewed Holm source was `/home/glasscube/Projects/holmhq/holm/master` at Holm `0.119.3`, commit `de9e73f4`, clean at review time.
+- `holm-app` docs emphasize: primary BFBB/raw apps must not require `npm install`, build, or public runtime CDN dependencies; npm/Vite are optional tooling only.
+- `extensions/vim.ts` had pre-existing uncommitted edits at open; close commits them together with this session's docs per close workflow.
 
 ## Future
 
-- Reopen the LENS meeting board with `xdg-open ~/.agent/diagrams/lens-grant-meeting-cheat-map.html` if needed.
-- Refresh the LENS visual from `~/Onesource/grants/lens/` if its distillations/artifacts change.
-- Reload/restart pi so recently added local skills/doc changes are picked up.
-- If Holm/Zippy source changes, refresh `HOLM.md` and the `holm-app` references from live source.
+- Reload/restart pi so refreshed local skill docs are picked up.
+- For future Holm app builds, load `.pi/skills/holm-app/SKILL.md` and its `references/holm-inventory.md` / `app-quality-and-contracts.md` before coding.
+- If Holm/Zippy changes, refresh the skill-local frontmatter (`updated`, `holm_version`, `holm_source_commit`) and inventory from live source.
 - Continue planned docs-only Azure umbrella skill structure under `.pi/skills/azure/references/modules/*/GUIDE.md`.
 
 ## Commands

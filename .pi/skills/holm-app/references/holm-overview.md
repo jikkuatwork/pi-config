@@ -1,6 +1,14 @@
+---
+title: Holm Overview For App Builders
+updated: 2026-05-23
+holm_version: 0.119.3
+holm_source_commit: de9e73f4
+source_repo: /home/glasscube/Projects/holmhq/holm/master
+---
+
 # Holm Overview For App Builders
 
-Source reviewed: `/home/glasscube/Projects/holmhq/holm/master` at Holm `0.119.3`.
+Source reviewed: `/home/glasscube/Projects/holmhq/holm/master` at Holm `0.119.3` / commit `de9e73f4`.
 
 ## What Holm is
 
@@ -62,6 +70,15 @@ Poor fits:
 - Apps requiring fully offline local model inference today.
 - Apps where a managed cloud control plane is the product requirement.
 
+## App-builder defaults
+
+- Start real apps from Zippy, then rename and prune.
+- Preserve BFBB/raw compatibility unless the user explicitly drops it.
+- Keep npm optional for dev/build/test wrappers; never require npm for primary raw deploy.
+- Build every serious app with route contracts and no-browser checks.
+- Use member-scoped storage for private member data.
+- Use exact host routes and current deploy flags.
+
 ## Source-of-truth pointers
 
 Read the live Holm source if this reference conflicts with it:
@@ -71,3 +88,6 @@ Read the live Holm source if this reference conflicts with it:
 - `/home/glasscube/Projects/holmhq/holm/master/docs/concepts/what-is-holm.md`
 - `/home/glasscube/Projects/holmhq/holm/master/docs/concepts/apps.md`
 - `/home/glasscube/Projects/holmhq/holm/master/knowledge-base/skills/app/SKILL.md`
+- `/home/glasscube/Projects/holmhq/holm/master/knowledge-base/skills/app/checklist.md`
+- `/home/glasscube/Projects/holmhq/holm/master/knowledge-base/skills/app/recipes/zippy/README.md`
+- `references/holm-inventory.md` inside this skill for the self-contained feature inventory

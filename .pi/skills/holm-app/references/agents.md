@@ -1,3 +1,10 @@
+---
+title: Native Agents In Holm Apps
+updated: 2026-05-23
+holm_version: 0.119.3
+holm_source_commit: de9e73f4
+---
+
 # Native Agents In Holm Apps
 
 Use this when a Holm app ships agents under `private/agents/*` or when an app needs agent-adjacent design.
@@ -74,6 +81,24 @@ Durable live memory belongs in:
 
 Do not model mutable memory as deployed files. Deployed brain files are immutable until the next deploy.
 
+Runtime brain overlay is the bounded prompt-facing exception managed by `brain_overlay_*` tools and stored in member KV under `brain:overlay/*`.
+
+## Agent product design checklist
+
+For rich agent-backed apps, define before coding:
+
+- agent folders and display names
+- trigger map: message, heartbeat, event, webhook
+- events/webhooks each agent subscribes to
+- durable memory plan in member storage
+- thread/annotation usage
+- approval/delegation/pipe use, if any
+- app server routes that call `holm.agent.send(...)`
+- operator CLI walkthrough for message/inspect/log/thread/replay/schedules
+- deploy command with `--include-private`
+
+Zippy's bundled agents are skeletal message examples, not a complete agent desk.
+
 ## Tool families
 
 Native agents use runtime tools, not the same surface as serverless `holm.*`. Important families:
@@ -124,4 +149,4 @@ Zippy includes example message-triggered agents:
 - `private/agents/reviewer/`
 - `private/agents/writer/`
 
-Use them as skeletal examples only. Replace their prompts and manifests with the target app's actual domain behavior.
+Use them as skeletal examples only. Replace their prompts and manifests with the target app's actual domain behavior, or delete them when the app does not intentionally ship agents.
