@@ -1,8 +1,8 @@
 ---
 title: Complex Holm App Single-Shot Protocol
-updated: 2026-05-23
+updated: 2026-05-24
 holm_version: 0.119.3
-holm_source_commit: de9e73f4
+holm_source_commit: 3775fd8e
 ---
 
 # Complex Holm App Single-Shot Protocol
@@ -21,6 +21,7 @@ Load these before implementation:
 - `runtime-and-storage.md` for API/storage/uploads/tasks/media
 - `agents.md` when `private/agents/*` or `holm.agent.*` is involved
 - `deployment.md` for validation/deploy handoff
+- `agent-first-shot-hardening.md` when stress-testing post-#340 readiness, designing a maximal first-shot app, or looking for platform/skill gaps beyond the basic readiness pipeline
 
 For real generation/deploy prep, also follow `INDEX.md` and read the live Holm app/Zippy docs when available.
 
@@ -129,6 +130,8 @@ Minimum before final handoff for a complex app:
 find api -name '*.js' -exec node --check {} \;
 bash scripts/cli-walkthrough.sh
 ```
+
+When the Issue #340 readiness pipeline is available in the target Holm runtime, treat its Holm-native checks as the stronger gate and run the relevant commands as well, for example `holm app doctor .`, `holm test scenario ...`, `holm test ws ...`, `holm app pwa doctor .`, `holm agent validate ...`, and `holm task check workers`. If those commands are not available, say so and use the current fallback checks without pretending they ran.
 
 The walkthrough should prove:
 

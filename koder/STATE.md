@@ -1,5 +1,5 @@
 ---
-updated_at: "24 May 2026 | 12:19 AM IST"
+updated_at: "24 May 2026 | 04:09 PM IST"
 ---
 
 # Koder State
@@ -14,28 +14,27 @@ updated_at: "24 May 2026 | 12:19 AM IST"
 
 - Session lifecycle flow is active (`open` / `close` with `koder/STATE.md`).
 - Repo remains source-of-truth for personal pi extensions, reviewed skills, and workflow notes.
-- `holm-app` is self-contained/direct-use, routed through `references/INDEX.md`, and grounded in live Holm/Zippy docs when generating apps.
-- Earlier Holm refresh added BFBB/no-npm policy, CLI-walkable contracts, runtime/storage/auth/realtime/deploy/agent refs, collaboration-production guidance, and UI excellence guidance.
-- This session stress-tested `holm-app` against a maximal single-attempt app: multi-member realtime, agentic workflows, media/uploads/blob links, async AI/tasks, PWA, responsive UI, themes, motion, and sounds.
-- Added `references/complex-app-single-shot.md` with a build brief, feature ledger, readiness contract, verification gate, and “human-discovered-basics” prevention checklist.
-- Hardened `app-quality-and-contracts.md`, `ui-excellence.md`, `INDEX.md`, and eval prompts around prompt traceability, auth/avatar, settings/theme/sound persistence, durable saves, route links, privacy probes, PWA, and manual/live-only caveats.
-- Filed Holm file-based issue `#340 App Builder Readiness Pipeline` in `/home/glasscube/Projects/holmhq/holm/master/koder/issues/340_app_builder_readiness_pipeline/INDEX.md`, validated metadata, and committed it in Holm as `3775fd8e`.
+- `holm-app` is self-contained/direct-use; invocation reads `references/INDEX.md`, then task-relevant refs and live Holm/Zippy docs when available.
+- Prior work added `complex-app-single-shot.md` and hardened serious Holm app contracts around prompt traceability, auth/avatar, settings/theme/sound persistence, durable saves, privacy probes, PWA, and manual/live-only caveats.
+- This session re-ran a deep post-#340 stress analysis for a maximal Notion/Discord/game-like Holm app with scopes, realtime collaboration, media/uploads/blob links, async AI/tasks, native agents, PWA, themes, sounds, motion, and operator workflows.
+- Added `.pi/skills/holm-app/references/agent-first-shot-hardening.md` for post-#340 first-shot gap analysis: app scopes, contract drift, CRDT/collab semantics, realtime QoS, security/abuse, migrations/seeds, observability/audit, agent blast radius, load, lifecycle, and manual browser/PWA proof.
+- Updated `INDEX.md`, `complex-app-single-shot.md`, `eval-prompts.md`, `holm-inventory.md`, and `HOLM.md`; refreshed reviewed live Holm marker to `0.119.3` / `3775fd8e` and corrected Zippy coverage for newer demos.
+- Read `koder/scratch/03_scope_leak.md` and filed Holm issues #341 app/member/scope semantics, #342 collaboration/CRDT strategy, #343 append-only app seed data, and #344 observability/audit correlation; #340 now links those follow-ups.
 
 ## Present
 
-- This repo is the canonical workspace for pi config, extensions, and local skills.
-- No root build/test harness or package manager project is defined in this repo.
-- `holm-app/SKILL.md` is intentionally tiny; invocation should read `references/INDEX.md`, then task-relevant refs.
-- `holm-app` now includes an explicit single-attempt readiness gate for complex apps; agents should not say ready until safe self-QA/tests pass or unproven live-only items are named.
-- Live Holm source checked this session was clean at commit `0bb93bf5`; cached skill refs still note reviewed Holm `0.119.3`/`de9e73f4` and should defer to live source when details drift.
+- This repo has no root build/test harness or package manager project.
+- `holm-app/SKILL.md` remains intentionally tiny; new hardening material is in references only.
+- Post-#340 hardening analysis now has a dedicated reference routed from `references/INDEX.md` and included by the complex single-shot protocol when relevant.
+- Live Holm source may move independently; trust live source over cached skill refs when details drift. Holm repo had unrelated/background `.harnex/dispatch.jsonl` dirtiness at close, not part of this pi commit.
 
 ## Future
 
 - Reload/restart pi so refreshed skill docs are picked up.
 - If promoting globally, copy the whole `.pi/skills/holm-app/` directory including all `references/` files.
-- For future complex Holm app builds, explicitly invoke `holm-app`, read `references/INDEX.md`, then load `complex-app-single-shot.md` plus task refs before editing.
-- In Holm repo, issue #340 can drive design for `holm app doctor`, app contracts, richer scenarios, n-client realtime tests, app scopes, authorized realtime, R/I/C primitives, PWA doctor, agent validation, and ESM worker checks.
-- Continue planned docs-only Azure umbrella skill structure under `.pi/skills/azure/references/modules/*/GUIDE.md`.
+- For future maximal Holm app builds, explicitly invoke `holm-app`, read `references/INDEX.md`, then load `complex-app-single-shot.md`, `agent-first-shot-hardening.md`, and task refs before editing.
+- In Holm, continue #340-#344 design: app doctor/contracts/scenarios/ws tests, generic app scopes, authorized realtime, CRDT/op-log strategy, deploy-time seeds, and observability/audit correlation.
+- Consider a deterministic local `holm_app_blueprint.rb` consistency compiler if native app-create/generator remains deferred.
 
 ## Commands
 

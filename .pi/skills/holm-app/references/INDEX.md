@@ -1,8 +1,8 @@
 ---
 title: Holm App Skill Router
-updated: 2026-05-23
+updated: 2026-05-24
 holm_version: 0.119.3
-holm_source_commit: de9e73f4
+holm_source_commit: 3775fd8e
 ---
 
 # Holm App Skill Router
@@ -36,6 +36,7 @@ Do not use for Holm platform internals, generic frontend/Go work, or node/cloud 
 | New full-stack app or visual scaffold | `zippy-boilerplate.md` |
 | Serious app contracts/handoff/audit | `app-quality-and-contracts.md` |
 | Maximal/multi-surface app or single-shot quality pass | `complex-app-single-shot.md` |
+| Post-#340 hardening, first-shot gap analysis, maximal stress patterns | `agent-first-shot-hardening.md` |
 | Multi-member realtime/collab/chat/presence/boards | `collaboration-production.md` |
 | Polished/showcase/production UI/UX | `ui-excellence.md` |
 | `api/main.js`, `holm.*`, auth/storage/tasks/uploads | `runtime-and-storage.md` |
@@ -52,6 +53,7 @@ Do not use for Holm platform internals, generic frontend/Go work, or node/cloud 
 - Use `holm.app.member.*` for one-member-private data; use app-level membership guards for team/workspace privacy.
 - For realtime/collab, realtime is notification, not authorization; use compact events plus authorized reconciliation routes and a two-client smoke path.
 - For maximal multi-surface apps, load `complex-app-single-shot.md`, complete its build brief/feature ledger before editing, and pass its readiness gate before saying ready.
+- For post-#340 hardening or first-shot failure analysis, also load `agent-first-shot-hardening.md` and look for scope, contract drift, collaboration semantics, security, observability, lifecycle, and manual-proof gaps.
 - For serious apps, do not offload basic acceptance testing to the human; self-check requested features, auth UI, settings/theme persistence, durable saves, route links, and privacy probes.
 - For polished apps, build the product workflow first and prune stale Zippy demos/agents unless intentionally showcasing.
 

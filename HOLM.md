@@ -1,8 +1,8 @@
 ---
 title: Holm Context Pointer
-updated: 2026-05-23
+updated: 2026-05-24
 holm_version: 0.119.3
-holm_source_commit: de9e73f4
+holm_source_commit: 3775fd8e
 canonical: .pi/skills/holm-app/references/holm-inventory.md
 ---
 
@@ -20,7 +20,7 @@ Read that file for the current app-builder inventory, Zippy coverage, BFBB guida
 
 - Reviewed Holm source: `/home/glasscube/Projects/holmhq/holm/master`
 - Reviewed Holm version: `0.119.3`
-- Reviewed source commit: `de9e73f4`
+- Reviewed source commit: `3775fd8e`
 - Source status at refresh: clean
 - Zippy path: `/home/glasscube/Projects/holmhq/holm/master/knowledge-base/skills/app/recipes/zippy/`
 

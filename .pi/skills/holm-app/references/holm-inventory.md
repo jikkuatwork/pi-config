@@ -1,8 +1,8 @@
 ---
 title: Holm Feature Inventory And Zippy Coverage
-updated: 2026-05-23
+updated: 2026-05-24
 holm_version: 0.119.3
-holm_source_commit: de9e73f4
+holm_source_commit: 3775fd8e
 source_repo: /home/glasscube/Projects/holmhq/holm/master
 source_status: clean at review time
 zippy_path: knowledge-base/skills/app/recipes/zippy
@@ -297,32 +297,33 @@ Current important files:
 - `scripts/cli-walkthrough.sh` browserless route walkthrough using a temp DB.
 - `private/agents/*` skeletal message-agent examples.
 
-Zippy covers well:
+Zippy covers well as of live source `3775fd8e`:
 
 - BFBB raw app and buildable mirror.
 - ESM serverless route pattern.
 - Browser auth, `/api/me`, login/logout helpers, route guards.
-- Shared DS/KV examples.
-- Realtime broadcast/count/subscribers/kick examples.
-- Server-authoritative collab/canvas/lobby workflows.
-- Responsive UI shell and design tokens.
-- CLI-walkable route proof for core demos through `bash scripts/cli-walkthrough.sh` or `npm test`.
+- Shared DS/KV examples, including filtered DS CRUD and KV TTL/list/increment/lock fallback demos.
+- True member-scoped storage through the member observatory demo (`holm.app.member.kv/ds`).
+- Realtime broadcast/count examples and server-authoritative collab/canvas/lobby workflows.
+- Multipart/JSON upload paths, S3 writes, blob-link lifecycle with TTL/password/max-download/revoke controls, and media/image probe/thumbnail paths.
+- Task controller/status/retry/cancel pattern, worker spawn fallback, and synthetic async AI job lane.
+- Network/provider passport demo with allowlist and redacted secret metadata.
+- Private-file reads and app role/admin role workflows through backstage routes.
+- Responsive UI shell, design tokens, settings, sounds, analytics, route/nav patterns, and PWA-oriented assets.
+- CLI-walkable route proof for a broad primitive set through `bash scripts/cli-walkthrough.sh` or `npm test`.
 
-Zippy still does not fully demonstrate every Holm feature. Missing or partial demo surfaces include:
+Zippy still does not fully demonstrate every Holm feature. Missing or partial surfaces include:
 
-- true member-scoped storage examples (`holm.app.member.*`)
-- multipart uploads/S3 galleries
-- blob links and password/TTL/max-download flows
-- image/media processing
-- tasks/workers and async AI status/result patterns
-- network egress/secrets/provider-backed integrations
-- private file reads
-- stdlib import examples such as `zod`
-- full DS/KV operator coverage, pagination, query playgrounds
-- app roles/admin role workflows
-- rich native agent flows beyond message-trigger skeletons
-- email/Telegram/webhook/delivery demos
-- operator companion pages for hosts/security/source workflows
+- one coherent production product that composes all primitives together; current Zippy is still primarily a primitive showcase.
+- true workspace/team/private app-scope primitives if/when Holm adds `holm.app.scope(...)`; current app-level membership examples are still hand-rolled or role-oriented.
+- server-authorized realtime subscriptions tied to scopes; current safe pattern treats channels as notification labels.
+- deep Notion-like rich-text/CRDT collaboration, op-log compaction, and conflict UX beyond simpler revision/state demos.
+- n-client realtime stress tests and reconnect/out-of-order/missed-event assertions beyond route-level walkthroughs.
+- complete provider-backed real AI/media/email/channel flows; most sensitive provider paths should keep mock/synthetic lanes unless credentials are configured.
+- rich native agent desks beyond skeletal/example agents and server route calls.
+- stdlib import examples such as `zod` in generated app routes.
+- app migrations/schema versioning, data export/delete/retention, rate limits/quotas, and security hardening examples such as CSP/XSS/upload scanning.
+- operator companion pages for hosts/security/source workflows and full deployment lifecycle management.
 
 ## Zippy generation implications
 

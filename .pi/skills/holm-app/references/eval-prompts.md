@@ -1,8 +1,8 @@
 ---
 title: Holm App Skill Eval Prompts
-updated: 2026-05-23
+updated: 2026-05-24
 holm_version: 0.119.3
-holm_source_commit: de9e73f4
+holm_source_commit: 3775fd8e
 ---
 
 # Holm App Skill Eval Prompts
@@ -19,6 +19,7 @@ Use these prompts when checking trigger boundaries and output quality for the `h
 6. "Design a Holm app with member-private uploads, blob links, and async AI jobs, then give me the route contract and deploy plan."
 7. "Build a polished multi-member Holm app with realtime rooms, shared boards, comments, presence, conflict handling, and a two-client smoke test."
 8. "Use holm-app to build a single-shot complex Holm app with realtime workspaces, member-private media uploads, blob links, async AI tasks, native agents, PWA installability, themes, sounds, animations, CLI walkthrough, and deploy plan."
+9. "Assume Holm issue #340 is implemented; stress-test the holm-app skill against a Notion/Discord/multiplayer-style app and identify remaining first-shot gaps and patterns."
 
 ## Should not trigger
 
@@ -46,6 +47,7 @@ Use these prompts when checking trigger boundaries and output quality for the `h
 - [x] Route contract, data model/storage scope, auth matrix, realtime map for serious apps.
 - [x] Collaboration safety summary for multi-member apps: channel privacy, membership guards, revision/idempotency/conflict/reconcile model.
 - [x] For maximal multi-surface apps, a build brief/feature ledger or equivalent single-shot protocol is produced before editing.
+- [x] For post-#340 hardening analysis, remaining gaps include scope leakage, contract/source drift, collaboration semantics, security/abuse, observability, data lifecycle, load, and manual browser/PWA proof boundaries.
 - [x] Before saying ready, output quality includes self-QA against prompt traceability, auth/avatar basics, settings/theme persistence, durable saves, route links, and privacy probes.
 - [x] UI state checklist or summary for generated app surfaces, with UI excellence notes for polished apps.
 - [x] Validation commands, including CLI-walkable checks and realtime smoke status where applicable.
