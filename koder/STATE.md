@@ -1,33 +1,37 @@
 ---
-updated_at: "27 May 2026 | 10:12 AM IST"
+updated_at: "27 May 2026 | 12:18 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
-- Opened session, reviewed prior handoff, and kept `koder/STATE.md` as source-of-truth.
-- Completed deep research on Telegram as a pi interface:
-  - confirmed official SDK/RPC integration paths in pi docs/examples;
-  - surveyed ecosystem packages (npm + pi.dev), with `@llblab/pi-telegram` as the most visible current package.
-- Cloned and reviewed `llblab/pi-telegram` at `/home/glasscube/Projects/outside_projects/pi-telegram` for safety posture (no install hooks, expected Telegram/API/file access patterns, command-template execution via `spawn(..., shell: false)`).
-- Per user request, applied operational changes in `/home/glasscube/Projects/kodemachine` runtime environment:
-  - verified `km-clawman` disk attachments and LUKS state;
-  - updated base VM toolchain (`.tool-versions`) to newer runtime versions and installed via mise;
-  - deleted/recreated `km-clawman` from updated base.
-- Filed follow-up artifact for next-session implementation/design work:
-  - `koder/issues/001_kodemachine_namespaced_resources_and_storage_vm/INDEX.md`.
+- Session handoff open/close flow is active; `koder/STATE.md` remains source-of-truth.
+- Telegram/pi integration research and operational work were completed earlier in session, including kodemachine base+clawman runtime refresh.
+- Filed durable kodemachine design issue:
+  - `koder/issues/001_kodemachine_namespaced_resources_and_storage_vm/INDEX.md`
+- Added new Framework7 research artifact scaffold around user-provided Gemini/Qwen drafts:
+  - `koder/research/002_framework7_docs/INDEX.md`
+  - `koder/research/002_framework7_docs/SYNTHESIS.md`
+  - `koder/research/002_framework7_docs/CHECKLIST.md`
+  - referenced existing `gemini.md` and `qwen.md` in canonical index.
 
 ## Present
 
-- Repo still has no root test/build harness.
-- `koder-pattern` remains direct-use only (explicit invocation).
-- Intentional pending changes:
-  - `koder/issues/001_kodemachine_namespaced_resources_and_storage_vm/INDEX.md`
+- Repo has no root test/build harness.
+- `koder-pattern` is direct-use only; invoke explicitly when filing/managing `koder/` artifacts.
+- Current intentional changes for commit:
+  - `koder/research/002_framework7_docs/INDEX.md`
+  - `koder/research/002_framework7_docs/SYNTHESIS.md`
+  - `koder/research/002_framework7_docs/CHECKLIST.md`
+  - `koder/research/002_framework7_docs/gemini.md`
+  - `koder/research/002_framework7_docs/qwen.md`
   - `koder/STATE.md`
 
 ## Future
 
-- Next session: convert Issue 001 into a thin implementation plan in the kodemachine repo (namespaced `console|disk|nfs` command surface and storage-VM/NFS decision).
-- If implementing command refactor, decide whether `console detach` remains advisory or gets managed-session semantics.
-- Keep cloud/credential-sensitive state out of repo artifacts; continue redacting operational details in handoffs.
+- Next session: decide Framework7 skill placement strategy:
+  - separate `framework7` skill (likely preferred for thin-to-load isolation), vs
+  - embedding Framework7 references inside `holm-app`.
+- If separate skill is chosen, build a thin trigger-focused SKILL with rich references and link it from Holm workflows when mobile/webview UI needs appear.
+- Produce canonical `FRAMEWORK7_VUE_NO_BUILD.md` from draft synthesis if still needed.
