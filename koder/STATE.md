@@ -1,26 +1,33 @@
 ---
-updated_at: "25 May 2026 | 02:13 PM IST"
+updated_at: "27 May 2026 | 10:12 AM IST"
 ---
 
 # Koder State
 
 ## Past
 
-- Session open/close handoff flow remains active and `koder/STATE.md` is source-of-truth for cross-session context.
-- Verified `koder-pattern` is discoverable and simulated the “file an issue” path (questions, artifact path, template, validation flow).
-- Completed a deep research pass on 2026 SOTA models (cost, benchmark performance, latency) using official vendor docs + Artificial Analysis.
-- Filed durable research artifact: `koder/research/001_sota_models_2026_cost_perf_latency/INDEX.md`.
+- Opened session, reviewed prior handoff, and kept `koder/STATE.md` as source-of-truth.
+- Completed deep research on Telegram as a pi interface:
+  - confirmed official SDK/RPC integration paths in pi docs/examples;
+  - surveyed ecosystem packages (npm + pi.dev), with `@llblab/pi-telegram` as the most visible current package.
+- Cloned and reviewed `llblab/pi-telegram` at `/home/glasscube/Projects/outside_projects/pi-telegram` for safety posture (no install hooks, expected Telegram/API/file access patterns, command-template execution via `spawn(..., shell: false)`).
+- Per user request, applied operational changes in `/home/glasscube/Projects/kodemachine` runtime environment:
+  - verified `km-clawman` disk attachments and LUKS state;
+  - updated base VM toolchain (`.tool-versions`) to newer runtime versions and installed via mise;
+  - deleted/recreated `km-clawman` from updated base.
+- Filed follow-up artifact for next-session implementation/design work:
+  - `koder/issues/001_kodemachine_namespaced_resources_and_storage_vm/INDEX.md`.
 
 ## Present
 
-- Repo has no root build/test harness or package-manager project-level test suite.
-- `koder-pattern` remains direct-use only; do not auto-load unless explicitly requested.
-- Current intentional changes for commit are:
-  - `koder/research/001_sota_models_2026_cost_perf_latency/INDEX.md`
+- Repo still has no root test/build harness.
+- `koder-pattern` remains direct-use only (explicit invocation).
+- Intentional pending changes:
+  - `koder/issues/001_kodemachine_namespaced_resources_and_storage_vm/INDEX.md`
   - `koder/STATE.md`
 
 ## Future
 
-- If continuing model research, extend coverage to more 2026 frontier/open models and normalize by workload class.
-- Run workload-specific local benchmarks (p50/p95 latency + quality + blended cost) before production routing decisions.
-- Keep persisting major investigations under `koder/research/NNN_*` and file follow-up issues/plans only when action is clear.
+- Next session: convert Issue 001 into a thin implementation plan in the kodemachine repo (namespaced `console|disk|nfs` command surface and storage-VM/NFS decision).
+- If implementing command refactor, decide whether `console detach` remains advisory or gets managed-session semantics.
+- Keep cloud/credential-sensitive state out of repo artifacts; continue redacting operational details in handoffs.
