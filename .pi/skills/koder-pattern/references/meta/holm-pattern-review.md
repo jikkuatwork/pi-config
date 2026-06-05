@@ -1,12 +1,12 @@
 ---
 title: Holm koder Pattern Review
-updated: 2026-05-24
-source: /home/glasscube/Projects/holmhq/holm/master/koder
+updated: 2026-06-05
+source_pattern: /home/glasscube/Projects/holmhq/holm/master/koder
 ---
 
 # Holm koder Pattern Review
 
-This reference summarizes the live Holm `koder/` folder as the seed pattern. Use it to understand why the generalized workflow exists; do not hard-code Holm-specific paths when working in another repo.
+This reference summarizes the Holm `koder/` folder as the seed pattern. Use it to understand why the generalized workflow exists; do not hard-code Holm-specific paths when working in another repo.
 
 ## Observed shape
 
@@ -53,5 +53,5 @@ Copy the **artifact contract**, not Holm's product content:
 
 - Keep paths, frontmatter, status enums, validation expectations, and source-of-truth hierarchy.
 - Replace Holm/Harnex-specific modes with the current repo's actual worker/review tooling.
-- Preserve permission gates from the target repo (cloud, deploy, release, destructive DB, credentials).
+- Preserve permission gates from the target repo: cloud, deploy, release, destructive DB, credentials.
 - If a live repo has existing `koder/` conventions, merge with them rather than overwriting history.

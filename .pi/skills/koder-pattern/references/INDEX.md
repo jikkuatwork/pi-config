@@ -1,54 +1,46 @@
 ---
 title: Koder Pattern Router
-updated: 2026-05-24
-source_pattern: Holm koder/ meta-workflow, generalized
+updated: 2026-06-05
 ---
 
 # Koder Pattern Router
 
-This skill captures a folder-first `koder/` meta-workflow for durable agent collaboration. It is self-contained; treat any live repository's own `koder/` files and agent instructions as source of truth when they differ.
+Thin router for setting up durable `koder/` repo memory and managing `koder/` artifacts. Do ordinary code work normally unless the user asked to set up koder-pattern or file/manage artifacts.
 
-## Scope
+## Start
 
-Use for creating, reviewing, maintaining, or explaining local `koder/` artifacts:
+1. Read live repo instructions (`AGENTS.md`, `CLAUDE.md`, etc.) and `koder/STATE.md` when present.
+2. If the user asked to set up/install/bootstrap koder-pattern in a repo, load the setup route first.
+3. Inspect nearby live artifacts before creating a new one; live convention beats this cached guide.
+4. Choose the narrowest route below and load only those files.
 
-- issues, plans, reviews, queues, research, analysis, notes, tasks, session state, and scratch/handoff files;
-- artifact hygiene, numbering, folder-first paths, frontmatter, validators, and status updates;
-- queue-add/queue-run policy, harnex/worker dispatches, and explicit file/plan/review semantics.
+## Routes
 
-Do not use for ordinary code changes unless the task is specifically to create or update the supporting `koder/` artifacts.
-
-## Load order
-
-1. Read the current repository's local instructions (`AGENTS.md`, `CLAUDE.md`, or equivalent) and `koder/STATE.md` when present.
-2. Read only the reference(s) below that match the requested artifact type.
-3. Inspect nearby live artifacts before filing a new one; live repo convention beats this cached guide.
-4. Prefer exact paths and links over copied detail. Keep artifacts durable, concise, and safe to commit.
-
-## Reference map
-
-| Need | Read |
+| Need | Load |
 | --- | --- |
-| First use, source pattern observed in Holm | `holm-pattern-review.md` |
-| Artifact hierarchy, numbering, frontmatter, source-of-truth rules | `artifact-model.md` |
-| File an issue, plan, or review | `issues-plans-reviews.md` |
-| File/add/run a queue, including queue-add and queue-run behavior | `queues.md` |
-| Dispatch/monitor workers through harnex from a queue or review loop | `harnex.md` |
-| File research, analysis, notes, tasks, scratch/state handoff | `research-analysis-notes.md` |
-| Trigger and quality checks for this skill | `eval-prompts.md` |
+| Set up/install/bootstrap koder-pattern in a repo | `references/setup.md`, then `references/shared/safety-validation.md` |
+| Paths, numbering, source-of-truth, turns, status vocabulary | `references/shared/artifact-model.md` |
+| Safety, validators, manual quality checks | `references/shared/safety-validation.md` |
+| Unsure which artifact type fits | `references/artifacts/INDEX.md` |
+| File/update an issue | `references/artifacts/issues.md` |
+| File/update a plan | `references/artifacts/plans.md` |
+| File/update a review verdict | `references/artifacts/reviews.md` |
+| File research | `references/artifacts/research.md` |
+| File analysis/audit/mapping | `references/artifacts/analysis.md` |
+| File a lightweight note | `references/artifacts/notes.md` |
+| File/maintain task state | `references/artifacts/tasks.md` |
+| Scratch, state handoff, evidence stores | `references/artifacts/scratch-state.md` |
+| File/add/refill a queue | `references/queues/INDEX.md`, then `references/queues/model.md`, `references/queues/gates.md`, `references/queues/queue-add.md` |
+| Run a queue | `references/queues/INDEX.md`, then `references/queues/model.md`, `references/queues/queue-run.md` |
+| Harnex/worker dispatch | `references/harnex/INDEX.md`, then only required harnex leaves |
+| Source pattern/origin | `references/meta/holm-pattern-review.md` |
+| Trigger/quality tests for this skill | `references/meta/eval-prompts.md` |
 
-## Operating defaults
+## Defaults
 
-- Folder-first for new durable artifacts: `koder/<type>/NNN_slug/INDEX.md`, except reviews which are numbered files under `koder/reviews/NNN_slug/`.
-- `INDEX.md` is canonical; `turns/` is history. Update canonical state in `INDEX.md`, not only in turn files.
-- A queue is orchestration metadata only; if the source issue/plan is vague, fix that source artifact instead of stuffing detail into the queue.
-- Queue-add and queue-run are workflows inside `queues.md`, not separate skills by default.
-- Harnex dispatch/task-brief/monitoring rules live in `harnex.md`; use live harnex/repo docs when they differ.
-- A review is a durable verdict with prioritized findings and evidence; it is not a chat reply unless the repo explicitly uses chat-only review.
-- A plan is a thin, testable implementation slice with defers, validation, stop rules, and source links; it is not a broad roadmap.
-- Keep secrets, private account IDs, full prompts/transcripts, credentials, and sensitive telemetry out of `koder/` artifacts.
-- Run existing validators when the repo provides them; otherwise perform a manual frontmatter/path/status check and say no validator exists.
-
-## Sub-skill extraction decision
-
-Do not create separate issue/queue/research/harnex skills by default. This umbrella skill is direct-use only and keeps the always-loaded context small. Split a sub-skill later only if a specific workflow becomes frequent enough to need its own `/skill:name` entry point, deterministic scripts, or separate trigger boundaries.
+- Setup creates/merges repo handoff files, project-local `.pi/skills/open` and `.pi/skills/close`, `koder/STATE.md`, git initialization, and a close commit unless the user says not to commit.
+- Folder-first: `koder/<type>/NNN_slug/INDEX.md`; reviews are numbered files under `koder/reviews/NNN_slug/`.
+- `INDEX.md` is canonical; `turns/` is history. Update canonical state when a turn changes decisions/status.
+- Queues contain orchestration metadata and refs, not implementation prose.
+- Harnex briefs must be bounded; use live harnex/repo docs over cached examples.
+- Keep artifacts concise, source-linked, validated, and safe to commit.
