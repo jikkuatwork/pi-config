@@ -1,5 +1,5 @@
 ---
-updated_at: "05 Jun 2026 | 06:55 PM IST"
+updated_at: "07 Jun 2026 | 04:00 PM IST"
 ---
 
 # Koder State
@@ -7,18 +7,16 @@ updated_at: "05 Jun 2026 | 06:55 PM IST"
 ## Past
 
 - Session handoff open/close flow is active; `koder/STATE.md` remains source-of-truth.
-- Earlier durable work includes kodemachine design issue `koder/issues/001_kodemachine_namespaced_resources_and_storage_vm/INDEX.md` and Framework7 research scaffold under `koder/research/002_framework7_docs/`.
-- The global `koder-pattern` skill was refactored into a thin router with split reference leaves for artifacts, queues, harnex, shared safety/model guidance, and meta evals.
-- This session taught `koder-pattern` how to bootstrap itself into a repo: git init, repo handoff files, project-local `/skill:open` and `/skill:close`, `koder/STATE.md`, validation, and close commit.
+- Earlier durable work includes kodemachine issue `koder/issues/001_kodemachine_namespaced_resources_and_storage_vm/INDEX.md`, Framework7 research scaffold, and the global `koder-pattern` skill refactor/bootstrap route.
+- This session worked outside this repo in `~/dotfiles`: added live terminal light/dark switching for Alacritty + tmux, with tmux `prefix` + `Shift+t` bound to the toggle and stdout removed so no Enter prompt appears.
 
 ## Present
 
 - Source for the global `koder-pattern` install is `.pi/skills/koder-pattern/`; `~/.pi/agent/skills/koder-pattern` points there.
-- The skill is now visible to model invocation for setup/artifact requests; ordinary code work should not trigger it.
 - Repo has no root test/build harness; validation is manual/documentation-based unless a target repo defines checks.
+- Active terminal theme config now lives in `~/dotfiles`; runtime override files are under `~/.local/state/alacritty/` and `~/.local/state/tmux/`.
 
 ## Future
 
-- Use `/skill:koder-pattern` or natural language setup/artifact requests to exercise the new setup route.
-- If trigger behavior is too broad, narrow the `SKILL.md` description rather than restoring slash-only mode by default.
-- Continue keeping project-local skills reviewed and source-controlled under `.pi/skills/`.
+- For terminal theme tweaks, edit `~/dotfiles/bin/toggle-terminal-theme`, `~/dotfiles/tmux.conf`, or the theme files under `~/dotfiles/{alacritty,tmux}/themes/`.
+- Continue keeping project-local pi skills reviewed and source-controlled under `.pi/skills/`.
