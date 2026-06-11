@@ -1,0 +1,100 @@
+---
+status: open
+priority: P1
+created: 2026-06-11
+updated: 2026-06-11
+tags: koder-pattern, state, cross-repo, commits, workflow
+type: design
+context: External filing from Holm: make koder-pattern reliably record semantic repo-state transitions across repos.
+---
+
+# Issue 002: State commit protocol for cross-repo filings
+
+## Problem
+
+The `koder-pattern` skill provides durable artifacts, session handoffs, and repo-local memory, but it does not yet define a minimal reliable protocol for semantic repo-state movement across repositories.
+
+When work in repo A discovers something repo B must track, agents can file an issue in repo B today, but the surrounding state transition is not consistently recorded. The next operator may miss that repo B moved because the issue appeared mid-session, or an analysing agent may need to read full artifacts/chat instead of orienting from commit history.
+
+## Context
+
+Origin: Holm session on 2026-06-11 discussing reliable cross-repo operation before Foundry frontend work.
+
+User direction from that discussion:
+
+- Use the operational mental model of taking a repo from one semantic state to the next.
+- Keep the MVP minimal: a `state:` commit for every close and every new issue filed from outside the repo.
+- Do not track every code commit; track independent semantic movements.
+- For external filings into a dirty repo, it is acceptable to commit a small state movement mid-session if the commit only includes the new issue and `koder/STATE.md`.
+- The `state:` commit body can carry structured delta metadata so future analysing agents can orient from git history alone.
+- `koder/notes/` remains useful for larger handoffs or context that does not fit issues/plans/reviews, but notes are not the MVP state ledger.
+
+Current relevant source in this repo:
+
+- `.pi/skills/koder-pattern/` is the source for the global `koder-pattern` install.
+- `koder/STATE.md` is the local handoff state file.
+
+## Proposed Direction
+
+Enhance `koder-pattern` guidance and templates with a minimal **state commit protocol**:
+
+1. Every close commit should use a grepable subject:
+
+   ```text
+   state: close - <semantic session result>
+   ```
+
+2. Every new issue filed from outside the target repo should:
+
+   - create the issue artifact;
+   - update `koder/STATE.md` with a short external-filing note and `updated_at`;
+   - commit only the issue artifact and `koder/STATE.md`;
+   - use a grepable subject:
+
+   ```text
+   state: file #NNN from <origin-repo> - <short reason>
+   ```
+
+3. The external filing commit body should include structured fields such as:
+
+   ```text
+   State event: external_issue
+   Origin repo: <repo>
+   Origin context: <one line>
+   Issue: koder/issues/NNN_slug/INDEX.md
+
+   Delta:
+   - <what changed in target repo state>
+   - <operator-facing impact>
+   ```
+
+4. Dirty target repo behavior:
+
+   - proceed if unrelated paths are dirty and `koder/STATE.md` is clean;
+   - commit only `koder/STATE.md` and the new issue path;
+   - stop/coordinate if `koder/STATE.md` or the target issue path is already dirty;
+   - never sweep unrelated dirty work into the state commit.
+
+5. Analysis invariant:
+
+   ```bash
+   git log --grep='^state:' --oneline
+   ```
+
+   should provide a compact semantic repo-evolution stream.
+
+## Acceptance Criteria
+
+- [ ] `koder-pattern` docs define `state:` commits as the minimal repo-state movement ledger.
+- [ ] Close/setup guidance uses `state: close - ...` for session close commits instead of generic docs-only subjects.
+- [ ] Issue-filing guidance covers external-origin filings, `STATE.md` updates, selected-path commits, and dirty repo guardrails.
+- [ ] A recommended `state:` commit body schema exists for close and external issue events.
+- [ ] Skill eval prompts or tests cover: filing an external issue into a dirty repo with unrelated changes, updating `STATE.md`, and committing only intended paths.
+- [ ] The guidance explicitly avoids tracking every code commit and does not introduce a heavier `koder/movements` artifact for the MVP.
+
+## Non-Goals
+
+- Solving cross-harness/runtime coordination beyond repo-local git/artifact protocol.
+- Requiring every implementation commit to be a `state:` commit.
+- Introducing a new movement artifact before validating the minimal commit-ledger protocol.
+- Changing target repos' existing artifact schemas beyond compatible guidance.
