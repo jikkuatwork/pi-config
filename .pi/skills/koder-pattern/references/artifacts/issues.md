@@ -7,7 +7,7 @@ updated: 2026-06-11
 
 Use an issue when there is a problem, opportunity, design decision, audit finding, or follow-up that needs durable tracking.
 
-Creating or materially updating an issue is a `koder/` state transition. Follow `references/shared/state-commit-protocol.md` unless the user explicitly says not to commit.
+Creating or materially updating an issue is a `koder/` state transition. Follow `references/shared/state-commit-protocol.md` unless the user explicitly says not to commit. This does not automatically mean editing `koder/STATE.md`; ordinary in-session issue changes are recorded in the issue artifact and `state:` commit, then summarized in `koder/STATE.md` at close if needed.
 
 ## Path
 
@@ -110,6 +110,8 @@ Use this when work in repo/session A discovers something repo B should track.
    ```
 
 If the target repo has unrelated dirty or staged paths, that is acceptable only when the selected-path commit cannot sweep them in. Avoid `git add -A` for external filings.
+
+External-origin filings are the main issue-flow exception that updates `koder/STATE.md` immediately, because the target repo changes outside its normal close boundary and the next opener must see that movement.
 
 ## Status updates
 

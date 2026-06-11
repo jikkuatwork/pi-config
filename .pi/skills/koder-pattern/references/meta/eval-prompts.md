@@ -23,7 +23,7 @@ This global install is visible to model invocation. Natural-language setup/artif
 
    > /skill:koder-pattern file an issue for the flaky app request command. Include acceptance criteria and link the failing test output.
 
-   Expected: load router, issue leaf, and state-commit protocol; create/update `koder/issues/NNN_slug/INDEX.md`; update `koder/STATE.md` when this is an external filing or semantic state move; validate if possible; commit intentional state paths with a `state:` subject unless explicitly told not to commit.
+   Expected: load router, issue leaf, and state-commit protocol; create/update `koder/issues/NNN_slug/INDEX.md`; do not update `koder/STATE.md` for an ordinary local issue filing; validate if possible; commit intentional artifact paths with a `state:` subject unless explicitly told not to commit.
 
 3. **Queue creation**
 
@@ -98,4 +98,5 @@ This global install is visible to model invocation. Natural-language setup/artif
 - [ ] Reviews include verdict, prioritized findings, passing checks, and verification.
 - [ ] Plans include one capability, defers/non-goals, validation, and stop rules.
 - [ ] State-changing setup/artifact flows use grepable `state:` commits and selected-path dirty-repo guardrails.
+- [ ] `koder/STATE.md` remains a session handoff, not a commit-by-commit ledger; only init, close, explicit handoff requests, and external-origin filings update it immediately.
 - [ ] No secrets, full prompts, credentials, private payloads, or sensitive account IDs are written.

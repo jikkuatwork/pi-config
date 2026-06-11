@@ -45,4 +45,5 @@ Thin router for setting up durable `koder/` repo memory and managing `koder/` ar
 - Queues contain orchestration metadata and refs, not implementation prose.
 - Harnex briefs must be bounded; use live harnex/repo docs over cached examples.
 - Every intentional `koder/` state transition gets a grepable `state:` commit by default; use selected-path commits so unrelated dirty/staged work is not swept in.
+- `koder/STATE.md` is session handoff, not the `state:` commit ledger; update it at init, close, explicit handoff requests, or external-origin filings.
 - Keep artifacts concise, source-linked, validated, and safe to commit.

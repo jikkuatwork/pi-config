@@ -97,10 +97,11 @@ Current relevant source in this repo:
 
 - [x] `koder-pattern` docs define `state:` commits as the minimal repo-state movement ledger.
 - [x] Close/setup guidance defines `state: close - ...` for close and `state: init - koder pattern scaffold` for setup.
-- [x] Issue-filing guidance covers external-origin filings, `STATE.md` updates, selected-path commits, and dirty repo guardrails.
+- [x] Issue-filing guidance covers external-origin filings, external-only immediate `STATE.md` updates, selected-path commits, and dirty repo guardrails.
 - [x] Recommended `state:` commit body schemas exist for init, close, external issue, and artifact update events.
 - [x] Skill eval prompts cover filing an external issue into a dirty repo with unrelated changes, updating `STATE.md`, and committing only intended paths.
 - [x] The guidance explicitly avoids tracking every code commit and does not introduce a heavier `koder/movements` artifact for the MVP.
+- [x] The guidance clarifies that `koder/STATE.md` is session-to-session handoff, not the commit-by-commit state ledger.
 
 ## Resolution
 
@@ -112,6 +113,12 @@ Implemented in the state commit that updates this issue and the koder-pattern sk
 - `.pi/skills/koder-pattern/references/artifacts/issues.md`
 - `.pi/skills/koder-pattern/templates/koder/skills/close/SKILL.md`
 - `.pi/skills/koder-pattern/references/meta/eval-prompts.md`
+
+Post-resolution clarification:
+
+- `state:` commits are the git-level semantic ledger.
+- `koder/STATE.md` updates at init, close, explicit handoff requests, or external-origin filings into this repo.
+- Local in-session artifact state commits do not update `koder/STATE.md` solely because they happened; close summarizes them only if they matter to the next session.
 
 Validation performed:
 

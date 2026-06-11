@@ -1,6 +1,6 @@
 ---
 title: Koder Scratch, State, and Evidence Stores
-updated: 2026-06-05
+updated: 2026-06-11
 ---
 
 # Koder Scratch, State, and Evidence Stores
@@ -46,7 +46,7 @@ Rules:
 - Next likely tasks, risks, commands.
 ```
 
-Detailed chronology belongs in changelogs, run logs, issues, or reviews. Update session state at closeout if the repo workflow asks for it.
+Detailed chronology belongs in changelogs, run logs, issues, reviews, or grepable `state:` commit history. Update session state at init, closeout, explicit handoff requests, or external-origin filings into the repo; do not update it for every local state commit.
 
 ## Bench / evidence stores
 

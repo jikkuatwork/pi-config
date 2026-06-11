@@ -11,6 +11,8 @@ Use this when setup, close, artifact filing, artifact status changes, or cross-r
 
 Every intentional `koder/` state transition gets a grepable `state:` commit by default.
 
+`state:` commits are the git-level semantic movement ledger. `koder/STATE.md` is **not** that ledger; it is a compact session-to-session handoff. Do not edit `koder/STATE.md` for every `state:` commit.
+
 The escape hatch must be explicit: `--no-commit`, “do not commit”, or equivalent. If a state change is left uncommitted, say so clearly and list the dirty paths.
 
 ## What counts as a state transition
@@ -27,6 +29,19 @@ Commit these with `state:`:
 Do not force ordinary implementation commits to use `state:` when they do not change koder/operator state. The ledger tracks independent semantic repo movements, not every code diff.
 
 Dry-runs and read-only inspections are not state transitions.
+
+## When to update `koder/STATE.md`
+
+Update `koder/STATE.md` only when the handoff itself must move:
+
+- during init, because the scaffold creates the initial handoff;
+- during close/session handoff;
+- when an external repo/agent/session files an issue or similar artifact into this repo mid-session;
+- when the user explicitly asks to update handoff state.
+
+Do **not** update `koder/STATE.md` solely because a local in-session `state:` commit files/updates/resolves an artifact. Record that movement in the artifact and commit body; summarize it in `koder/STATE.md` at close if it matters to the next session.
+
+Use `State file: koder/STATE.md` in a commit body only when the commit actually touches `koder/STATE.md`.
 
 ## Subject forms
 
@@ -123,12 +138,17 @@ git diff --cached --name-only
 
 Rules:
 
-- If the state paths you need to touch are already dirty/staged from someone else, stop and coordinate.
+- If the paths you need to touch are already dirty/staged from someone else, stop and coordinate.
 - Unrelated dirty or staged paths may remain, but must not be swept into the `state:` commit.
-- Prefer selected-path staging and pathspec commits for state-only movement:
+- Prefer selected-path staging and pathspec commits for state-only movement. External issue filings touch both handoff and issue paths:
   ```bash
   git add -- koder/STATE.md koder/issues/NNN_slug/INDEX.md
   git commit -F /tmp/state-message -- koder/STATE.md koder/issues/NNN_slug/INDEX.md
+  ```
+- Ordinary local artifact updates usually do **not** touch `koder/STATE.md`:
+  ```bash
+  git add -- koder/issues/NNN_slug/INDEX.md
+  git commit -F /tmp/state-message -- koder/issues/NNN_slug/INDEX.md
   ```
 - Avoid blind `git add -A` when unrelated dirty work exists.
 - If a repo has no git repository and a state transition is being committed, run `git init` in the target root first. Do not add remotes or rewrite history.

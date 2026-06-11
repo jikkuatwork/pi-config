@@ -69,5 +69,5 @@ Use this skill at the end of a work session in this repository.
 - Every intentional `koder/` state transition gets a `state:` commit unless the user explicitly says not to commit.
 - Do not commit secrets, credentials, caches, build outputs, or unrelated generated files.
 - Do not sweep unrelated dirty/staged work into a state commit.
-- Keep `koder/STATE.md` concise; it is a hand-off, not a changelog.
+- Keep `koder/STATE.md` concise; it is a session handoff, not the `state:` commit ledger or a changelog.
 - Always update `updated_at` in `koder/STATE.md` frontmatter using India time format: `DD Mon YYYY | HH:MM AM IST`.

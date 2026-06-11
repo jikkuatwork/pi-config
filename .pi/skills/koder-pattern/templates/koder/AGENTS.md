@@ -14,13 +14,15 @@ This repo uses the koder pattern for durable agent handoff and project memory.
 - Use the `open` skill at the start of a session.
 - Use the `close` skill at the end of a session; it updates `koder/STATE.md` and creates a grepable `state: close - ...` commit for the semantic state transition.
 - Read `koder/STATE.md` before making changes when opening manually.
-- Keep `koder/STATE.md` short and current; update it when closing meaningful work.
+- Keep `koder/STATE.md` short and current; update it at init, close, explicit handoff requests, or external-origin filings into this repo.
 - Do not put secrets, private payloads, full prompts, credentials, or large copied source/output into `koder/`.
 
 ## State commits
 
 - Every intentional `koder/` state transition gets a `state:` commit by default.
 - Use subjects like `state: init - koder pattern scaffold`, `state: close - <result>`, `state: file #NNN from <origin> - <reason>`, or `state: update #NNN - <reason>`.
+- `state:` commits are the semantic movement ledger; `koder/STATE.md` is the session handoff, not a commit-by-commit changelog.
+- Do not edit `koder/STATE.md` solely because a local in-session artifact state commit happened; summarize at close if it matters.
 - Do not force ordinary code-only commits to use `state:`; the ledger tracks semantic operator/repo-state movement.
 - In dirty repos, commit only the intended state paths and preserve unrelated dirty/staged work.
 - If the user explicitly says not to commit, leave state uncommitted and report the dirty paths.
