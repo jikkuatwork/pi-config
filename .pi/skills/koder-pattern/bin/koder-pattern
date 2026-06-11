@@ -1,0 +1,435 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage:
+  koder-pattern init [options] [path]
+  koder-pattern doctor [path]
+  koder-pattern help
+
+Commands:
+  init      Create the thin koder operator scaffold in a folder/repo.
+  doctor    Check whether the thin scaffold is present.
+  help      Show this help.
+
+Init options:
+  --pi          Create .pi/skills/{open,close} adapters. Default.
+  --no-pi       Do not create .pi skill adapters.
+  --claude      Create CLAUDE.md and .claude/skills/{open,close} adapters.
+  --agents      Create .agents/skills/{open,close} adapters.
+  --all         Create pi, claude, and generic .agents adapters.
+  --no-commit   Do not initialize git or create the default state: init commit.
+  --dry-run     Print actions without writing files or committing.
+  -h, --help    Show this help.
+
+The init command is conservative: it creates missing files/symlinks and skips
+anything that already exists. By default, any created scaffold paths are committed
+with a path-scoped `state: init - koder pattern scaffold` commit; unrelated dirty
+or staged work is not swept into that commit.
+EOF
+}
+
+resolve_script_dir() {
+  local src dir
+  src="${BASH_SOURCE[0]}"
+  while [ -h "$src" ]; do
+    dir="$(cd -P "$(dirname "$src")" >/dev/null 2>&1 && pwd)"
+    src="$(readlink "$src")"
+    case "$src" in
+      /*) ;;
+      *) src="$dir/$src" ;;
+    esac
+  done
+  cd -P "$(dirname "$src")" >/dev/null 2>&1 && pwd
+}
+
+SCRIPT_DIR="$(resolve_script_dir)"
+SKILL_ROOT="$(cd "$SCRIPT_DIR/.." >/dev/null 2>&1 && pwd)"
+TEMPLATE_DIR="$SKILL_ROOT/templates"
+DRY_RUN=0
+CREATED_PATHS=()
+
+say() { printf '%s\n' "$*"; }
+warn() { printf 'warn: %s\n' "$*" >&2; }
+fail() { printf 'error: %s\n' "$*" >&2; exit 1; }
+
+record_path() {
+  CREATED_PATHS+=("$1")
+}
+
+run_mkdir() {
+  local dir="$1"
+  if [ "$DRY_RUN" -eq 1 ]; then
+    say "mkdir -p $dir"
+  else
+    mkdir -p "$dir"
+  fi
+}
+
+create_from_template() {
+  local dest="$1"
+  local template="$2"
+
+  [ -f "$template" ] || fail "missing template: $template"
+
+  if [ -e "$dest" ] || [ -L "$dest" ]; then
+    say "skip existing $dest"
+    return 0
+  fi
+
+  run_mkdir "$(dirname "$dest")"
+  if [ "$DRY_RUN" -eq 1 ]; then
+    say "create $dest from $template"
+  else
+    cp "$template" "$dest"
+    say "created $dest"
+  fi
+  record_path "$dest"
+}
+
+create_state() {
+  local dest="$1"
+  local stamp
+
+  if [ -e "$dest" ] || [ -L "$dest" ]; then
+    say "skip existing $dest"
+    return 0
+  fi
+
+  stamp="$(TZ='Asia/Kolkata' date '+%d %b %Y | %I:%M %p IST')"
+  run_mkdir "$(dirname "$dest")"
+  if [ "$DRY_RUN" -eq 1 ]; then
+    say "create $dest"
+    record_path "$dest"
+    return 0
+  fi
+
+  cat >"$dest" <<EOF
+---
+updated_at: "$stamp"
+---
+
+# Koder State
+
+## Past
+
+- Koder-pattern thin operator scaffold was initialized.
+
+## Present
+
+- Durable operator files live under \`koder/\`.
+- Active scaffold: \`koder/AGENTS.md\`, \`koder/STATE.md\`, \`koder/issues/\`, and \`koder/skills/{open,close}/\`.
+
+## Future
+
+- Use \`open\` at session start and \`close\` at session end.
+- Add plans, reviews, research, notes, tasks, queues, or scratch areas only when work needs durable records.
+EOF
+  say "created $dest"
+  record_path "$dest"
+}
+
+create_gitkeep_dir() {
+  local dir="$1"
+  local keep="$dir/.gitkeep"
+  run_mkdir "$dir"
+  if [ -e "$keep" ] || [ -L "$keep" ]; then
+    say "skip existing $keep"
+  elif [ "$DRY_RUN" -eq 1 ]; then
+    say "create $keep"
+    record_path "$keep"
+  else
+    : >"$keep"
+    say "created $keep"
+    record_path "$keep"
+  fi
+}
+
+create_symlink() {
+  local link_path="$1"
+  local target="$2"
+  local current
+
+  if [ -L "$link_path" ]; then
+    current="$(readlink "$link_path")"
+    if [ "$current" = "$target" ]; then
+      say "ok symlink $link_path -> $target"
+    else
+      warn "skip existing symlink $link_path -> $current (wanted $target)"
+    fi
+    return 0
+  fi
+
+  if [ -e "$link_path" ]; then
+    warn "skip existing path $link_path (wanted symlink to $target)"
+    return 0
+  fi
+
+  run_mkdir "$(dirname "$link_path")"
+  if [ "$DRY_RUN" -eq 1 ]; then
+    say "ln -s $target $link_path"
+  else
+    ln -s "$target" "$link_path"
+    say "linked $link_path -> $target"
+  fi
+  record_path "$link_path"
+}
+
+create_skill_adapters() {
+  local root="$1"
+  local surface="$2"
+  create_symlink "$root/$surface/skills/open" "../../koder/skills/open"
+  create_symlink "$root/$surface/skills/close" "../../koder/skills/close"
+}
+
+abs_path_no_deref() {
+  local path="$1"
+  local dir base
+  dir="$(dirname "$path")"
+  base="$(basename "$path")"
+  printf '%s/%s\n' "$(cd "$dir" >/dev/null 2>&1 && pwd -P)" "$base"
+}
+
+rel_to_git_root() {
+  local path="$1"
+  local git_root="$2"
+  local abs
+  abs="$(abs_path_no_deref "$path")"
+  case "$abs" in
+    "$git_root") printf '.\n' ;;
+    "$git_root"/*) printf '%s\n' "${abs#"$git_root"/}" ;;
+    *) fail "created path is outside git root: $path" ;;
+  esac
+}
+
+commit_init_state() {
+  local root="$1"
+  local commit_enabled="$2"
+
+  if [ "$commit_enabled" -eq 0 ]; then
+    say "commit skipped (--no-commit)"
+    return 0
+  fi
+
+  if [ "${#CREATED_PATHS[@]}" -eq 0 ]; then
+    say "no scaffold changes to commit"
+    return 0
+  fi
+
+  if [ "$DRY_RUN" -eq 1 ]; then
+    say "would initialize git if needed"
+    say "would commit: state: init - koder pattern scaffold"
+    say "would commit paths:"
+    local dry_path
+    for dry_path in "${CREATED_PATHS[@]}"; do
+      say "- $dry_path"
+    done
+    return 0
+  fi
+
+  if ! git -C "$root" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    git -C "$root" init
+    say "initialized git repository in $root"
+  fi
+
+  local git_root
+  git_root="$(git -C "$root" rev-parse --show-toplevel)"
+  git_root="$(cd "$git_root" >/dev/null 2>&1 && pwd -P)"
+
+  local rel path
+  local rel_paths=()
+  declare -A seen=()
+  for path in "${CREATED_PATHS[@]}"; do
+    rel="$(rel_to_git_root "$path" "$git_root")"
+    if [ -z "${seen[$rel]+x}" ]; then
+      rel_paths+=("$rel")
+      seen[$rel]=1
+    fi
+  done
+
+  git -C "$git_root" add -- "${rel_paths[@]}"
+
+  if git -C "$git_root" diff --cached --quiet -- "${rel_paths[@]}"; then
+    say "no staged scaffold changes to commit"
+    return 0
+  fi
+
+  local msgfile
+  msgfile="$(mktemp)"
+  cat >"$msgfile" <<'EOF'
+state: init - koder pattern scaffold
+
+State event: init
+State file: koder/STATE.md
+
+Scaffold:
+- koder/AGENTS.md
+- koder/STATE.md
+- koder/issues/
+- koder/skills/open/
+- koder/skills/close/
+
+Delta:
+- Repository now has koder-pattern durable operator state.
+- Agent surfaces point at koder-owned instructions/skills where possible.
+EOF
+
+  if git -C "$git_root" commit -F "$msgfile" -- "${rel_paths[@]}"; then
+    rm -f "$msgfile"
+    say "committed state: init - koder pattern scaffold"
+  else
+    rm -f "$msgfile"
+    fail "state init commit failed; scaffold paths may be staged but unrelated dirty work was not intentionally staged"
+  fi
+}
+
+init_cmd() {
+  local target="."
+  local pi=1
+  local claude=0
+  local agents=0
+  local commit_enabled=1
+  local positional=0
+
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      --pi) pi=1 ;;
+      --no-pi) pi=0 ;;
+      --claude) claude=1 ;;
+      --agents) agents=1 ;;
+      --all) pi=1; claude=1; agents=1 ;;
+      --no-commit) commit_enabled=0 ;;
+      --dry-run) DRY_RUN=1 ;;
+      -h|--help) usage; return 0 ;;
+      --*) fail "unknown option for init: $1" ;;
+      *)
+        [ "$positional" -eq 0 ] || fail "only one path may be supplied"
+        target="$1"
+        positional=1
+        ;;
+    esac
+    shift
+  done
+
+  if [ "$DRY_RUN" -eq 1 ]; then
+    say "dry-run target: $target"
+  else
+    mkdir -p "$target"
+  fi
+
+  local root
+  if [ "$DRY_RUN" -eq 1 ]; then
+    root="$target"
+  else
+    root="$(cd "$target" >/dev/null 2>&1 && pwd -P)"
+  fi
+
+  say "initializing thin koder scaffold in $root"
+
+  create_from_template "$root/koder/AGENTS.md" "$TEMPLATE_DIR/koder/AGENTS.md"
+  create_state "$root/koder/STATE.md"
+  create_gitkeep_dir "$root/koder/issues"
+  create_from_template "$root/koder/skills/open/SKILL.md" "$TEMPLATE_DIR/koder/skills/open/SKILL.md"
+  create_from_template "$root/koder/skills/close/SKILL.md" "$TEMPLATE_DIR/koder/skills/close/SKILL.md"
+
+  create_symlink "$root/AGENTS.md" "koder/AGENTS.md"
+
+  if [ "$pi" -eq 1 ]; then
+    create_skill_adapters "$root" ".pi"
+  fi
+  if [ "$claude" -eq 1 ]; then
+    create_symlink "$root/CLAUDE.md" "koder/AGENTS.md"
+    create_skill_adapters "$root" ".claude"
+  fi
+  if [ "$agents" -eq 1 ]; then
+    create_skill_adapters "$root" ".agents"
+  fi
+
+  commit_init_state "$root" "$commit_enabled"
+
+  say "done"
+  say "next: read $root/koder/STATE.md, then use the open/close skills through your agent surface."
+}
+
+check_path() {
+  local label="$1"
+  local path="$2"
+  if [ -e "$path" ] || [ -L "$path" ]; then
+    say "ok      $label"
+    return 0
+  fi
+  say "missing $label"
+  return 1
+}
+
+check_symlink() {
+  local label="$1"
+  local path="$2"
+  local target="$3"
+  local current
+  if [ -L "$path" ]; then
+    current="$(readlink "$path")"
+    if [ "$current" = "$target" ]; then
+      say "ok      $label -> $target"
+      return 0
+    fi
+    say "warn    $label -> $current (wanted $target)"
+    return 1
+  fi
+  if [ -e "$path" ]; then
+    say "warn    $label exists but is not a symlink"
+    return 1
+  fi
+  say "missing $label"
+  return 1
+}
+
+doctor_cmd() {
+  local target="${1:-.}"
+  [ "$#" -le 1 ] || fail "doctor accepts at most one path"
+  local root
+  root="$(cd "$target" >/dev/null 2>&1 && pwd -P)" || fail "cannot access $target"
+
+  say "checking koder scaffold in $root"
+  local failures=0
+
+  check_path "koder/AGENTS.md" "$root/koder/AGENTS.md" || failures=$((failures + 1))
+  check_path "koder/STATE.md" "$root/koder/STATE.md" || failures=$((failures + 1))
+  check_path "koder/issues/" "$root/koder/issues" || failures=$((failures + 1))
+  check_path "koder/skills/open/SKILL.md" "$root/koder/skills/open/SKILL.md" || failures=$((failures + 1))
+  check_path "koder/skills/close/SKILL.md" "$root/koder/skills/close/SKILL.md" || failures=$((failures + 1))
+  check_symlink "AGENTS.md" "$root/AGENTS.md" "koder/AGENTS.md" || failures=$((failures + 1))
+
+  if [ -e "$root/.pi" ] || [ -L "$root/.pi" ]; then
+    check_symlink ".pi/skills/open" "$root/.pi/skills/open" "../../koder/skills/open" || failures=$((failures + 1))
+    check_symlink ".pi/skills/close" "$root/.pi/skills/close" "../../koder/skills/close" || failures=$((failures + 1))
+  fi
+  if [ -e "$root/.claude" ] || [ -L "$root/.claude" ]; then
+    check_symlink ".claude/skills/open" "$root/.claude/skills/open" "../../koder/skills/open" || failures=$((failures + 1))
+    check_symlink ".claude/skills/close" "$root/.claude/skills/close" "../../koder/skills/close" || failures=$((failures + 1))
+  fi
+  if [ -e "$root/.agents" ] || [ -L "$root/.agents" ]; then
+    check_symlink ".agents/skills/open" "$root/.agents/skills/open" "../../koder/skills/open" || failures=$((failures + 1))
+    check_symlink ".agents/skills/close" "$root/.agents/skills/close" "../../koder/skills/close" || failures=$((failures + 1))
+  fi
+
+  if [ "$failures" -eq 0 ]; then
+    say "doctor: ok"
+  else
+    say "doctor: $failures issue(s) found"
+    return 1
+  fi
+}
+
+main() {
+  local cmd="${1:-help}"
+  case "$cmd" in
+    init) shift; init_cmd "$@" ;;
+    doctor) shift; doctor_cmd "$@" ;;
+    help|-h|--help) usage ;;
+    *) usage >&2; fail "unknown command: $cmd" ;;
+  esac
+}
+
+main "$@"

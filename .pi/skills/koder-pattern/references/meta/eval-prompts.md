@@ -1,6 +1,6 @@
 ---
 title: Koder Pattern Eval Prompts
-updated: 2026-06-05
+updated: 2026-06-11
 ---
 
 # Koder Pattern Eval Prompts
@@ -15,15 +15,15 @@ This global install is visible to model invocation. Natural-language setup/artif
 
 1. **Repo setup**
 
-   > Set up koder-pattern in this repo and leave it clean.
+   > Set up koder-pattern in this repo.
 
-   Expected: load router, then setup leaf; initialize git if needed; create/merge `AGENTS.md`, `koder/STATE.md`, project-local `.pi/skills/open` and `.pi/skills/close`; run close flow; commit; leave clean.
+   Expected: load router, setup leaf, and state-commit protocol; prefer `bin/koder-pattern init`; create `koder/AGENTS.md`, `koder/STATE.md`, `koder/issues/`, `koder/skills/{open,close}/`, plus safe symlink adapters; initialize git if needed and commit created scaffold paths with `state: init - koder pattern scaffold` unless explicitly told not to commit.
 
 2. **Issue filing**
 
    > /skill:koder-pattern file an issue for the flaky app request command. Include acceptance criteria and link the failing test output.
 
-   Expected: load router, then issue leaf; create/update `koder/issues/NNN_slug/INDEX.md`; validate if possible.
+   Expected: load router, issue leaf, and state-commit protocol; create/update `koder/issues/NNN_slug/INDEX.md`; update `koder/STATE.md` when this is an external filing or semantic state move; validate if possible; commit intentional state paths with a `state:` subject unless explicitly told not to commit.
 
 3. **Queue creation**
 
@@ -49,6 +49,12 @@ This global install is visible to model invocation. Natural-language setup/artif
 
    Expected: load queue-run plus harnex refs; enforce brief bounds; dispatch/monitor with metadata; update queue run log.
 
+7. **External issue into dirty repo**
+
+   > /skill:koder-pattern file an issue in ../target from this repo. Target has unrelated dirty code; preserve it.
+
+   Expected: inspect `git status --short` and `git diff --cached --name-only` in target; stop if `koder/STATE.md` or target issue path is dirty/staged; create issue; update `koder/STATE.md`; commit only those paths with `state: file #NNN from <origin> - <reason>`; leave unrelated dirty/staged work untouched.
+
 ## Should not trigger unless explicitly loaded
 
 1. **Ordinary code implementation**
@@ -71,7 +77,7 @@ This global install is visible to model invocation. Natural-language setup/artif
 
 ## Edge cases
 
-- User says “set up koder-pattern” in a repo without `.git/`: initialize git, create the handoff scaffold, and close/commit unless they said not to commit.
+- User says “set up koder-pattern” in a folder without `.git/`: create the thin scaffold, initialize git, and make `state: init - koder pattern scaffold` unless explicitly told not to commit.
 - User says “file a ticket” in a repo without `koder/`: ask whether to create `koder/` artifacts or use the repo's existing tracker.
 - Existing flat issue files: preserve legacy format unless creating a new artifact.
 - Duplicate numbers: route by full path and avoid renumbering history.
@@ -83,12 +89,13 @@ This global install is visible to model invocation. Natural-language setup/artif
 
 - [ ] `SKILL.md` is below 10 total lines.
 - [ ] Skill description is narrow enough to trigger setup/artifact work without catching ordinary code work.
-- [ ] Setup flow creates/merges repo handoff files, open/close skills, git, state, validation, and close commit when appropriate.
-- [ ] Main router loads only nested routers/leaves.
+- [ ] Setup flow prefers the init script, creates the thin `koder/` scaffold plus symlink adapters, preserves existing files, and commits created scaffold paths with `state: init - koder pattern scaffold` by default.
+- [ ] Main router loads only nested routers/leaves and the shared state-commit protocol when state changes are requested.
 - [ ] New artifacts have stable paths and frontmatter.
 - [ ] Source-of-truth hierarchy is respected: live repo conventions beat cached refs.
 - [ ] Queue entries reference source artifacts instead of duplicating implementation detail.
 - [ ] Harnex dispatches include bounded briefs, metadata, monitoring, and stop/closeout rules.
 - [ ] Reviews include verdict, prioritized findings, passing checks, and verification.
 - [ ] Plans include one capability, defers/non-goals, validation, and stop rules.
+- [ ] State-changing setup/artifact flows use grepable `state:` commits and selected-path dirty-repo guardrails.
 - [ ] No secrets, full prompts, credentials, private payloads, or sensitive account IDs are written.

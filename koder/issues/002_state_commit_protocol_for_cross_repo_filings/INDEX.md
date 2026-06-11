@@ -1,5 +1,5 @@
 ---
-status: open
+status: resolved
 priority: P1
 created: 2026-06-11
 updated: 2026-06-11
@@ -12,20 +12,21 @@ context: External filing from Holm: make koder-pattern reliably record semantic 
 
 ## Problem
 
-The `koder-pattern` skill provides durable artifacts, session handoffs, and repo-local memory, but it does not yet define a minimal reliable protocol for semantic repo-state movement across repositories.
+The `koder-pattern` skill provides durable artifacts, session handoffs, and repo-local memory, but it did not define a minimal reliable protocol for semantic repo-state movement across repositories.
 
-When work in repo A discovers something repo B must track, agents can file an issue in repo B today, but the surrounding state transition is not consistently recorded. The next operator may miss that repo B moved because the issue appeared mid-session, or an analysing agent may need to read full artifacts/chat instead of orienting from commit history.
+When work in repo A discovers something repo B must track, agents can file an issue in repo B, but the surrounding state transition was not consistently recorded. The next operator could miss that repo B moved because the issue appeared mid-session, or an analysing agent could need to read full artifacts/chat instead of orienting from commit history.
 
 ## Context
 
 Origin: Holm session on 2026-06-11 discussing reliable cross-repo operation before Foundry frontend work.
 
-User direction from that discussion:
+User direction from that discussion and follow-up review:
 
 - Use the operational mental model of taking a repo from one semantic state to the next.
-- Keep the MVP minimal: a `state:` commit for every close and every new issue filed from outside the repo.
-- Do not track every code commit; track independent semantic movements.
-- For external filings into a dirty repo, it is acceptable to commit a small state movement mid-session if the commit only includes the new issue and `koder/STATE.md`.
+- Keep the MVP minimal: a `state:` commit for every intentional `koder/` state transition.
+- Setup is not special; scaffold initialization is `state: init - koder pattern scaffold` unless explicitly skipped.
+- Do not track every code commit; track independent semantic/operator movements.
+- For external filings into a dirty repo, commit a small state movement if the commit only includes the new issue and `koder/STATE.md`.
 - The `state:` commit body can carry structured delta metadata so future analysing agents can orient from git history alone.
 - `koder/notes/` remains useful for larger handoffs or context that does not fit issues/plans/reviews, but notes are not the MVP state ledger.
 
@@ -34,17 +35,25 @@ Current relevant source in this repo:
 - `.pi/skills/koder-pattern/` is the source for the global `koder-pattern` install.
 - `koder/STATE.md` is the local handoff state file.
 
-## Proposed Direction
+## Implemented Direction
 
-Enhance `koder-pattern` guidance and templates with a minimal **state commit protocol**:
+`koder-pattern` now defines a minimal **state commit protocol**:
 
-1. Every close commit should use a grepable subject:
+1. Every intentional `koder/` state transition gets a grepable `state:` commit by default.
+
+2. Setup initializes git if needed and commits created scaffold paths:
+
+   ```text
+   state: init - koder pattern scaffold
+   ```
+
+3. Close commits use:
 
    ```text
    state: close - <semantic session result>
    ```
 
-2. Every new issue filed from outside the target repo should:
+4. New issues filed from outside the target repo should:
 
    - create the issue artifact;
    - update `koder/STATE.md` with a short external-filing note and `updated_at`;
@@ -55,7 +64,7 @@ Enhance `koder-pattern` guidance and templates with a minimal **state commit pro
    state: file #NNN from <origin-repo> - <short reason>
    ```
 
-3. The external filing commit body should include structured fields such as:
+5. External filing commit bodies use structured fields:
 
    ```text
    State event: external_issue
@@ -68,14 +77,15 @@ Enhance `koder-pattern` guidance and templates with a minimal **state commit pro
    - <operator-facing impact>
    ```
 
-4. Dirty target repo behavior:
+6. Dirty target repo behavior:
 
-   - proceed if unrelated paths are dirty and `koder/STATE.md` is clean;
-   - commit only `koder/STATE.md` and the new issue path;
-   - stop/coordinate if `koder/STATE.md` or the target issue path is already dirty;
-   - never sweep unrelated dirty work into the state commit.
+   - inspect both working tree and staged state;
+   - proceed if unrelated paths are dirty/staged and the required `koder/` state paths are clean;
+   - commit only the intended state paths with a pathspec commit;
+   - stop/coordinate if `koder/STATE.md` or the target issue path is already dirty/staged from unrelated work;
+   - never sweep unrelated dirty/staged work into the state commit.
 
-5. Analysis invariant:
+7. Analysis invariant:
 
    ```bash
    git log --grep='^state:' --oneline
@@ -85,12 +95,29 @@ Enhance `koder-pattern` guidance and templates with a minimal **state commit pro
 
 ## Acceptance Criteria
 
-- [ ] `koder-pattern` docs define `state:` commits as the minimal repo-state movement ledger.
-- [ ] Close/setup guidance uses `state: close - ...` for session close commits instead of generic docs-only subjects.
-- [ ] Issue-filing guidance covers external-origin filings, `STATE.md` updates, selected-path commits, and dirty repo guardrails.
-- [ ] A recommended `state:` commit body schema exists for close and external issue events.
-- [ ] Skill eval prompts or tests cover: filing an external issue into a dirty repo with unrelated changes, updating `STATE.md`, and committing only intended paths.
-- [ ] The guidance explicitly avoids tracking every code commit and does not introduce a heavier `koder/movements` artifact for the MVP.
+- [x] `koder-pattern` docs define `state:` commits as the minimal repo-state movement ledger.
+- [x] Close/setup guidance defines `state: close - ...` for close and `state: init - koder pattern scaffold` for setup.
+- [x] Issue-filing guidance covers external-origin filings, `STATE.md` updates, selected-path commits, and dirty repo guardrails.
+- [x] Recommended `state:` commit body schemas exist for init, close, external issue, and artifact update events.
+- [x] Skill eval prompts cover filing an external issue into a dirty repo with unrelated changes, updating `STATE.md`, and committing only intended paths.
+- [x] The guidance explicitly avoids tracking every code commit and does not introduce a heavier `koder/movements` artifact for the MVP.
+
+## Resolution
+
+Implemented in the state commit that updates this issue and the koder-pattern skill source. Evidence paths:
+
+- `.pi/skills/koder-pattern/references/shared/state-commit-protocol.md`
+- `.pi/skills/koder-pattern/bin/koder-pattern`
+- `.pi/skills/koder-pattern/references/setup.md`
+- `.pi/skills/koder-pattern/references/artifacts/issues.md`
+- `.pi/skills/koder-pattern/templates/koder/skills/close/SKILL.md`
+- `.pi/skills/koder-pattern/references/meta/eval-prompts.md`
+
+Validation performed:
+
+- `bash -n .pi/skills/koder-pattern/bin/koder-pattern`
+- temp-repo `koder-pattern init --all` created a root `state: init - koder pattern scaffold` commit.
+- temp dirty-repo test preserved unrelated dirty/staged work while committing only scaffold paths.
 
 ## Non-Goals
 

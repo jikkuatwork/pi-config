@@ -1,6 +1,6 @@
 ---
 title: Koder Artifact Router
-updated: 2026-06-05
+updated: 2026-06-11
 ---
 
 # Koder Artifact Router
@@ -23,6 +23,7 @@ Use this only when the requested artifact type is unclear. Otherwise load the le
 ## Common rules
 
 - For new artifacts, read `references/shared/artifact-model.md` if numbering/path/turn behavior is not obvious.
+- For intentional artifact state changes, read or apply `references/shared/state-commit-protocol.md`.
 - Before finalizing, read or apply `references/shared/safety-validation.md`.
 - Inspect nearby live artifacts first; preserve legacy format when updating legacy records.
 - Use exact paths and source links instead of copied detail.

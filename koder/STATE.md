@@ -1,5 +1,5 @@
 ---
-updated_at: "11 Jun 2026 | 12:39 PM IST"
+updated_at: "11 Jun 2026 | 01:57 PM IST"
 ---
 
 # Koder State
@@ -7,18 +7,19 @@ updated_at: "11 Jun 2026 | 12:39 PM IST"
 ## Past
 
 - Session handoff open/close flow is active; `koder/STATE.md` remains source-of-truth.
-- Earlier durable work includes kodemachine issue `koder/issues/001_kodemachine_namespaced_resources_and_storage_vm/INDEX.md`, Framework7 research scaffold, and the global `koder-pattern` skill refactor/bootstrap route.
-- This session worked outside this repo in `~/dotfiles`: added live terminal light/dark switching for Alacritty + tmux, with tmux `prefix` + `Shift+t` bound to the toggle and stdout removed so no Enter prompt appears.
+- Earlier durable work includes kodemachine issue 001, Framework7 research/skill work, and the global `koder-pattern` refactor/bootstrap route.
+- Issue 002 landed from Holm with a `state: file #002 from holm - cross-repo state protocol` commit.
 
 ## Present
 
 - Source for the global `koder-pattern` install is `.pi/skills/koder-pattern/`; `~/.pi/agent/skills/koder-pattern` points there.
-- External filing from Holm: `koder/issues/002_state_commit_protocol_for_cross_repo_filings/INDEX.md` tracks a minimal `state:` commit protocol for reliable cross-repo repo-state movement.
-- Repo has no root test/build harness; validation is manual/documentation-based unless a target repo defines checks.
-- Active terminal theme config now lives in `~/dotfiles`; runtime override files are under `~/.local/state/alacritty/` and `~/.local/state/tmux/`.
+- `koder-pattern` now has a thin `bin/koder-pattern init` script, scaffold templates, and state-commit protocol docs.
+- The protocol commits every intentional `koder/` state transition with grepable `state:` subjects by default; setup uses `state: init - koder pattern scaffold` and `--no-commit` is the explicit escape hatch.
+- Issue 002 is resolved in the current state update: docs/templates cover init, close, external issue filings, dirty-repo guardrails, selected-path commits, and eval prompts.
+- Repo has no root test/build harness; validation is script/docs/manual plus temp-repo smoke tests.
 
 ## Future
 
-- For terminal theme tweaks, edit `~/dotfiles/bin/toggle-terminal-theme`, `~/dotfiles/tmux.conf`, or the theme files under `~/dotfiles/{alacritty,tmux}/themes/`.
+- Use `git log --grep='^state:' --oneline` as the semantic repo-evolution stream.
 - Continue keeping project-local pi skills reviewed and source-controlled under `.pi/skills/`.
-- When resuming `koder-pattern`, consider Issue 002 before broader cross-repo/harness work.
+- If expanding koder artifacts later, keep `plans/`, `reviews/`, `research/`, etc. lazy/on-demand rather than part of init.

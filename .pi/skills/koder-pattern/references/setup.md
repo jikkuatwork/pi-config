@@ -1,221 +1,207 @@
 ---
 title: Koder Pattern Setup
-updated: 2026-06-05
+updated: 2026-06-11
 ---
 
 # Koder Pattern Setup
 
-Use when the user asks to set up, install, initialize, or bootstrap the koder pattern in a repository.
+Use when the user asks to set up, install, initialize, or bootstrap the koder pattern in a repository/folder.
 
-Goal: leave the target repo with durable handoff state, project-local open/close skills, git initialized, and a concise `koder/STATE.md` built from available repo facts. By default, finish with the close flow and commit the setup unless the user explicitly says not to commit.
+Goal: leave the target with the thinnest durable operator scaffold: `koder/AGENTS.md`, `koder/STATE.md`, `koder/issues/`, `koder/skills/open/`, `koder/skills/close/`, plus root/agent-surface symlinks where safe. By default, setup is a state transition: initialize git if needed and commit created scaffold paths with `state: init - koder pattern scaffold`.
+
+Read `references/shared/state-commit-protocol.md` before overriding commit behavior.
+
+## Placement principle
+
+- Durable non-code agent/operator files belong under `koder/`.
+- Root `AGENTS.md`/`CLAUDE.md` and agent skill folders should be symlinks/adapters to `koder/` when the target paths are absent.
+- `README.md` is the root documentation exception because GitHub/repo hosts render it directly; prefer other durable docs under `koder/docs/` unless live project conventions differ.
+- Create artifact directories lazily. Do not create `plans/`, `reviews/`, `research/`, `analysis/`, `notes/`, `tasks/`, `queues/`, or `scratch/` during thin init unless explicitly requested.
 
 ## 1. Inspect before writing
 
-1. Locate the target repo/root from the current working directory.
-2. Read live instructions if present: `AGENTS.md`, `CLAUDE.md`, `.agents/`, `.pi/`, and `koder/STATE.md`.
+1. Locate the target root from the current working directory or requested path.
+2. Read live instructions if present: `AGENTS.md`, `CLAUDE.md`, `.agents/`, `.claude/`, `.pi/`, and `koder/STATE.md`.
 3. Inspect current shape without dumping private content:
    - `git status --short --branch` if `.git/` exists;
+   - `git diff --cached --name-only` if `.git/` exists;
    - top-level files and likely manifests: `README*`, `package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, etc.;
-   - existing `koder/` artifacts and validators, if any.
-4. Preserve live conventions. Do not overwrite existing instructions, skills, or state without merging a small compatible section.
+   - existing `koder/` artifacts, skills, and validators.
+4. Preserve live conventions. Do not overwrite existing instructions, skills, state, docs, or symlinks.
 
-## 2. Initialize git
+## 2. Prefer the init script
 
-If the target is not already a git repository, run:
+Run the script from the skill root. If the skill is globally symlinked, this usually works:
 
 ```bash
-git init
+~/.pi/agent/skills/koder-pattern/bin/koder-pattern init .
 ```
 
-Do not add remotes, change branches, or rewrite history unless explicitly asked.
+Useful variants:
 
-## 3. Create or merge core files
+```bash
+# Preview only; no writes and no commit
+~/.pi/agent/skills/koder-pattern/bin/koder-pattern init --dry-run .
 
-### `AGENTS.md`
+# Write scaffold but skip git init/commit only when explicitly requested
+~/.pi/agent/skills/koder-pattern/bin/koder-pattern init --no-commit .
 
-If missing, create a concise repo instruction file like:
+# Add Claude adapters too
+~/.pi/agent/skills/koder-pattern/bin/koder-pattern init --claude .
 
-```markdown
-# Agent Instructions
+# Add Pi, Claude, and generic .agents adapters
+~/.pi/agent/skills/koder-pattern/bin/koder-pattern init --all .
 
-This repo uses the koder pattern for durable agent handoff and project memory.
-
-## Session handoff
-
-- Use `/skill:open` at the start of a session.
-- Use `/skill:close` at the end of a session; it updates `koder/STATE.md` and commits intentional work.
-- Read `koder/STATE.md` before making changes when opening manually.
-- Keep `koder/STATE.md` short and current; update it when closing meaningful work.
-- Do not put secrets, private payloads, full prompts, credentials, or large copied source/output into `koder/`.
-
-## Koder artifacts
-
-- Use folder-first artifacts for durable records: `koder/<type>/NNN_short_slug/INDEX.md`.
-- Treat `INDEX.md` as canonical current state; use `turns/` only for optional discussion/history.
-- Scan existing artifacts before choosing the next number; each artifact type has its own sequence.
-- Prefer source links, file paths, command names, and concise evidence over copied detail.
-- Run local validators before finalizing artifacts when validators exist.
-
-## Project-local skills
-
-- `.pi/skills/open/` contains the start-of-session handoff skill.
-- `.pi/skills/close/` contains the end-of-session handoff/commit skill.
+# Validate shape after init
+~/.pi/agent/skills/koder-pattern/bin/koder-pattern doctor .
 ```
 
-If `AGENTS.md` exists, add only missing session-handoff/koder sections and keep existing project policy authoritative.
+Script behavior:
 
-If `CLAUDE.md` is missing and `AGENTS.md` exists, create a symlink or tiny pointer to `AGENTS.md`. Do not replace an existing `CLAUDE.md`.
+- creates the target folder if missing;
+- creates missing scaffold files only;
+- skips existing files/dirs/symlinks instead of replacing them;
+- does not move existing docs;
+- initializes git if needed unless `--no-commit` or `--dry-run` is used;
+- commits only created scaffold paths with `state: init - koder pattern scaffold` unless `--no-commit` or `--dry-run` is used;
+- preserves unrelated dirty/staged work by using a selected-path commit;
+- creates `.pi/skills/{open,close}` adapters by default;
+- creates `CLAUDE.md`/`.claude/skills/*` only with `--claude` or `--all`;
+- creates `.agents/skills/*` only with `--agents` or `--all`.
 
-### `koder/STATE.md`
+Default scaffold:
 
-If missing, create it with India-time frontmatter and facts discovered during inspection:
-
-```markdown
----
-updated_at: "DD Mon YYYY | HH:MM AM IST"
----
-
-# Koder State
-
-## Past
-
-- Repository initialized with the koder-pattern handoff scaffold.
-
-## Present
-
-- Current repo shape: <brief stack/manifests/instructions/git branch/dirty state>.
-- Koder setup files: `AGENTS.md`, `.pi/skills/open/SKILL.md`, `.pi/skills/close/SKILL.md`, and `koder/STATE.md`.
-
-## Future
-
-- Decide the next product/implementation task.
-- Use `/skill:open` at session start and `/skill:close` at session end.
+```text
+AGENTS.md -> koder/AGENTS.md
+koder/
+  AGENTS.md
+  STATE.md
+  issues/
+    .gitkeep
+  skills/
+    open/
+      SKILL.md
+    close/
+      SKILL.md
+.pi/
+  skills/
+    open -> ../../koder/skills/open
+    close -> ../../koder/skills/close
 ```
 
-If state exists, update it only as part of close, keeping it under 100 lines and source-linked/concise.
+Optional Claude/generic adapters:
 
-### `.pi/skills/open/SKILL.md`
+```text
+CLAUDE.md -> koder/AGENTS.md
+.claude/skills/open -> ../../koder/skills/open
+.claude/skills/close -> ../../koder/skills/close
+.agents/skills/open -> ../../koder/skills/open
+.agents/skills/close -> ../../koder/skills/close
+```
 
-Create or refresh this exact project-local open skill when absent or clearly stale:
+Default commit body:
 
-````markdown
----
-name: open
-description: Start-of-session hand-off for this repo. Use when beginning work in this project; reads koder/STATE.md, inspects repository status, and summarizes past/present/future context before changes.
----
+```text
+State event: init
+State file: koder/STATE.md
 
-# Open Session
+Scaffold:
+- koder/AGENTS.md
+- koder/STATE.md
+- koder/issues/
+- koder/skills/open/
+- koder/skills/close/
 
-Use this skill at the beginning of a work session in this repository.
+Delta:
+- Repository now has koder-pattern durable operator state.
+- Agent surfaces point at koder-owned instructions/skills where possible.
+```
 
-## Steps
+## 3. Manual fallback
 
-1. Locate the repository/project root from the current working directory.
-2. Read `koder/STATE.md` completely before making changes.
-3. Check repository state:
+If the script cannot run, manually create the same thin scaffold and make a state commit.
+
+1. Create directories:
    ```bash
-   git status --short
-   git branch --show-current
-   git log --oneline -5
+   mkdir -p koder/issues koder/skills/open koder/skills/close
+   touch koder/issues/.gitkeep
    ```
-   If this is not a git repository, say so clearly and continue with the file-based hand-off.
-4. Summarize:
-   - Past: what was previously done.
-   - Present: current repo state and any dirty/uncommitted work.
-   - Future: next likely tasks or risks.
-5. Ask what the user wants to do next unless they already gave a concrete task.
+2. Copy templates from the skill root:
+   - `templates/koder/AGENTS.md` -> `koder/AGENTS.md`
+   - `templates/koder/skills/open/SKILL.md` -> `koder/skills/open/SKILL.md`
+   - `templates/koder/skills/close/SKILL.md` -> `koder/skills/close/SKILL.md`
+3. Create `koder/STATE.md` with India-time frontmatter and concise handoff sections:
+   ```markdown
+   ---
+   updated_at: "DD Mon YYYY | HH:MM AM IST"
+   ---
 
-## Rules
+   # Koder State
 
-- Do not modify files as part of opening unless the user explicitly asks.
-- Treat `koder/STATE.md` as the source of truth for cross-session context.
-- If `koder/STATE.md` is missing, tell the user and offer to create it.
-````
+   ## Past
 
-### `.pi/skills/close/SKILL.md`
+   - Koder-pattern thin operator scaffold was initialized.
 
-Create or refresh this exact project-local close skill when absent or clearly stale:
+   ## Present
 
-````markdown
----
-name: close
-description: End-of-session hand-off for this repo. Use when finishing work; updates koder/STATE.md under 100 lines, reviews changes, commits all work, and leaves the repository clean.
----
+   - Durable operator files live under `koder/`.
+   - Active scaffold: `koder/AGENTS.md`, `koder/STATE.md`, `koder/issues/`, and `koder/skills/{open,close}/`.
 
-# Close Session
+   ## Future
 
-Use this skill at the end of a work session in this repository.
-
-## Steps
-
-1. Inspect current state:
+   - Use `open` at session start and `close` at session end.
+   - Add plans, reviews, research, notes, tasks, queues, or scratch areas only when work needs durable records.
+   ```
+4. Create symlinks only when targets are absent:
    ```bash
-   git status --short
-   git diff --stat
+   ln -s koder/AGENTS.md AGENTS.md
+   mkdir -p .pi/skills
+   ln -s ../../koder/skills/open .pi/skills/open
+   ln -s ../../koder/skills/close .pi/skills/close
    ```
-2. Refresh `koder/STATE.md` frontmatter timestamp:
-   - Ensure the file starts with YAML frontmatter containing `updated_at`.
-   - Set `updated_at` to current India time in this exact format: `DD Mon YYYY | HH:MM AM IST`.
-   - Use:
-     ```bash
-     TZ='Asia/Kolkata' date '+%d %b %Y | %I:%M %p IST'
-     ```
-3. Update `koder/STATE.md` so it remains under 100 lines and accurately captures:
-   - Past: durable completed work from this session.
-   - Present: current repo structure/state and any important caveats.
-   - Future: concise next steps for the next session.
-4. Verify line count:
+5. For Claude/generic surfaces, only if requested and absent:
+   ```bash
+   ln -s koder/AGENTS.md CLAUDE.md
+   mkdir -p .claude/skills .agents/skills
+   ln -s ../../koder/skills/open .claude/skills/open
+   ln -s ../../koder/skills/close .claude/skills/close
+   ln -s ../../koder/skills/open .agents/skills/open
+   ln -s ../../koder/skills/close .agents/skills/close
+   ```
+6. Initialize git if needed and commit only scaffold paths. Write the default commit body shown above to `/tmp/koder-state-init-message`; include optional adapter paths only if you created them:
+   ```bash
+   git rev-parse --is-inside-work-tree >/dev/null 2>&1 || git init
+   git add -- AGENTS.md koder/AGENTS.md koder/STATE.md koder/issues/.gitkeep koder/skills/open/SKILL.md koder/skills/close/SKILL.md .pi/skills/open .pi/skills/close
+   git commit -F /tmp/koder-state-init-message -- AGENTS.md koder/AGENTS.md koder/STATE.md koder/issues/.gitkeep koder/skills/open/SKILL.md koder/skills/close/SKILL.md .pi/skills/open .pi/skills/close
+   ```
+
+If `AGENTS.md`, `CLAUDE.md`, or skill paths already exist, do not replace them. Report that a manual merge/pointer may be needed. If the user explicitly says not to commit, skip step 6 and report the uncommitted scaffold paths.
+
+## 4. Validate and hand back
+
+1. Run the doctor when available:
+   ```bash
+   ~/.pi/agent/skills/koder-pattern/bin/koder-pattern doctor .
+   ```
+2. Verify `koder/STATE.md` is under 100 lines:
    ```bash
    wc -l koder/STATE.md
    ```
-   If it is 100 lines or more, compress it before continuing.
-5. Run relevant checks/tests if the repo defines any. If none exist, note that no test suite is present.
-6. Review final changes:
+3. Inspect repo state if git exists:
    ```bash
    git status --short
-   git diff --stat
+   git log --grep='^state:' --oneline -5
    ```
-7. Commit all work:
-   - If this is not a git repository, initialize it with `git init`.
-   - Stage all intentional changes with `git add -A`.
-   - Commit with a concise descriptive message, e.g. `chore: set up koder pattern`.
-8. Confirm the repo is clean:
-   ```bash
-   git status --short
-   ```
-
-## Rules
-
-- Do not leave intentional work uncommitted.
-- Do not commit secrets, credentials, caches, build outputs, or unrelated generated files.
-- If a commit cannot be made, explain exactly why and what remains dirty.
-- Keep `koder/STATE.md` concise; it is a hand-off, not a changelog.
-- Always update `updated_at` in `koder/STATE.md` frontmatter using India time format: `DD Mon YYYY | HH:MM AM IST`.
-````
-
-### `.gitignore`, `.editorconfig`, README
-
-- Ensure `.gitignore` excludes transient and secret-prone files, especially `koder/scratch/`, `.env`, `.env.*`, OS/editor noise, dependencies, and build outputs. Preserve existing ignore rules.
-- Create `.editorconfig` only if missing.
-- Create or update `README.md` only when the repo has no useful README; add a short agent handoff section, not project claims you cannot verify.
-
-## 4. Close by default
-
-For a plain “set up koder-pattern in this repo” request, finish by running the close flow unless the user said not to commit:
-
-1. Update `koder/STATE.md` with the setup work and discovered repo facts.
-2. Verify `wc -l koder/STATE.md` is under 100.
-3. Run available validators/tests. If none exist, state that none exist and manual checks were done.
-4. Review `git status --short` and `git diff --stat`.
-5. `git add -A` and `git commit -m "chore: set up koder pattern"`.
-6. Confirm `git status --short` is empty.
+4. Summarize created files, skipped existing paths, the `state: init` commit hash if one was made, and any remaining dirty paths.
 
 ## Manual validation checklist
 
-- `.git/` exists.
-- `AGENTS.md` or equivalent mentions `/skill:open`, `/skill:close`, `koder/STATE.md`, and secret hygiene.
-- `.pi/skills/open/SKILL.md` and `.pi/skills/close/SKILL.md` exist and have valid frontmatter.
+- `koder/AGENTS.md` exists and states the koder placement/safety/state-commit policy.
 - `koder/STATE.md` has `updated_at`, Past/Present/Future, and is under 100 lines.
-- `.gitignore` excludes `koder/scratch/` and env/secrets.
-- No secrets, private payloads, full prompts, large generated outputs, or unrelated caches are committed.
-- The target repo is clean after close unless commit was explicitly skipped or failed.
+- `koder/issues/` exists; other artifact dirs are absent unless requested or pre-existing.
+- `koder/skills/open/SKILL.md` and `koder/skills/close/SKILL.md` exist and have valid frontmatter.
+- Root `AGENTS.md` is a symlink to `koder/AGENTS.md`, or an existing root file was preserved and a merge need was reported.
+- Requested agent surfaces symlink `open` and `close` to `koder/skills/*`.
+- A `state: init - koder pattern scaffold` commit exists unless `--no-commit`/explicit no-commit was used or no scaffold paths changed.
+- No secrets, private payloads, full prompts, large generated outputs, or unrelated caches were created or committed.
+- Unrelated dirty/staged work, if any, was not swept into the state commit.

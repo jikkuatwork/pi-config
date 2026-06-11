@@ -1,11 +1,11 @@
 ---
 title: Koder Safety and Validation
-updated: 2026-06-05
+updated: 2026-06-11
 ---
 
 # Koder Safety and Validation
 
-Read before finalizing or committing a `koder/` artifact.
+Read before finalizing or committing a `koder/` artifact. For intentional state mutations, also follow `references/shared/state-commit-protocol.md`.
 
 ## Safety rules
 
@@ -15,6 +15,7 @@ Read before finalizing or committing a `koder/` artifact.
 - Do not mark work resolved without evidence: commit, validation, release/version, review verdict, or explicit user decision.
 - Ask before filing artifacts that imply cloud spend, release/deploy, destructive DB work, production mutation, credential changes, or account changes.
 - Keep durable artifacts safe to commit unless the repo explicitly keeps them private.
+- Do not sweep unrelated dirty/staged work into a `state:` commit; use selected paths when needed.
 
 ## Validation
 

@@ -1,6 +1,6 @@
 ---
 name: close
-description: "End-of-session hand-off for this repo. Use when finishing work; updates koder/STATE.md under 100 lines, reviews changes, commits intentional safe work with a grepable state: close subject, and reports final repo state."
+description: "End-of-session hand-off for this repo. Use when finishing work; updates koder/STATE.md under 100 lines, runs relevant checks, and commits the semantic state transition with a grepable state: close subject."
 ---
 
 # Close Session
@@ -15,6 +15,7 @@ Use this skill at the end of a work session in this repository.
    git diff --stat
    git diff --cached --name-only
    ```
+   If this is not a git repository, initialize it with `git init` before the state commit.
 2. Refresh `koder/STATE.md` frontmatter timestamp:
    - Ensure the file starts with YAML frontmatter containing `updated_at`.
    - Set `updated_at` to current India time in this exact format: `DD Mon YYYY | HH:MM AM IST`.
@@ -39,7 +40,6 @@ Use this skill at the end of a work session in this repository.
    git diff --cached --name-only
    ```
 7. Commit intentional safe work with a `state: close` subject:
-   - If this is not a git repository, initialize it with `git init`.
    - Use `state: close - <semantic session result>`.
    - Stage only intentional safe paths; avoid blind `git add -A` when unrelated dirty work exists.
    - If committing only handoff state, use a path-scoped commit for `koder/STATE.md` and relevant `koder/` artifacts.

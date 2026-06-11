@@ -1,15 +1,26 @@
 ---
 title: Koder Artifact Model
-updated: 2026-06-05
+updated: 2026-06-11
 ---
 
 # Koder Artifact Model
 
-Use when path shape, numbering, source-of-truth, turns, or statuses are relevant. For safety and validators also read `references/shared/safety-validation.md`.
+Use when path shape, numbering, source-of-truth, turns, or statuses are relevant. For state commits read `references/shared/state-commit-protocol.md`; for safety and validators also read `references/shared/safety-validation.md`.
 
 ## Core invariant
 
 `koder/` is durable agent memory and orchestration state. It should make work resumable across humans, agents, sessions, and branches without forcing the next agent to read chat history.
+
+## Operator/doc placement
+
+- Keep durable non-code agent/operator files under `koder/`: state, issues, plans, reviews, research, notes, queues, scratch, local skills, and operator docs.
+- Root `AGENTS.md`, `CLAUDE.md`, `.pi/skills/*`, `.claude/skills/*`, and `.agents/skills/*` should be symlinks/adapters to `koder/` when possible.
+- `README.md` is the normal root documentation exception because repository hosts render it directly.
+- Prefer other durable docs under `koder/docs/` unless live project conventions require another location.
+
+## State movement ledger
+
+Every intentional `koder/` state transition gets a grepable `state:` commit by default. This includes scaffold init, close handoffs, external filings, and artifact status changes. Do not force ordinary code-only commits into the ledger. Use selected-path commits when unrelated dirty/staged work exists.
 
 ## Folder-first layout
 
