@@ -1,5 +1,5 @@
 ---
-updated_at: "11 Jun 2026 | 01:57 PM IST"
+updated_at: "11 Jun 2026 | 02:03 PM IST"
 ---
 
 # Koder State
@@ -12,7 +12,7 @@ updated_at: "11 Jun 2026 | 01:57 PM IST"
 
 ## Present
 
-- Source for the global `koder-pattern` install is `.pi/skills/koder-pattern/`; `~/.pi/agent/skills/koder-pattern` points there.
+- Source for the global `koder-pattern` install is `.pi/skills/koder-pattern/`; global Pi, generic agents, Claude, and Codex skill paths all symlink to it.
 - `koder-pattern` now has a thin `bin/koder-pattern init` script, scaffold templates, and state-commit protocol docs.
 - The protocol commits every intentional `koder/` state transition with grepable `state:` subjects by default; setup uses `state: init - koder pattern scaffold` and `--no-commit` is the explicit escape hatch.
 - Issue 002 is resolved in the current state update: docs/templates cover init, close, external issue filings, dirty-repo guardrails, selected-path commits, and eval prompts.
