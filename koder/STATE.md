@@ -1,5 +1,5 @@
 ---
-updated_at: "13 Jun 2026 | 12:07 AM IST"
+updated_at: "13 Jun 2026 | 01:19 AM IST"
 ---
 
 # Koder State
@@ -7,21 +7,22 @@ updated_at: "13 Jun 2026 | 12:07 AM IST"
 ## Past
 
 - Session handoff open/close flow is active; `koder/STATE.md` remains source-of-truth.
-- Earlier durable work includes koder issue 001, Framework7 research/skill work, and the global `koder-pattern` refactor/bootstrap route.
 - Issue 002 clarified that grepable `state:` commits are the semantic movement ledger; `koder/STATE.md` is only session handoff.
-- Added docs-only `ponytail` skill from `DietrichGebert/ponytail` at `cf97ccc`; reviewed plugin hooks/commands but did not vendor or run them.
-- Added local `skill-import` workflow skill for adapting skills/docs/workflows/blogs/etc. into frontmatter-only pi skills.
-- Confirmed via temp pi probes that `metadata.references.index` can route to `references/INDEX.md` without body text in `SKILL.md`.
+- Added docs-only `ponytail` skill and local `skill-import` workflow; both established the tiny front-door convention.
+- Confirmed via temp pi probes that frontmatter-only `SKILL.md` files can route through `metadata.references.index` to `references/INDEX.md`.
+- Converted all top-level local `.pi/skills/*/SKILL.md` files to frontmatter-only entrypoints with `metadata.structure: tiny_front_door_v1` and `metadata.references.index`.
+- Added/updated skill `references/INDEX.md` routers; moved large always-loaded bodies behind references.
+- Renamed nested `koder-pattern` scaffold templates to `SKILL.md.template` so pi does not discover them as live nested skills, while init still writes target `koder/skills/{open,close}/SKILL.md`.
 
 ## Present
 
-- New local convention: `SKILL.md` is frontmatter-only by default, with `metadata.structure: tiny_front_door_v1` and `metadata.references.index: references/INDEX.md`.
-- References are flat `NN_label.md` by default; use folders only for multi-file topics/assets; avoid nested `SKILL.md` files.
-- `skill-import` and `ponytail` both follow this convention; `AGENTS.md`, `find-skills`, and `knowledge-base/workflows/skill-import.md` point to it.
-- Repo has no root test/build harness; validation is docs/manual plus targeted pi CLI probes and file/security scans.
+- Local skill convention: one discoverable top-level `SKILL.md` per skill, frontmatter-only by default, routing to `references/INDEX.md`.
+- References stay flat by default; use folders only for multi-file topics/assets; avoid nested discoverable `SKILL.md` files.
+- `koder-pattern` still creates real `open`/`close` skills in target repos from `.template` sources.
+- Repo has no root test/build harness; validation is docs/manual plus targeted script/YAML/pi CLI probes.
 
 ## Future
 
-- Next session: convert remaining local skills to the frontmatter-only + `references/INDEX.md` convention where appropriate.
-- Reload/restart pi after local skill changes so new/updated triggers are discovered.
+- Reload/restart pi after local skill changes so updated triggers and frontmatter are discovered.
 - Keep project-local pi skills reviewed and source-controlled under `.pi/skills/`; do not edit global symlink installs directly.
+- When adding or importing skills, keep entrypoints frontmatter-only unless safety/compatibility requires a tiny body.

@@ -128,8 +128,8 @@ If the script cannot run, manually create the same thin scaffold and make a stat
    ```
 2. Copy templates from the skill root:
    - `templates/koder/AGENTS.md` -> `koder/AGENTS.md`
-   - `templates/koder/skills/open/SKILL.md` -> `koder/skills/open/SKILL.md`
-   - `templates/koder/skills/close/SKILL.md` -> `koder/skills/close/SKILL.md`
+   - `templates/koder/skills/open/SKILL.md.template` -> `koder/skills/open/SKILL.md`
+   - `templates/koder/skills/close/SKILL.md.template` -> `koder/skills/close/SKILL.md`
 3. Create `koder/STATE.md` with India-time frontmatter and concise handoff sections:
    ```markdown
    ---

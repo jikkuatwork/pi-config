@@ -87,7 +87,7 @@ This global install is visible to model invocation. Natural-language setup/artif
 
 ## Quality checklist
 
-- [ ] `SKILL.md` is below 10 total lines.
+- [ ] `SKILL.md` is frontmatter-only and routes via `metadata.references.index` to `references/INDEX.md`.
 - [ ] Skill description is narrow enough to trigger setup/artifact work without catching ordinary code work.
 - [ ] Setup flow prefers the init script, creates the thin `koder/` scaffold plus symlink adapters, preserves existing files, and commits created scaffold paths with `state: init - koder pattern scaffold` by default.
 - [ ] Main router loads only nested routers/leaves and the shared state-commit protocol when state changes are requested.

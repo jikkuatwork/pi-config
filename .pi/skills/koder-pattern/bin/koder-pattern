@@ -330,8 +330,8 @@ init_cmd() {
   create_from_template "$root/koder/AGENTS.md" "$TEMPLATE_DIR/koder/AGENTS.md"
   create_state "$root/koder/STATE.md"
   create_gitkeep_dir "$root/koder/issues"
-  create_from_template "$root/koder/skills/open/SKILL.md" "$TEMPLATE_DIR/koder/skills/open/SKILL.md"
-  create_from_template "$root/koder/skills/close/SKILL.md" "$TEMPLATE_DIR/koder/skills/close/SKILL.md"
+  create_from_template "$root/koder/skills/open/SKILL.md" "$TEMPLATE_DIR/koder/skills/open/SKILL.md.template"
+  create_from_template "$root/koder/skills/close/SKILL.md" "$TEMPLATE_DIR/koder/skills/close/SKILL.md.template"
 
   create_symlink "$root/AGENTS.md" "koder/AGENTS.md"
 
