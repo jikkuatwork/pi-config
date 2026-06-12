@@ -11,12 +11,12 @@ metadata:
 
 Discover, vet, and add agent skills to this pi project **without installing or invoking the Skills CLI**.
 
-Before importing skills, follow the repo workflow in `knowledge-base/workflows/skill-import.md`.
+Before importing skills, use the local `skill-import` workflow: read `.pi/skills/skill-import/references/INDEX.md`.
 
 ## Hard Rules
 
 - **Never** install or invoke Vercel's Skills CLI: no `npx skills ...`, `npm install -g skills`, `skills add`, or equivalent Skills CLI command.
-- **Always** manually copy/vendor skill files into this repo; prefer project-local installation under `.pi/skills/<skill-name>/`.
+- **Always** manually copy/vendor skill files into this repo; prefer project-local installation under `.pi/skills/<skill-name>/` with a frontmatter-only `SKILL.md` routing to `metadata.references.index` / `references/INDEX.md`.
 - Do **not** install third-party skills globally by default.
 - Review skill content before adding it. Skills may instruct the agent to run code.
 - Check whether the skill includes executable scripts, dependency installers, or setup commands. If it does, warn the user and ask for explicit permission before running or installing anything.

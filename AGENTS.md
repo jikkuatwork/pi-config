@@ -19,7 +19,7 @@ This repo is the staging area for pi configuration, extensions, and locally revi
 
 ## Skill import policy
 
-Follow `knowledge-base/workflows/skill-import.md` for all third-party skill discovery, review, and vendoring.
+Use the local `.pi/skills/skill-import/` skill for third-party skill discovery, review, adaptation, and vendoring; start at `.pi/skills/skill-import/references/INDEX.md`. `knowledge-base/workflows/skill-import.md` is the compatibility pointer.
 
 Hard rules:
 
@@ -28,7 +28,7 @@ Hard rules:
 - Prefer project-local skills under `.pi/skills/`; do not install globally unless explicitly requested.
 - Review for executables, installers, dependency setup, MCP/plugin hooks, package scripts, and binaries.
 - If an imported skill includes anything runnable or installable, warn and ask permission before running/installing it.
-- Avoid autocomplete/context spam: for large domains, create one top-level umbrella skill and move sub-skills into `references/modules/*/GUIDE.md` instead of nested `SKILL.md` files.
+- Keep imported skill entrypoints frontmatter-only by default, routing through `metadata.references.index` / `references/INDEX.md`; add body text only for exceptional safety/compatibility needs. Use underscore paths, flat `NN_label.md` references by default, and folders only for multi-file topics/assets. For large domains, create one top-level umbrella skill and move sub-skills into `references/modules/*/GUIDE.md` instead of nested `SKILL.md` files.
 
 ## Azure and cloma credentials
 
