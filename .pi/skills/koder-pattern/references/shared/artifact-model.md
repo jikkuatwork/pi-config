@@ -1,6 +1,6 @@
 ---
 title: Koder Artifact Model
-updated: 2026-06-11
+updated: 2026-06-12
 ---
 
 # Koder Artifact Model
@@ -34,7 +34,7 @@ koder/<type>/NNN_short_slug/
     02_claude.md
 ```
 
-`turns/` is optional. Use it when the user asks for a turn or when multi-agent discussion would clutter canonical state. Do not create it for routine edits.
+`turns/` is optional. Use it when the user asks for a turn or when multi-agent discussion would clutter canonical state. Do not create it for routine edits. For issues whose discussion converges into a substantially different planning source, keep the original issue body intact and point frontmatter `converged:` at the self-contained turn.
 
 Reviews usually do **not** use `INDEX.md`; the numbered review files are the artifact and function as turns:
 
@@ -52,7 +52,7 @@ Legacy flat files may remain. Do not churn history just to normalize old artifac
 When facts conflict, prefer:
 
 1. live source code, commands, and current repo instructions;
-2. canonical `koder/<type>/.../INDEX.md` frontmatter/body;
+2. canonical `koder/<type>/.../INDEX.md` frontmatter/body, except that issue frontmatter `converged: turns/...` promotes that target turn to current planning source over the original issue body;
 3. latest relevant review verdict;
 4. latest relevant `turns/` file;
 5. scratch/session logs and chat memory.
@@ -76,7 +76,7 @@ When the user says “do one turn in #NNN,” first identify the artifact type a
 - queue artifacts may use `Run Log` for mechanical status and `turns/` for substantive discussion/design;
 - plan artifacts may use `turns/` for convergence discussion, but canonical implementation instructions stay in `INDEX.md`.
 
-If the turn changes canonical decisions/status, update `INDEX.md` too.
+If the turn changes canonical decisions/status, update `INDEX.md` too. Issue convergence is the exception: when the original issue body should remain as submitted, update only frontmatter `converged:` and put the current self-contained specification in the pointed turn.
 
 ## Status vocabulary
 

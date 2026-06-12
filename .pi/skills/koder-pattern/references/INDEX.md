@@ -1,6 +1,6 @@
 ---
 title: Koder Pattern Router
-updated: 2026-06-11
+updated: 2026-06-12
 ---
 
 # Koder Pattern Router
@@ -41,7 +41,7 @@ Thin router for setting up durable `koder/` repo memory and managing `koder/` ar
 
 - Setup is a thin, conservative scaffold: `koder/AGENTS.md`, `koder/STATE.md`, `koder/issues/`, `koder/skills/{open,close}/`, plus safe symlink adapters. It initializes git if needed and commits created scaffold paths with `state: init - koder pattern scaffold` unless explicitly told not to commit.
 - Keep durable non-code operator/docs files under `koder/`; `README.md` is the normal root documentation exception. Folder-first artifacts: `koder/<type>/NNN_slug/INDEX.md`; reviews are numbered files under `koder/reviews/NNN_slug/`.
-- `INDEX.md` is canonical; `turns/` is history. Update canonical state when a turn changes decisions/status.
+- `INDEX.md` is canonical; `turns/` is history. Update canonical state when a turn changes decisions/status. For issues with frontmatter `converged: turns/...`, the pointed turn is the current self-contained planning source while `status` remains independent.
 - Queues contain orchestration metadata and refs, not implementation prose.
 - Harnex briefs must be bounded; use live harnex/repo docs over cached examples.
 - Every intentional `koder/` state transition gets a grepable `state:` commit by default; use selected-path commits so unrelated dirty/staged work is not swept in.

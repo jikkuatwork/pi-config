@@ -1,6 +1,6 @@
 ---
 title: Koder Issues
-updated: 2026-06-11
+updated: 2026-06-12
 ---
 
 # Koder Issues
@@ -26,6 +26,7 @@ updated: YYYY-MM-DD
 tags: area, topic
 type: feature       # bug | feature | design | audit | analysis | docs
 context: One-line why this exists.
+converged: turns/NN_label.md  # optional: current self-contained planning source
 ---
 ```
 
@@ -40,6 +41,7 @@ updated: YYYY-MM-DD
 tags: area, topic
 type: feature
 context: One-line why this issue exists.
+# converged: turns/NN_label.md
 ---
 
 # Issue NNN: Title
@@ -71,7 +73,32 @@ Optional. Use when there is a likely path but not yet a thin plan.
 - Focused on **why** and **what success means**, not detailed implementation.
 - Carries enough context for plan extraction.
 - Links related issues/plans/reviews when known.
-- Uses `turns/` for long discussion and keeps `INDEX.md` current after convergence.
+- Uses `turns/` for long discussion. When discussion materially changes the original issue, preserve the original issue body and point `converged:` at a self-contained turn.
+
+## Converged issue turns
+
+Use this when an issue is submitted, discussed, and the final agreed shape differs materially from the original report.
+
+Keep the original `INDEX.md` body as the historical problem submission. Do not rewrite it into the new answer just to make it current. Instead:
+
+1. Append a turn file under `turns/`, for example:
+   ```text
+   koder/issues/NNN_slug/turns/03_proxy_body_policy_convergence.md
+   ```
+2. Make that turn self-contained enough for plan extraction:
+   - current problem statement;
+   - accepted decisions;
+   - rejected alternatives;
+   - implementation scope;
+   - acceptance criteria;
+   - evidence/source pointers.
+3. Add or update frontmatter on `INDEX.md`:
+   ```yaml
+   converged: turns/03_proxy_body_policy_convergence.md
+   ```
+4. Keep `status: open` unless implementation/evidence actually resolves the issue. `converged` means design/planning source, not completion.
+
+Agents planning from an issue must read `INDEX.md` first. If `converged:` is present, read that target next and treat it as the current issue specification for planning/mapping.
 
 ## External-origin filings
 
