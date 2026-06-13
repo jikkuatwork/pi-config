@@ -1,5 +1,5 @@
 ---
-updated_at: "13 Jun 2026 | 01:19 AM IST"
+updated_at: "13 Jun 2026 | 11:33 PM IST"
 ---
 
 # Koder State
@@ -20,9 +20,11 @@ updated_at: "13 Jun 2026 | 01:19 AM IST"
 - References stay flat by default; use folders only for multi-file topics/assets; avoid nested discoverable `SKILL.md` files.
 - `koder-pattern` still creates real `open`/`close` skills in target repos from `.template` sources.
 - Repo has no root test/build harness; validation is docs/manual plus targeted script/YAML/pi CLI probes.
+- External Holm filing created Issue 003 to compare DocFlow with `koder-pattern` and decide what to import/adapt.
 
 ## Future
 
 - Reload/restart pi after local skill changes so updated triggers and frontmatter are discovered.
 - Keep project-local pi skills reviewed and source-controlled under `.pi/skills/`; do not edit global symlink installs directly.
 - When adding or importing skills, keep entrypoints frontmatter-only unless safety/compatibility requires a tiny body.
+- Analyze DocFlow in this repo via Issue 003 before importing/adapting productization ideas into `koder-pattern`.
