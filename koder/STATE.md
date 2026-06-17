@@ -1,5 +1,5 @@
 ---
-updated_at: "13 Jun 2026 | 11:33 PM IST"
+updated_at: "17 Jun 2026 | 11:23 AM IST"
 ---
 
 # Koder State
@@ -7,24 +7,22 @@ updated_at: "13 Jun 2026 | 11:33 PM IST"
 ## Past
 
 - Session handoff open/close flow is active; `koder/STATE.md` remains source-of-truth.
-- Issue 002 clarified that grepable `state:` commits are the semantic movement ledger; `koder/STATE.md` is only session handoff.
-- Added docs-only `ponytail` skill and local `skill-import` workflow; both established the tiny front-door convention.
-- Confirmed via temp pi probes that frontmatter-only `SKILL.md` files can route through `metadata.references.index` to `references/INDEX.md`.
-- Converted all top-level local `.pi/skills/*/SKILL.md` files to frontmatter-only entrypoints with `metadata.structure: tiny_front_door_v1` and `metadata.references.index`.
-- Added/updated skill `references/INDEX.md` routers; moved large always-loaded bodies behind references.
-- Renamed nested `koder-pattern` scaffold templates to `SKILL.md.template` so pi does not discover them as live nested skills, while init still writes target `koder/skills/{open,close}/SKILL.md`.
+- `state:` commits are the semantic movement ledger; `koder/STATE.md` is only session handoff.
+- Local `.pi/skills/*/SKILL.md` files use frontmatter-only tiny front doors with `metadata.references.index` routers.
+- `koder-pattern` scaffold templates are named `SKILL.md.template` so pi does not discover nested live skills, while init still writes target `koder/skills/{open,close}/SKILL.md`.
+- External Holm filing created Issue 003 to compare DocFlow with `koder-pattern` and decide what to import/adapt.
 
 ## Present
 
-- Local skill convention: one discoverable top-level `SKILL.md` per skill, frontmatter-only by default, routing to `references/INDEX.md`.
-- References stay flat by default; use folders only for multi-file topics/assets; avoid nested discoverable `SKILL.md` files.
-- `koder-pattern` still creates real `open`/`close` skills in target repos from `.template` sources.
+- Branch `master` was clean at open; this close updates only handoff state.
+- Local skill convention remains: one discoverable top-level `SKILL.md` per skill, frontmatter-only by default, with flat references unless a folder is justified.
+- `koder-pattern` already documents `koder/notes/` as lightweight durable memory; no new inbox/messages artifact exists.
+- Session brainstorm favored a minimal cross-repo extension: file ordinary notes in the target repo (`file a note in holm`), include origin metadata for external notes, and add a `koder/STATE.md` pointer only when the user asks for handoff/next-agent visibility.
 - Repo has no root test/build harness; validation is docs/manual plus targeted script/YAML/pi CLI probes.
-- External Holm filing created Issue 003 to compare DocFlow with `koder-pattern` and decide what to import/adapt.
 
 ## Future
 
+- If implementing the cross-repo note idea, update `koder-pattern` docs minimally: ownership rule, external-note fields, and handoff visibility rule; avoid adding `koder/inbox/` unless repeated pain proves it needed.
+- Add trigger wording/examples for `file a note in <repo>`, `leave a note for <repo>`, and handoff variants that also update target `STATE.md`.
+- Analyze DocFlow via Issue 003 before importing/adapting productization ideas into `koder-pattern`.
 - Reload/restart pi after local skill changes so updated triggers and frontmatter are discovered.
-- Keep project-local pi skills reviewed and source-controlled under `.pi/skills/`; do not edit global symlink installs directly.
-- When adding or importing skills, keep entrypoints frontmatter-only unless safety/compatibility requires a tiny body.
-- Analyze DocFlow in this repo via Issue 003 before importing/adapting productization ideas into `koder-pattern`.
