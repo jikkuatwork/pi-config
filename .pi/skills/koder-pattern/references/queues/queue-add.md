@@ -5,7 +5,7 @@ updated: 2026-06-20
 
 # Koder Queue Add Workflow
 
-Use when the user asks to add, prepare, pack, or refill queue work.
+Use when the user asks to add, prepare, pack, or refill queue work. If the task starts from a broad issue/backlog item or asks for queueable pieces, load `references/queues/conveyor.md` first.
 
 ## Workflow
 

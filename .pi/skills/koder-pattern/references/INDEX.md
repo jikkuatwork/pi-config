@@ -1,6 +1,6 @@
 ---
 title: Koder Pattern Router
-updated: 2026-06-12
+updated: 2026-06-20
 ---
 
 # Koder Pattern Router
@@ -31,6 +31,7 @@ Thin router for setting up durable `koder/` repo memory and managing `koder/` ar
 | File a lightweight note | `references/artifacts/notes.md` |
 | File/maintain task state | `references/artifacts/tasks.md` |
 | Scratch, state handoff, evidence stores | `references/artifacts/scratch-state.md` |
+| Extract queueable slices / build a queue conveyor | `references/queues/INDEX.md`, then `references/queues/conveyor.md` |
 | File/add/refill a queue | `references/queues/INDEX.md`, then `references/queues/model.md`, `references/queues/gates.md`, `references/queues/queue-add.md` |
 | Run a queue | `references/queues/INDEX.md`, then `references/queues/model.md`, `references/queues/queue-run.md` |
 | Harnex/worker dispatch | `references/harnex/INDEX.md`, then only required harnex leaves |
@@ -43,6 +44,7 @@ Thin router for setting up durable `koder/` repo memory and managing `koder/` ar
 - Keep durable non-code operator/docs files under `koder/`; `README.md` is the normal root documentation exception. Folder-first artifacts: `koder/<type>/NNN_slug/INDEX.md`; reviews are numbered files under `koder/reviews/NNN_slug/`.
 - `INDEX.md` is canonical; `turns/` is history. Update canonical state when a turn changes decisions/status. For issues with frontmatter `converged: turns/...`, the pointed turn is the current self-contained planning source while `status` remains independent.
 - Queues contain orchestration metadata and refs, not implementation prose.
+- Queue-conveyor work lives under the queue route: mine issues for safe mechanical slices, write queueable plans, pack compatible queues, and keep active implementation ownership non-overlapping.
 - Harnex briefs must be bounded; use live harnex/repo docs over cached examples.
 - Every intentional `koder/` state transition gets a grepable `state:` commit by default; use selected-path commits so unrelated dirty/staged work is not swept in.
 - `koder/STATE.md` is session handoff, not the `state:` commit ledger; update it at init, close, explicit handoff requests, or external-origin filings.

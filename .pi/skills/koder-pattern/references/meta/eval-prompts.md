@@ -1,6 +1,6 @@
 ---
 title: Koder Pattern Eval Prompts
-updated: 2026-06-11
+updated: 2026-06-20
 ---
 
 # Koder Pattern Eval Prompts
@@ -31,25 +31,31 @@ This global install is visible to model invocation. Natural-language setup/artif
 
    Expected: load queue router/model/gates/add; inspect source plan; create/update `koder/queue/.../INDEX.md` with thin entries and gates.
 
-4. **Review filing**
+4. **Queue conveyor extraction**
+
+   > /skill:koder-pattern extract queueable slices from Issue 455 and prepare the next safe queue while Queue 006 is running.
+
+   Expected: load queue router and `references/queues/conveyor.md`; classify safe slices vs human gates/red risks; write/update thin source plans when needed; pack only sequentially compatible non-overlapping queue entries with a completion contract.
+
+5. **Review filing**
 
    > /skill:koder-pattern write a code review artifact for Plan 410. Verdict needs fixes; cite the cache header gaps.
 
    Expected: load review leaf; write numbered review file under `koder/reviews/...`; include verdict, findings, evidence, verification.
 
-5. **Research/analysis filing**
+6. **Research/analysis filing**
 
    > /skill:koder-pattern turn this benchmark audit into an analysis artifact and file follow-up issues only for actionable gaps.
 
    Expected: load analysis leaf; create `koder/analysis/.../INDEX.md`; separate evidence/recommendation/follow-ups.
 
-6. **Harnex-backed queue work**
+7. **Harnex-backed queue work**
 
    > /skill:koder-pattern run Queue 006 with harnex-chain entries, carrying queue metadata into dispatch summaries.
 
    Expected: load queue-run plus harnex refs; enforce brief bounds; dispatch/monitor with metadata; update queue run log.
 
-7. **External issue into dirty repo**
+8. **External issue into dirty repo**
 
    > /skill:koder-pattern file an issue in ../target from this repo. Target has unrelated dirty code; preserve it.
 
@@ -94,6 +100,7 @@ This global install is visible to model invocation. Natural-language setup/artif
 - [ ] New artifacts have stable paths and frontmatter.
 - [ ] Source-of-truth hierarchy is respected: live repo conventions beat cached refs.
 - [ ] Queue entries reference source artifacts instead of duplicating implementation detail.
+- [ ] Queue-conveyor work separates safe automatable slices from human-gated decisions, checks overlap with active work, and includes completion contracts.
 - [ ] Harnex dispatches include bounded briefs, metadata, monitoring, and stop/closeout rules.
 - [ ] Reviews include verdict, prioritized findings, passing checks, and verification.
 - [ ] Plans include one capability, defers/non-goals, validation, and stop rules.
