@@ -1,6 +1,6 @@
 ---
 title: Koder Queue Run Workflow
-updated: 2026-06-05
+updated: 2026-06-20
 ---
 
 # Koder Queue Run Workflow
@@ -14,25 +14,29 @@ Before running entries, determine:
 - target duration and closeout reserve;
 - autonomy level and forbidden risks;
 - active/ready queue batch;
-- whether each entry should be direct, review-only, harnex-light, harnex-chain, or another repo-local mode.
+- completion contract: done state, timebox gate, continuation policy, and early-stop consent;
+- whether each entry should be direct, review-only, harnex-light, harnex-chain, or another repo-local mode;
+- whether release/deploy/peer mutation is explicitly allowed after full drain and final validation.
 
 ## Execution loop
 
 1. Read repo instructions, `koder/STATE.md`, active queue, and recent run log.
-2. Pick the first eligible `queued` entry under current constraints.
-3. Mark the batch `active` and the entry `running`; add a short tick/run-log intent if the repo uses one.
-4. Execute according to entry mode:
+2. Verify the queue completion contract. If it is missing for an unattended/away-window run, pause and add/refill instead of launching.
+3. Pick the first eligible `queued` entry under current constraints.
+4. Mark the batch `active` and the entry `running`; add a short tick/run-log intent if the repo uses one.
+5. Execute according to entry mode:
    - `docs-direct` / `direct` for small green work;
    - `review-only` for existing diffs/artifacts;
    - `harnex-light` or `harnex-chain` for larger, riskier, or blind-orchestrated work.
-5. For harnex entries, read `references/harnex/INDEX.md` and generate a bounded task brief with queue metadata.
-6. Run the entry validation command or require worker proof, according to the queue contract.
-7. Commit green checkpoints if the repo workflow expects commits.
-8. Mark entry `done`, `blocked`, or `skipped` with evidence in the run log.
-9. Continue to the next eligible entry; a green checkpoint is not a stop condition.
-10. If blocked, stop/park the worker, record the shortest actionable blocker, and continue.
-11. If the batch drains before closeout reserve, inspect the next ready batch or run a small queue-add refill pass.
-12. During closeout reserve, stop starting new implementation entries and update queue/status/handoff.
+6. For harnex entries, read `references/harnex/INDEX.md` and generate a bounded task brief with queue metadata.
+7. Run the entry validation command or require worker proof, according to the queue contract.
+8. Commit green checkpoints if the repo workflow expects commits.
+9. Mark entry `done`, `blocked`, or `skipped` with evidence in the run log.
+10. Continue to the next eligible entry. A green checkpoint, plan completion, or primary-entry drain is not a stop condition unless `early_stop_consent` says so.
+11. If blocked, stop/park the worker, record the shortest actionable blocker, and continue.
+12. If the batch drains before closeout reserve, follow `continuation_policy`: overflow, next compatible ready queue, refill pass, final validation, or explicit stop.
+13. If release/deploy was explicitly approved, do it only after all eligible work drains or the timebox reaches closeout and final validation passes.
+14. During closeout reserve, stop starting new implementation entries and update queue/status/handoff.
 
 ## Block rules
 
@@ -40,19 +44,21 @@ Never wait unattended on one blocked entry. If an entry exceeds its max estimate
 
 ## Blind orchestrator rule
 
-A queue runner manages state and routing, not huge implementation context.
+A queue runner manages state and routing, not huge implementation context. Blind means blind to implementation detail, not blind to process.
 
 It may read:
 
 - queue metadata and run log;
 - `STATE.md` and tick/handoff notes;
-- worker summaries, review verdicts, changed-path lists, and test output.
+- worker summaries, review verdicts, changed-path lists, and test output;
+- active refs/files/dependencies, validation status, commit state, release/deploy permissions, and blockers.
 
 It should avoid reading:
 
 - large implementation diffs;
 - generated source files from workers;
-- full transcripts/prompts.
+- full transcripts/prompts;
+- implementation reasoning that should be captured by tests, review verdicts, or source artifacts.
 
 If implementation judgment is needed, dispatch a review or mark the entry too risky for blind queue execution.
 
@@ -61,6 +67,7 @@ If implementation judgment is needed, dispatch a review or mark the entry too ri
 A drained or paused queue should leave:
 
 - current queue entry statuses;
+- whether the user-visible done state completed or only queue entries drained;
 - validation commands and pass/fail evidence;
 - links to commits/reviews/issues filed;
 - unresolved blockers and next actions;

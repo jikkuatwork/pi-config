@@ -1,5 +1,5 @@
 ---
-updated_at: "18 Jun 2026 | 10:20 PM IST"
+updated_at: "20 Jun 2026 | 08:08 PM IST"
 ---
 
 # Koder State
@@ -12,10 +12,11 @@ updated_at: "18 Jun 2026 | 10:20 PM IST"
 - `koder-pattern` scaffold templates are named `SKILL.md.template` so pi does not discover nested live skills, while init still writes target `koder/skills/{open,close}/SKILL.md`.
 - External Holm filing created Issue 003 to compare DocFlow with `koder-pattern` and decide what to import/adapt.
 - Imported `ui-ux-pro-max` as a docs-only local pi skill optimized for BFBB/Holm/Zippy UI work; Python/CLI/scripts/data/install cruft was intentionally omitted.
+- `koder-pattern` queue docs now encode the queue-conveyor lesson: build/refill multiple compatible queues while human judgment is present, require completion contracts, and keep blind orchestration process-aware.
 
 ## Present
 
-- This close commits the new `.pi/skills/ui-ux-pro-max/` skill plus this handoff update; branch `master` should be clean afterward.
+- This session commits `koder-pattern` queue-conveyor docs plus this handoff update; branch `master` should be clean afterward.
 - Local skill convention remains: one discoverable top-level `SKILL.md` per skill, frontmatter-only by default, with flat references unless a folder is justified.
 - `koder-pattern` already documents `koder/notes/` as lightweight durable memory; no new inbox/messages artifact exists.
 - Session brainstorm favored a minimal cross-repo extension: file ordinary notes in the target repo (`file a note in holm`), include origin metadata for external notes, and add a `koder/STATE.md` pointer only when the user asks for handoff/next-agent visibility.

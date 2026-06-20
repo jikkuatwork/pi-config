@@ -6,6 +6,6 @@ metadata:
   references:
     index: references/INDEX.md
   tags: [koder, durable-memory, state, artifacts]
-  updated_at: "2026-06-13"
+  updated_at: "2026-06-20"
   status: reviewed
 ---
