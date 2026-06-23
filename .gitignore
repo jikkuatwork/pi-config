@@ -1,1 +1,3 @@
 koder/scratch
+extension-experiments/*/node_modules/
+extension-experiments/*/.devtools/

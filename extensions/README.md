@@ -16,6 +16,10 @@ This directory is the source-of-truth for global pi extensions on this machine.
 - `footer-highlights.ts` - replaces the footer with colorized stats so cost and context usage are easier to scan.
 - `hide-clone-autocomplete.ts` - removes the built-in `/clone` command from slash autocomplete so `/skill:close` is easier to complete.
 
+## Optional experiments
+
+Symlink-gated experimental extensions live in `../extension-experiments/` instead of this auto-loaded directory. Enable one by symlinking it into `~/.pi/agent/extensions/`, then `/reload`; disable it by removing that symlink.
+
 ## Notes
 
 - Vim quick-switch config file format example: `extensions/vim-model-switch.example.json`

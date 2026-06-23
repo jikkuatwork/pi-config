@@ -1,0 +1,11 @@
+{
+  "name": "pi-gopls-mcp-experiment",
+  "private": true,
+  "type": "module",
+  "pi": {
+    "extensions": ["./index.ts"]
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "latest"
+  }
+}
