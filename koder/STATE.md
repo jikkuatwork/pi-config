@@ -1,5 +1,5 @@
 ---
-updated_at: "23 Jun 2026 | 07:27 AM IST"
+updated_at: "23 Jun 2026 | 01:56 PM IST"
 ---
 
 # Koder State
@@ -9,24 +9,23 @@ updated_at: "23 Jun 2026 | 07:27 AM IST"
 - Session handoff open/close flow is active; `koder/STATE.md` remains source-of-truth.
 - `state:` commits are the semantic movement ledger; `koder/STATE.md` is only session handoff.
 - Local `.pi/skills/*/SKILL.md` files use frontmatter-only tiny front doors with `metadata.references.index` routers.
-- `koder-pattern` scaffold templates are named `SKILL.md.template` so pi does not discover nested live skills, while init still writes target `koder/skills/{open,close}/SKILL.md`.
-- External Holm filing created Issue 003 to compare DocFlow with `koder-pattern` and decide what to import/adapt.
-- Imported `ui-ux-pro-max` as a docs-only local pi skill optimized for BFBB/Holm/Zippy UI work; Python/CLI/scripts/data/install cruft was intentionally omitted.
-- `koder-pattern` queue docs now encode the queue-conveyor lesson: build/refill multiple compatible queues while human judgment is present, require completion contracts, and keep blind orchestration process-aware.
-- `koder-pattern` now has `references/queues/conveyor.md` as the explicit route for mining issues/plans into queueable slices, queue-shaped plans, compatible queues, and refills.
+- `koder-pattern` has a queue-conveyor route at `references/queues/conveyor.md` for mining issues/plans into queueable slices, queue-shaped plans, compatible queues, and refills.
+- Imported `ui-ux-pro-max` as a docs-only local pi skill optimized for BFBB/Holm/Zippy UI work.
+- Added a symlink-gated zero-repo `gopls-mcp` Pi experiment; `/gopls-mcp-status` validates against `gopls v0.22.0` in Pi JSON mode.
+- Checked `/home/glasscube/dotfiles/codex-modes.zsh` for Foundry/Codex wiring: it has ChatGPT subscription + Azure modes only, while `/home/glasscube/dotfiles/pi-modes.zsh` contains Foundry ZYT/`FOUNDRY_API_KEY` support.
 
 ## Present
 
-- Added a zero-repo `gopls-mcp` Pi experiment for Go semantic tooling. Source lives at `extension-experiments/gopls-mcp/`; runtime binary/cache lives at `~/.pi/agent/devtools/gopls-mcp/`.
-- Global extension loading is now symlink-gated: `~/.pi/agent/settings.json` has `"extensions": []`, and Pi auto-loads only selected symlinks in `~/.pi/agent/extensions/`.
-- Active symlinks now include the standard local extensions (`vim`, footer, mode status, Azure retry normalizer, hide clone autocomplete) plus `gopls-mcp`.
-- `gopls-mcp` validation passed through Pi JSON mode: `/gopls-mcp-status` connects to `gopls v0.22.0` and lists MCP tools.
-- Repo has no root test/build harness; validation remains docs/manual plus targeted pi CLI probes.
+- Branch `master` is clean except this close-session `koder/STATE.md` update before commit.
+- `codex-modes.zsh` has no `foundry`, `FOUNDRY_API_KEY`, `codex-foundry`, or `cx-foundry` matches, so `codex-foundry` will not work from that file yet.
+- Global extension loading is symlink-gated via `~/.pi/agent/settings.json` with active local extension symlinks plus `gopls-mcp`.
+- Repo has no root test/build harness; validation remains docs/manual plus targeted file, grep, and pi CLI probes.
 
 ## Future
 
+- If requested, add a Codex Foundry mode/function to `/home/glasscube/dotfiles/codex-modes.zsh` that uses `FOUNDRY_API_KEY` and the Foundry base URL without copying secrets into dotfiles.
 - Use `/reload` or restart Pi after enabling/disabling extension symlinks; current already-running sessions may not see newly registered tools until reload.
 - Trial `gopls_*` tools only as optional backend/dev assistance; the experiment intentionally does not expose upstream `go_rename_symbol` yet.
 - If the experiment sticks, decide whether to promote it from `extension-experiments/` to a normal extension or keep it symlink-gated.
-- If implementing the cross-repo note idea later, update `koder-pattern` docs minimally: ownership rule, external-note fields, and handoff visibility rule; avoid adding `koder/inbox/` unless repeated pain proves it needed.
+- If implementing cross-repo notes later, update `koder-pattern` docs minimally: ownership rule, external-note fields, and handoff visibility rule.
 - Analyze DocFlow via Issue 003 before importing/adapting productization ideas into `koder-pattern`.
