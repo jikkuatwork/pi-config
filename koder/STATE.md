@@ -1,5 +1,5 @@
 ---
-updated_at: "20 Jun 2026 | 08:14 PM IST"
+updated_at: "23 Jun 2026 | 07:27 AM IST"
 ---
 
 # Koder State
@@ -17,17 +17,16 @@ updated_at: "20 Jun 2026 | 08:14 PM IST"
 
 ## Present
 
-- This session commits the explicit `koder-pattern` queue conveyor sub-route plus this handoff update; branch `master` should be clean afterward.
-- Local skill convention remains: one discoverable top-level `SKILL.md` per skill, frontmatter-only by default, with flat references unless a folder is justified.
-- `koder-pattern` already documents `koder/notes/` as lightweight durable memory; no new inbox/messages artifact exists.
-- Session brainstorm favored a minimal cross-repo extension: file ordinary notes in the target repo (`file a note in holm`), include origin metadata for external notes, and add a `koder/STATE.md` pointer only when the user asks for handoff/next-agent visibility.
-- Repo has no root test/build harness; validation is docs/manual plus targeted script/YAML/pi CLI probes.
-- `ui-ux-pro-max` import validation passed: one discoverable `SKILL.md`, no executable files, no secrets; grep hits are provenance/negative-rule false positives.
+- Added a zero-repo `gopls-mcp` Pi experiment for Go semantic tooling. Source lives at `extension-experiments/gopls-mcp/`; runtime binary/cache lives at `~/.pi/agent/devtools/gopls-mcp/`.
+- Global extension loading is now symlink-gated: `~/.pi/agent/settings.json` has `"extensions": []`, and Pi auto-loads only selected symlinks in `~/.pi/agent/extensions/`.
+- Active symlinks now include the standard local extensions (`vim`, footer, mode status, Azure retry normalizer, hide clone autocomplete) plus `gopls-mcp`.
+- `gopls-mcp` validation passed through Pi JSON mode: `/gopls-mcp-status` connects to `gopls v0.22.0` and lists MCP tools.
+- Repo has no root test/build harness; validation remains docs/manual plus targeted pi CLI probes.
 
 ## Future
 
-- If implementing the cross-repo note idea, update `koder-pattern` docs minimally: ownership rule, external-note fields, and handoff visibility rule; avoid adding `koder/inbox/` unless repeated pain proves it needed.
-- Add trigger wording/examples for `file a note in <repo>`, `leave a note for <repo>`, and handoff variants that also update target `STATE.md`.
+- Use `/reload` or restart Pi after enabling/disabling extension symlinks; current already-running sessions may not see newly registered tools until reload.
+- Trial `gopls_*` tools only as optional backend/dev assistance; the experiment intentionally does not expose upstream `go_rename_symbol` yet.
+- If the experiment sticks, decide whether to promote it from `extension-experiments/` to a normal extension or keep it symlink-gated.
+- If implementing the cross-repo note idea later, update `koder-pattern` docs minimally: ownership rule, external-note fields, and handoff visibility rule; avoid adding `koder/inbox/` unless repeated pain proves it needed.
 - Analyze DocFlow via Issue 003 before importing/adapting productization ideas into `koder-pattern`.
-- In future Holm/other repo sessions, use `koder-pattern`'s conveyor route for “extract queueable pieces,” “build queueable slices,” and “prepare/refill safe queues.”
-- Reload/restart pi after local skill changes so updated triggers and frontmatter are discovered, including the queue-conveyor route.
