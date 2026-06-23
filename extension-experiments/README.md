@@ -1,6 +1,8 @@
 # Extension experiments
 
-Optional Pi extensions live here when they need source control but should not be loaded just because `~/Projects/pi/extensions` is configured globally.
+Optional Pi extensions live here when they need source control but should not be enabled by default.
+
+Pi loads selected extensions from symlinks in the global auto-discovery directory, not by loading this source directory directly.
 
 Enable an experiment by symlinking it into Pi's global auto-discovery directory:
 

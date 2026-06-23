@@ -5,8 +5,12 @@ This directory is the source-of-truth for global pi extensions on this machine.
 ## Workflow
 
 - Edit extensions here (versioned in git).
-- Pi loads this directory via `~/.pi/agent/settings.json`:
-  - `"extensions": ["/home/glasscube/Projects/pi/extensions"]`
+- Pi does **not** load this source directory directly from `~/.pi/agent/settings.json`.
+- Pi auto-loads only selected symlinks in `~/.pi/agent/extensions/`.
+- Enable an extension by symlinking it into the global folder:
+  - `ln -sfn ~/Projects/pi/extensions/<name>.ts ~/.pi/agent/extensions/<name>.ts`
+- Disable it by removing only the symlink:
+  - `rm ~/.pi/agent/extensions/<name>.ts`
 - Reload in pi with `/reload` (or restart pi).
 
 ## Included extensions
