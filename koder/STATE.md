@@ -1,31 +1,28 @@
 ---
-updated_at: "23 Jun 2026 | 01:56 PM IST"
+updated_at: "29 Jun 2026 | 09:29 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
-- Session handoff open/close flow is active; `koder/STATE.md` remains source-of-truth.
-- `state:` commits are the semantic movement ledger; `koder/STATE.md` is only session handoff.
-- Local `.pi/skills/*/SKILL.md` files use frontmatter-only tiny front doors with `metadata.references.index` routers.
-- `koder-pattern` has a queue-conveyor route at `references/queues/conveyor.md` for mining issues/plans into queueable slices, queue-shaped plans, compatible queues, and refills.
-- Imported `ui-ux-pro-max` as a docs-only local pi skill optimized for BFBB/Holm/Zippy UI work.
-- Added a symlink-gated zero-repo `gopls-mcp` Pi experiment; `/gopls-mcp-status` validates against `gopls v0.22.0` in Pi JSON mode.
-- Checked `/home/glasscube/dotfiles/codex-modes.zsh` for Foundry/Codex wiring: it has ChatGPT subscription + Azure modes only, while `/home/glasscube/dotfiles/pi-modes.zsh` contains Foundry ZYT/`FOUNDRY_API_KEY` support.
+- Session handoff open/close flow is active; `koder/STATE.md` remains source-of-truth, while grepable `state:` commits are the semantic movement ledger.
+- Local `.pi/skills/*/SKILL.md` files use tiny front doors with `metadata.references.index` routers.
+- Added reviewed `speak` skill (`fb349aa`) with `agent-speak` helper; symlinked globally for Pi/Agents/Claude/Codex and removed Holm's repo-local `scripts/speak.sh` in Holm commit `bcad749f`.
+- Added reviewed docs-only `council` skill (`9402fef`) adapted from `0xNyk/council-of-high-intelligence`; it is a transparent single-agent simulated council and omits upstream installers/scripts/provider calls.
+- Prior durable skill/workflow context remains: `koder-pattern` queue-conveyor route, `ui-ux-pro-max`, symlink-gated `gopls-mcp`, and Codex Foundry wiring gap noted in dotfiles.
 
 ## Present
 
-- Branch `master` is clean except this close-session `koder/STATE.md` update before commit.
-- `codex-modes.zsh` has no `foundry`, `FOUNDRY_API_KEY`, `codex-foundry`, or `cx-foundry` matches, so `codex-foundry` will not work from that file yet.
-- Global extension loading is symlink-gated via `~/.pi/agent/settings.json` with active local extension symlinks plus `gopls-mcp`.
-- Repo has no root test/build harness; validation remains docs/manual plus targeted file, grep, and pi CLI probes.
+- Branch `master` is clean at close after this handoff commit.
+- Global council symlinks currently exist for `~/.pi/agent/skills/council` and `~/.claude/skills/council`; speak symlinks exist for `~/.pi/agent`, `~/.agents`, `~/.claude`, and `~/.codex` plus `~/.local/bin/agent-speak`.
+- Repo has no root test/build harness; validation is docs/manual plus targeted scans, shell syntax checks, grep checks, and pi reload probes.
+- `codex-modes.zsh` still has no `foundry`, `FOUNDRY_API_KEY`, `codex-foundry`, or `cx-foundry` matches; Pi modes do contain Foundry support.
 
 ## Future
 
-- If requested, add a Codex Foundry mode/function to `/home/glasscube/dotfiles/codex-modes.zsh` that uses `FOUNDRY_API_KEY` and the Foundry base URL without copying secrets into dotfiles.
-- Use `/reload` or restart Pi after enabling/disabling extension symlinks; current already-running sessions may not see newly registered tools until reload.
-- Trial `gopls_*` tools only as optional backend/dev assistance; the experiment intentionally does not expose upstream `go_rename_symbol` yet.
-- If the experiment sticks, decide whether to promote it from `extension-experiments/` to a normal extension or keep it symlink-gated.
+- Reload/restart existing agent sessions after skill changes so new/changed global skills are discovered.
+- If requested, add Codex Foundry mode/function to `/home/glasscube/dotfiles/codex-modes.zsh` using `FOUNDRY_API_KEY` without copying secrets.
+- If desired, add council symlinks for `~/.agents/skills/council` and `~/.codex/skills/council` to mirror speak's full cross-harness wiring.
+- Trial `gopls_*` tools only as optional backend/dev assistance; decide later whether to promote the experiment from `extension-experiments/`.
 - If implementing cross-repo notes later, update `koder-pattern` docs minimally: ownership rule, external-note fields, and handoff visibility rule.
-- Analyze DocFlow via Issue 003 before importing/adapting productization ideas into `koder-pattern`.
