@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# agent-speak — short local TTS status notifications for agent workflows.
+# Usage: agent-speak "Tests passed. Queue entry two is committed."
+
+set -uo pipefail
+
+warn() {
+  if [[ "${AGENT_SPEAK_QUIET:-0}" != "1" ]]; then
+    printf 'agent-speak: %s\n' "$*" >&2
+  fi
+}
+
+if [[ $# -eq 0 ]]; then
+  warn 'usage: agent-speak "message"'
+  exit 2
+fi
+
+TEXT="$*"
+if [[ -z "${TEXT//[[:space:]]/}" ]]; then
+  exit 0
+fi
+
+CATTERY_BIN="${AGENT_SPEAK_CATTERY:-cattery}"
+PLAYER_BIN="${AGENT_SPEAK_PLAYER:-play}"
+VOICE="${AGENT_SPEAK_VOICE:-4}"
+SPEED="${AGENT_SPEAK_SPEED:-1.15}"
+
+if ! command -v "$CATTERY_BIN" >/dev/null 2>&1; then
+  warn "missing TTS command: $CATTERY_BIN"
+  exit 0
+fi
+
+if ! command -v "$PLAYER_BIN" >/dev/null 2>&1; then
+  warn "missing audio player: $PLAYER_BIN"
+  exit 0
+fi
+
+OUT="$(mktemp -t agent-speak.XXXXXX.wav)" || exit 0
+cleanup_pending=1
+cleanup() {
+  if [[ "${cleanup_pending:-0}" == "1" ]]; then
+    rm -f "$OUT"
+  fi
+}
+trap cleanup EXIT
+
+if ! "$CATTERY_BIN" tts --voice "$VOICE" --speed "$SPEED" -o "$OUT" "$TEXT" >/dev/null 2>&1; then
+  # Older/local cattery builds may have carried an undocumented `speak` alias.
+  if ! "$CATTERY_BIN" speak --voice "$VOICE" --speed "$SPEED" -o "$OUT" "$TEXT" >/dev/null 2>&1; then
+    warn 'TTS generation failed'
+    exit 0
+  fi
+fi
+
+cleanup_pending=0
+if command -v setsid >/dev/null 2>&1; then
+  ( setsid "$PLAYER_BIN" "$OUT" </dev/null >/dev/null 2>&1; rm -f "$OUT" ) &
+else
+  ( "$PLAYER_BIN" "$OUT" </dev/null >/dev/null 2>&1; rm -f "$OUT" ) &
+fi
+disown 2>/dev/null || true
