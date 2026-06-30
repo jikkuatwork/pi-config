@@ -1,6 +1,6 @@
 ---
 title: Koder State Commit Protocol
-updated: 2026-06-11
+updated: 2026-06-30
 ---
 
 # Koder State Commit Protocol
@@ -21,7 +21,7 @@ Commit these with `state:`:
 
 - initializing the koder scaffold;
 - updating `koder/STATE.md` during close;
-- filing an issue/plan/review/research/note/task/queue artifact;
+- filing a proposal/issue/plan/review/research/note/task/queue artifact;
 - changing artifact status or acceptance/resolution state;
 - filing into this repo from another repo/session;
 - durable queue/harnex run-log movement.

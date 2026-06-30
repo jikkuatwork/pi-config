@@ -1,6 +1,6 @@
 ---
 title: Koder Pattern Router
-updated: 2026-06-20
+updated: 2026-06-30
 ---
 
 # Koder Pattern Router
@@ -23,6 +23,7 @@ Thin router for setting up durable `koder/` repo memory and managing `koder/` ar
 | State commit ledger, dirty repo guardrails, commit body schemas | `references/shared/state-commit-protocol.md` |
 | Safety, validators, manual quality checks | `references/shared/safety-validation.md` |
 | Unsure which artifact type fits | `references/artifacts/INDEX.md` |
+| File/update a proposal or RFC | `references/artifacts/proposals.md`, then `references/shared/state-commit-protocol.md` |
 | File/update an issue | `references/artifacts/issues.md`, then `references/shared/state-commit-protocol.md` |
 | File/update a plan | `references/artifacts/plans.md` |
 | File/update a review verdict | `references/artifacts/reviews.md` |
@@ -41,7 +42,7 @@ Thin router for setting up durable `koder/` repo memory and managing `koder/` ar
 ## Defaults
 
 - Setup is a thin, conservative scaffold: `koder/AGENTS.md`, `koder/STATE.md`, `koder/issues/`, `koder/skills/{open,close}/`, plus safe symlink adapters. It initializes git if needed and commits created scaffold paths with `state: init - koder pattern scaffold` unless explicitly told not to commit.
-- Keep durable non-code operator/docs files under `koder/`; `README.md` is the normal root documentation exception. Folder-first artifacts: `koder/<type>/NNN_slug/INDEX.md`; reviews are numbered files under `koder/reviews/NNN_slug/`.
+- Keep durable non-code operator/docs files under `koder/`; `README.md` is the normal root documentation exception. Folder-first artifacts: `koder/<type>/NNN_slug/INDEX.md`; reviews are numbered files under `koder/reviews/NNN_slug/`. Use `koder/proposals/` for RFC-scale ideas that should converge before issues/plans are extracted.
 - `INDEX.md` is canonical; `turns/` is history. Update canonical state when a turn changes decisions/status. For issues with frontmatter `converged: turns/...`, the pointed turn is the current self-contained planning source while `status` remains independent.
 - Queues contain orchestration metadata and refs, not implementation prose.
 - Queue-conveyor work lives under the queue route: mine issues for safe mechanical slices, write queueable plans, pack compatible queues, and keep active implementation ownership non-overlapping.

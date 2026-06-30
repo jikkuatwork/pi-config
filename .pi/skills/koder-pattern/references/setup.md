@@ -1,6 +1,6 @@
 ---
 title: Koder Pattern Setup
-updated: 2026-06-11
+updated: 2026-06-30
 ---
 
 # Koder Pattern Setup
@@ -16,7 +16,7 @@ Read `references/shared/state-commit-protocol.md` before overriding commit behav
 - Durable non-code agent/operator files belong under `koder/`.
 - Root `AGENTS.md`/`CLAUDE.md` and agent skill folders should be symlinks/adapters to `koder/` when the target paths are absent.
 - `README.md` is the root documentation exception because GitHub/repo hosts render it directly; prefer other durable docs under `koder/docs/` unless live project conventions differ.
-- Create artifact directories lazily. Do not create `plans/`, `reviews/`, `research/`, `analysis/`, `notes/`, `tasks/`, `queues/`, or `scratch/` during thin init unless explicitly requested.
+- Create artifact directories lazily. Do not create `proposals/`, `plans/`, `reviews/`, `research/`, `analysis/`, `notes/`, `tasks/`, `queues/`, or `scratch/` during thin init unless explicitly requested.
 
 ## 1. Inspect before writing
 
@@ -150,7 +150,7 @@ If the script cannot run, manually create the same thin scaffold and make a stat
    ## Future
 
    - Use `open` at session start and `close` at session end.
-   - Add plans, reviews, research, notes, tasks, queues, or scratch areas only when work needs durable records.
+   - Add proposals, plans, reviews, research, notes, tasks, queues, or scratch areas only when work needs durable records.
    ```
 4. Create symlinks only when targets are absent:
    ```bash

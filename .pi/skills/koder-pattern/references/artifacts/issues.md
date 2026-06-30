@@ -1,11 +1,11 @@
 ---
 title: Koder Issues
-updated: 2026-06-12
+updated: 2026-06-30
 ---
 
 # Koder Issues
 
-Use an issue when there is a problem, opportunity, design decision, audit finding, or follow-up that needs durable tracking.
+Use an issue when there is a problem, opportunity, design decision, audit finding, or follow-up that needs durable tracking. If the idea is RFC-scale and should converge before work is split, file a proposal first and extract issues from it later.
 
 Creating or materially updating an issue is a `koder/` state transition. Follow `references/shared/state-commit-protocol.md` unless the user explicitly says not to commit. This does not automatically mean editing `koder/STATE.md`; ordinary in-session issue changes are recorded in the issue artifact and `state:` commit, then summarized in `koder/STATE.md` at close if needed.
 

@@ -1,6 +1,6 @@
 ---
 title: Koder Artifact Model
-updated: 2026-06-12
+updated: 2026-06-30
 ---
 
 # Koder Artifact Model
@@ -13,7 +13,7 @@ Use when path shape, numbering, source-of-truth, turns, or statuses are relevant
 
 ## Operator/doc placement
 
-- Keep durable non-code agent/operator files under `koder/`: state, issues, plans, reviews, research, notes, queues, scratch, local skills, and operator docs.
+- Keep durable non-code agent/operator files under `koder/`: state, proposals, issues, plans, reviews, research, notes, queues, scratch, local skills, and operator docs.
 - Root `AGENTS.md`, `CLAUDE.md`, `.pi/skills/*`, `.claude/skills/*`, and `.agents/skills/*` should be symlinks/adapters to `koder/` when possible.
 - `README.md` is the normal root documentation exception because repository hosts render it directly.
 - Prefer other durable docs under `koder/docs/` unless live project conventions require another location.
@@ -35,6 +35,8 @@ koder/<type>/NNN_short_slug/
 ```
 
 `turns/` is optional. Use it when the user asks for a turn or when multi-agent discussion would clutter canonical state. Do not create it for routine edits. For issues whose discussion converges into a substantially different planning source, keep the original issue body intact and point frontmatter `converged:` at the self-contained turn.
+
+Proposals use the same folder-first shape and may use `turns/` for discussion/history while `INDEX.md` remains the canonical current RFC/spec. Use proposals for cross-cutting ideas that should converge before issues/plans are extracted.
 
 Reviews usually do **not** use `INDEX.md`; the numbered review files are the artifact and function as turns:
 
@@ -74,6 +76,7 @@ When the user says “do one turn in #NNN,” first identify the artifact type a
 - if it has no `turns/` but the user explicitly asks for a turn, create `turns/` and append the next actor file;
 - review artifacts use the next numbered review file in `koder/reviews/<slug>/` instead of `turns/`;
 - queue artifacts may use `Run Log` for mechanical status and `turns/` for substantive discussion/design;
+- proposal artifacts may use `turns/` for discussion/history, but canonical decisions and open questions stay in `INDEX.md`;
 - plan artifacts may use `turns/` for convergence discussion, but canonical implementation instructions stay in `INDEX.md`.
 
 If the turn changes canonical decisions/status, update `INDEX.md` too. Issue convergence is the exception: when the original issue body should remain as submitted, update only frontmatter `converged:` and put the current self-contained specification in the pointed turn.
@@ -82,6 +85,7 @@ If the turn changes canonical decisions/status, update `INDEX.md` too. Issue con
 
 Keep status values boring and finite. Follow repo-local validators when they differ.
 
+- Proposal: `draft`, `converged`, `split`, `superseded`.
 - Issue: `open`, `resolved`, `blocked`, `backlog`, `superseded`.
 - Plan: `draft`, `in_review`, `approved`, `implemented`, `superseded`.
 - Queue batch: `ready`, `active`, `drained`, `paused`, `archived`.

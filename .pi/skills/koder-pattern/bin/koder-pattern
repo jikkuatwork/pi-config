@@ -124,7 +124,7 @@ updated_at: "$stamp"
 ## Future
 
 - Use \`open\` at session start and \`close\` at session end.
-- Add plans, reviews, research, notes, tasks, queues, or scratch areas only when work needs durable records.
+- Add proposals, plans, reviews, research, notes, tasks, queues, or scratch areas only when work needs durable records.
 EOF
   say "created $dest"
   record_path "$dest"

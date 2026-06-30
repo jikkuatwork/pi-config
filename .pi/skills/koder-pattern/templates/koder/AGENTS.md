@@ -30,8 +30,9 @@ This repo uses the koder pattern for durable agent handoff and project memory.
 ## Koder artifacts
 
 - Minimum scaffold: `koder/STATE.md`, `koder/issues/`, `koder/skills/open/`, and `koder/skills/close/`.
-- Create other artifact directories only when needed, for example `koder/plans/`, `koder/reviews/`, `koder/research/`, `koder/analysis/`, `koder/notes/`, `koder/tasks/`, `koder/queues/`, or `koder/scratch/`.
+- Create other artifact directories only when needed, for example `koder/proposals/`, `koder/plans/`, `koder/reviews/`, `koder/research/`, `koder/analysis/`, `koder/notes/`, `koder/tasks/`, `koder/queues/`, or `koder/scratch/`.
 - Use folder-first artifacts for durable records: `koder/<type>/NNN_short_slug/INDEX.md`.
+- Use `koder/proposals/` for RFC-scale ideas that should converge before issues/plans are extracted.
 - Treat `INDEX.md` as canonical current state; use `turns/` only for optional discussion/history.
 - Scan existing artifacts before choosing the next number; each artifact type has its own sequence.
 - Prefer source links, file paths, command names, commits, and concise evidence over copied detail.
