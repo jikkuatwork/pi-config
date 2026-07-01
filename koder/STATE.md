@@ -1,5 +1,5 @@
 ---
-updated_at: "29 Jun 2026 | 09:29 PM IST"
+updated_at: "01 Jul 2026 | 11:19 AM IST"
 ---
 
 # Koder State
@@ -8,21 +8,21 @@ updated_at: "29 Jun 2026 | 09:29 PM IST"
 
 - Session handoff open/close flow is active; `koder/STATE.md` remains source-of-truth, while grepable `state:` commits are the semantic movement ledger.
 - Local `.pi/skills/*/SKILL.md` files use tiny front doors with `metadata.references.index` routers.
-- Added reviewed `speak` skill (`fb349aa`) with `agent-speak` helper; symlinked globally for Pi/Agents/Claude/Codex and removed Holm's repo-local `scripts/speak.sh` in Holm commit `bcad749f`.
-- Added reviewed docs-only `council` skill (`9402fef`) adapted from `0xNyk/council-of-high-intelligence`; it is a transparent single-agent simulated council and omits upstream installers/scripts/provider calls.
-- Prior durable skill/workflow context remains: `koder-pattern` queue-conveyor route, `ui-ux-pro-max`, symlink-gated `gopls-mcp`, and Codex Foundry wiring gap noted in dotfiles.
+- Added reviewed `speak` skill (`fb349aa`) with `agent-speak` helper and reviewed docs-only `council` skill (`9402fef`); global speak symlinks are broadly wired, council is wired for Pi/Claude.
+- Added Codex Foundry/ZYT shell mode in `/home/glasscube/dotfiles/codex-modes.zsh` (`3ebeab0`): `cx-zyt` and `cx-zyt-status` use `FOUNDRY_API_KEY`, `.foundry-zyt.env`, provider `foundry-zyt`, Responses wire API, default `gpt-5.5:xhigh`, and a separate `$HOME/.codex-zyt`.
+- Prior durable skill/workflow context remains: `koder-pattern` queue-conveyor route, `ui-ux-pro-max`, symlink-gated `gopls-mcp`, and optional cross-repo notes doc cleanup.
 
 ## Present
 
-- Branch `master` is clean at close after this handoff commit.
-- Global council symlinks currently exist for `~/.pi/agent/skills/council` and `~/.claude/skills/council`; speak symlinks exist for `~/.pi/agent`, `~/.agents`, `~/.claude`, and `~/.codex` plus `~/.local/bin/agent-speak`.
-- Repo has no root test/build harness; validation is docs/manual plus targeted scans, shell syntax checks, grep checks, and pi reload probes.
-- `codex-modes.zsh` still has no `foundry`, `FOUNDRY_API_KEY`, `codex-foundry`, or `cx-foundry` matches; Pi modes do contain Foundry support.
+- Pi repo branch `master` is clean at close after this handoff commit.
+- Dotfiles repo intentionally committed only `codex-modes.zsh`; pre-existing unrelated `/home/glasscube/dotfiles/claude-modes.zsh` dirty work remains uncommitted and untouched.
+- Repo has no root test/build harness; validation is docs/manual plus targeted scans, shell syntax checks, grep checks, and pi/codex probes.
+- `cx()` in dotfiles still points to `cx-azure`; `cx-zyt` is available explicitly after shell reload/source.
 
 ## Future
 
-- Reload/restart existing agent sessions after skill changes so new/changed global skills are discovered.
-- If requested, add Codex Foundry mode/function to `/home/glasscube/dotfiles/codex-modes.zsh` using `FOUNDRY_API_KEY` without copying secrets.
+- Reload/source dotfiles shell config before using `cx-zyt`; run a real Foundry/ZYT Codex call only if desired and with key/cost awareness.
+- If desired, switch `cx()` default from `cx-azure` to `cx-zyt`.
 - If desired, add council symlinks for `~/.agents/skills/council` and `~/.codex/skills/council` to mirror speak's full cross-harness wiring.
 - Trial `gopls_*` tools only as optional backend/dev assistance; decide later whether to promote the experiment from `extension-experiments/`.
 - If implementing cross-repo notes later, update `koder-pattern` docs minimally: ownership rule, external-note fields, and handoff visibility rule.
