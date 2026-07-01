@@ -15,12 +15,14 @@ To file a queue is to create or update a `koder/queue/NNN_slug/INDEX.md` batch w
 - progress accounting for issues touched and slices queued/drained when useful;
 - ordered entries that reference existing issues/plans/tasks;
 - estimate, risk, ambiguity, mode, validation, and stop rule per entry;
+- optional estimate/actual telemetry in `koder/queue/log.jsonl` for calibration;
 - a concise run log as entries are consumed.
 
 ## Path
 
 ```text
 koder/queue/NNN_short_slug/INDEX.md
+koder/queue/log.jsonl        # optional cross-queue estimate/actual ledger
 ```
 
 ## Template
@@ -97,6 +99,31 @@ Optional but recommended for broad queues. See
 | `early_stop_consent` | Whether stopping before the window/outcome is allowed. Default is not granted. |
 
 Do not summarize an underpacked queue as covering the full window. Either add overflow/next-ready work or say it will drain and stop early.
+
+## Queue estimate/actual ledger
+
+Repos may keep an append-only `koder/queue/log.jsonl` ledger to calibrate future
+queue sizing. Queue rows are human planning estimates; harnex/worker telemetry
+captures active dispatch time; the ledger joins those at queue-entry level and
+records wall-clock actuals.
+
+Recommended entry event shape:
+
+```json
+{"schema":"koder.queue.log.entry.v1","event":"entry_done","queue_id":"066","entry_id":"066-02","estimate_min":105,"predicted_wall_min":35,"actual_wall_s":1440,"harnex_active_s":1030,"status":"done"}
+```
+
+Rules:
+
+- log `entry_started` before work and `entry_done` / `entry_blocked` /
+  `entry_skipped` at entry closeout;
+- keep `estimate_min` as the queue-row nominal estimate;
+- use `predicted_wall_min` for any telemetry-calibrated forecast made at launch;
+- use `actual_wall_s` for elapsed wall-clock time including review, validation,
+  and orchestration overhead;
+- use `harnex_active_s` for summed worker dispatch duration when available;
+- do not log prompts, transcripts, secrets, credentials, private payloads, or raw
+  worker output.
 
 ## Entry fields
 

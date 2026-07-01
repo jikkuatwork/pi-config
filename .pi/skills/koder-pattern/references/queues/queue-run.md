@@ -30,14 +30,18 @@ Before running entries, determine:
    - `review-only` for existing diffs/artifacts;
    - `harnex-light` or `harnex-chain` for larger, riskier, or blind-orchestrated work.
 6. For harnex entries, read `references/harnex/INDEX.md` and generate a bounded task brief with queue metadata.
-7. Run the entry validation command or require worker proof, according to the queue contract.
-8. Commit green checkpoints if the repo workflow expects commits.
-9. Mark entry `done`, `blocked`, or `skipped` with evidence in the run log, including the slice status delta when the entry maps to a slice ledger.
-10. Continue to the next eligible entry. A green checkpoint, plan completion, or primary-entry drain is not a stop condition unless `early_stop_consent` says so.
-11. If blocked, stop/park the worker, record the shortest actionable blocker, and continue.
-12. If the batch drains before closeout reserve, follow `continuation_policy`: overflow, next compatible ready queue, refill pass, final validation, or explicit stop.
-13. If release/deploy was explicitly approved, do it only after all eligible work drains or the timebox reaches closeout and final validation passes.
-14. During closeout reserve, stop starting new implementation entries and update queue/status/handoff with both issue and slice deltas.
+7. If the repo has `koder/queue/log.jsonl` or a queue log helper, append an
+   `entry_started` record with the queue-row estimate and any calibrated wall
+   forecast.
+8. Run the entry validation command or require worker proof, according to the queue contract.
+9. Commit green checkpoints if the repo workflow expects commits.
+10. Mark entry `done`, `blocked`, or `skipped` with evidence in the run log, including the slice status delta when the entry maps to a slice ledger.
+11. Append entry actuals to `koder/queue/log.jsonl` when the repo uses the estimate/actual ledger.
+12. Continue to the next eligible entry. A green checkpoint, plan completion, or primary-entry drain is not a stop condition unless `early_stop_consent` says so.
+13. If blocked, stop/park the worker, record the shortest actionable blocker, and continue.
+14. If the batch drains before closeout reserve, follow `continuation_policy`: overflow, next compatible ready queue, refill pass, final validation, or explicit stop.
+15. If release/deploy was explicitly approved, do it only after all eligible work drains or the timebox reaches closeout and final validation passes.
+16. During closeout reserve, stop starting new implementation entries and update queue/status/handoff with both issue and slice deltas.
 
 ## Block rules
 
@@ -72,6 +76,7 @@ A drained or paused queue should leave:
 - issue delta: issues closed, advanced, moved to live-proof-only, and raw open-count change;
 - whether the user-visible done state completed or only queue entries drained;
 - validation commands and pass/fail evidence;
+- estimate/actual ledger records when the repo tracks queue calibration;
 - links to commits/reviews/issues filed;
 - unresolved blockers and next actions;
 - clean repo state or explicit dirty-work explanation.
