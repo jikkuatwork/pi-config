@@ -1,6 +1,6 @@
 ---
 title: Koder Artifact Model
-updated: 2026-06-30
+updated: 2026-07-01
 ---
 
 # Koder Artifact Model
@@ -87,6 +87,8 @@ Keep status values boring and finite. Follow repo-local validators when they dif
 
 - Proposal: `draft`, `converged`, `split`, `superseded`.
 - Issue: `open`, `resolved`, `blocked`, `backlog`, `superseded`.
+- Issue kind (optional): `slice`, `track`, `mapping`, `live-proof`. See `references/shared/slice-accounting.md`.
+- Slice ledger row (optional): `candidate`, `planned`, `queued`, `running`, `done`, `released`, `live_proven`, `blocked`, `closed`.
 - Plan: `draft`, `in_review`, `approved`, `implemented`, `superseded`.
 - Queue batch: `ready`, `active`, `drained`, `paused`, `archived`.
 - Queue entry: `candidate`, `queued`, `running`, `reviewing`, `done`, `blocked`, `skipped`.

@@ -1,6 +1,6 @@
 ---
 title: Koder Queue Run Workflow
-updated: 2026-06-20
+updated: 2026-07-01
 ---
 
 # Koder Queue Run Workflow
@@ -15,6 +15,7 @@ Before running entries, determine:
 - autonomy level and forbidden risks;
 - active/ready queue batch;
 - completion contract: done state, timebox gate, continuation policy, and early-stop consent;
+- progress accounting expectations: issues touched, slices queued, likely closures, and live-gated outcomes;
 - whether each entry should be direct, review-only, harnex-light, harnex-chain, or another repo-local mode;
 - whether release/deploy/peer mutation is explicitly allowed after full drain and final validation.
 
@@ -31,12 +32,12 @@ Before running entries, determine:
 6. For harnex entries, read `references/harnex/INDEX.md` and generate a bounded task brief with queue metadata.
 7. Run the entry validation command or require worker proof, according to the queue contract.
 8. Commit green checkpoints if the repo workflow expects commits.
-9. Mark entry `done`, `blocked`, or `skipped` with evidence in the run log.
+9. Mark entry `done`, `blocked`, or `skipped` with evidence in the run log, including the slice status delta when the entry maps to a slice ledger.
 10. Continue to the next eligible entry. A green checkpoint, plan completion, or primary-entry drain is not a stop condition unless `early_stop_consent` says so.
 11. If blocked, stop/park the worker, record the shortest actionable blocker, and continue.
 12. If the batch drains before closeout reserve, follow `continuation_policy`: overflow, next compatible ready queue, refill pass, final validation, or explicit stop.
 13. If release/deploy was explicitly approved, do it only after all eligible work drains or the timebox reaches closeout and final validation passes.
-14. During closeout reserve, stop starting new implementation entries and update queue/status/handoff.
+14. During closeout reserve, stop starting new implementation entries and update queue/status/handoff with both issue and slice deltas.
 
 ## Block rules
 
@@ -67,6 +68,8 @@ If implementation judgment is needed, dispatch a review or mark the entry too ri
 A drained or paused queue should leave:
 
 - current queue entry statuses;
+- slice delta: queued/drained/blocked/released/live-proven counts where tracked;
+- issue delta: issues closed, advanced, moved to live-proof-only, and raw open-count change;
 - whether the user-visible done state completed or only queue entries drained;
 - validation commands and pass/fail evidence;
 - links to commits/reviews/issues filed;

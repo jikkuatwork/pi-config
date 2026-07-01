@@ -1,6 +1,6 @@
 ---
 title: Koder Issues
-updated: 2026-06-30
+updated: 2026-07-01
 ---
 
 # Koder Issues
@@ -25,6 +25,7 @@ created: YYYY-MM-DD
 updated: YYYY-MM-DD
 tags: area, topic
 type: feature       # bug | feature | design | audit | analysis | docs
+issue_kind: slice   # optional: slice | track | mapping | live-proof
 context: One-line why this exists.
 converged: turns/NN_label.md  # optional: current self-contained planning source
 ---
@@ -40,6 +41,7 @@ created: YYYY-MM-DD
 updated: YYYY-MM-DD
 tags: area, topic
 type: feature
+# issue_kind: slice   # optional: slice | track | mapping | live-proof
 context: One-line why this issue exists.
 # converged: turns/NN_label.md
 ---
@@ -63,6 +65,16 @@ Optional. Use when there is a likely path but not yet a thin plan.
 - [ ] Observable condition that proves the issue is addressed.
 - [ ] Validation command, artifact, or user-facing behavior where possible.
 
+## Slice Ledger (optional for broad issues)
+
+Use only for `issue_kind: track`, `mapping`, large `live-proof` issues, or when
+raw issue count hides meaningful progress. See
+`references/shared/slice-accounting.md`.
+
+| Slice | Status | Ref | Queue | Closure gate |
+| --- | --- | --- | --- | --- |
+| First checkable seam | candidate | — | — | validation or decision needed |
+
 ## Non-Goals
 
 - What this issue explicitly does not cover.
@@ -74,6 +86,7 @@ Optional. Use when there is a likely path but not yet a thin plan.
 - Carries enough context for plan extraction.
 - Links related issues/plans/reviews when known.
 - Uses `turns/` for long discussion. When discussion materially changes the original issue, preserve the original issue body and point `converged:` at a self-contained turn.
+- For broad work, distinguish issue closure from slice progress. Add `issue_kind` and a compact `Slice Ledger` lazily instead of splitting or rewriting the whole backlog up front.
 
 ## Converged issue turns
 

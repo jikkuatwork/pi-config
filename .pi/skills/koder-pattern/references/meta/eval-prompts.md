@@ -1,6 +1,6 @@
 ---
 title: Koder Pattern Eval Prompts
-updated: 2026-06-20
+updated: 2026-07-01
 ---
 
 # Koder Pattern Eval Prompts
@@ -35,7 +35,7 @@ This global install is visible to model invocation. Natural-language setup/artif
 
    > /skill:koder-pattern extract queueable slices from Issue 455 and prepare the next safe queue while Queue 006 is running.
 
-   Expected: load queue router and `references/queues/conveyor.md`; classify safe slices vs human gates/red risks; write/update thin source plans when needed; pack only sequentially compatible non-overlapping queue entries with a completion contract.
+   Expected: load queue router and `references/queues/conveyor.md`; classify safe slices vs human gates/red risks; write/update thin source plans when needed; pack only sequentially compatible non-overlapping queue entries with a completion contract and slice/issue progress accounting when the parent issue is broad.
 
 5. **Review filing**
 
@@ -49,13 +49,19 @@ This global install is visible to model invocation. Natural-language setup/artif
 
    Expected: load analysis leaf; create `koder/analysis/.../INDEX.md`; separate evidence/recommendation/follow-ups.
 
-7. **Harnex-backed queue work**
+7. **Slice accounting for broad work**
+
+   > /skill:koder-pattern issue count is not moving; add slice ledgers/progress accounting for the next queue only, without rewriting the whole backlog.
+
+   Expected: load `references/shared/slice-accounting.md` plus queue/issue leaves; lazily add `issue_kind`, `Slice Ledger`, and queue progress accounting only to touched artifacts; report slices queued/drained/blocked separately from raw issue closure.
+
+8. **Harnex-backed queue work**
 
    > /skill:koder-pattern run Queue 006 with harnex-chain entries, carrying queue metadata into dispatch summaries.
 
    Expected: load queue-run plus harnex refs; enforce brief bounds; dispatch/monitor with metadata; update queue run log.
 
-8. **External issue into dirty repo**
+9. **External issue into dirty repo**
 
    > /skill:koder-pattern file an issue in ../target from this repo. Target has unrelated dirty code; preserve it.
 
@@ -100,7 +106,7 @@ This global install is visible to model invocation. Natural-language setup/artif
 - [ ] New artifacts have stable paths and frontmatter.
 - [ ] Source-of-truth hierarchy is respected: live repo conventions beat cached refs.
 - [ ] Queue entries reference source artifacts instead of duplicating implementation detail.
-- [ ] Queue-conveyor work separates safe automatable slices from human-gated decisions, checks overlap with active work, and includes completion contracts.
+- [ ] Queue-conveyor work separates safe automatable slices from human-gated decisions, checks overlap with active work, includes completion contracts, and reports slice movement when issue count under-represents progress.
 - [ ] Harnex dispatches include bounded briefs, metadata, monitoring, and stop/closeout rules.
 - [ ] Reviews include verdict, prioritized findings, passing checks, and verification.
 - [ ] Plans include one capability, defers/non-goals, validation, and stop rules.

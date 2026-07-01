@@ -1,6 +1,6 @@
 ---
 title: Koder Queue Gates
-updated: 2026-06-20
+updated: 2026-07-01
 ---
 
 # Koder Queue Gates
@@ -39,9 +39,10 @@ Launch is blocked for unattended or away-window queues unless the queue declares
 - `done_state`: what user-visible result should exist when the user returns;
 - `timebox_gate`: whether to stop by clock, exhaustion, validation, release, or closeout reserve;
 - `continuation_policy`: what to dispatch after primary drain, including overflow or next ready queue;
-- `early_stop_consent`: explicit permission if the queue is intentionally underpacked or allowed to stop early.
+- `early_stop_consent`: explicit permission if the queue is intentionally underpacked or allowed to stop early;
+- progress accounting for broad work: issues touched, slices queued, likely closures, and live-gated outcomes.
 
-A green checkpoint, plan completion, or primary-entry drain is not a stop condition by itself. If the target window is larger than eligible queued effort, add safe overflow/next-queue work or state clearly that the queue will drain and stop early.
+A green checkpoint, plan completion, primary-entry drain, or low raw issue-closure count is not a stop condition by itself. If the target window is larger than eligible queued effort, add safe overflow/next-queue work or state clearly that the queue will drain and stop early. If issue count will barely move, report slice movement explicitly.
 
 ## Gate failure fixes
 

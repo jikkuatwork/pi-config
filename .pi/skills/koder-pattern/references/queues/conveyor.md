@@ -1,6 +1,6 @@
 ---
 title: Koder Queue Conveyor
-updated: 2026-06-20
+updated: 2026-07-01
 ---
 
 # Koder Queue Conveyor
@@ -12,7 +12,8 @@ queue, or improve the repo's automation throughput.
 A queue conveyor separates judgment-heavy planning from execution-heavy queue
 running. Use human-present time to classify, slice, approve constraints, and
 pack compatible work. Use away/unattended time to consume already-approved
-mechanical slices quickly and safely.
+mechanical slices quickly and safely. For broad issues, count slice movement as
+well as issue closure so progress remains visible when parent issues stay open.
 
 ## Core stance
 
@@ -28,8 +29,10 @@ release/deploy permissions, blockers, and closeout evidence.
 
 ### 1. Mine
 
-Read only the source issue/plan/backlog item and nearby live queue state. Split
-work into:
+Read only the source issue/plan/backlog item and nearby live queue state. If the
+source issue is broad, classify its issue kind (`slice`, `track`, `mapping`, or
+`live-proof`) and add/update a compact `Slice Ledger` only for the seams being
+touched. Split work into:
 
 | Bucket | Meaning | Action |
 | --- | --- | --- |
@@ -50,6 +53,7 @@ artifact so a runner can execute without ordinary implementation questions.
 
 A queueable slice should include:
 
+- stable slice name or child issue ref when it belongs to a broader ledger;
 - capability statement;
 - build-on/source-drift checks;
 - TDD or validation plan;
@@ -65,7 +69,8 @@ needs a product answer, mark it human-gated instead of weakening the stop rule.
 
 ### 3. Pack
 
-Add slices to one or more compatible queues.
+Add slices to one or more compatible queues. Record `progress_accounting` or a
+`## Progress Accounting` table when the queue touches broad issues.
 
 Before packing, check overlap:
 
@@ -79,6 +84,7 @@ Before packing, check overlap:
 A packed unattended queue needs:
 
 - primary entries and overflow or next-compatible queue;
+- issue/slice impact counts when issue count alone will understate progress;
 - `completion_contract` with done state, timebox gate, continuation policy, and early-stop consent;
 - closeout reserve;
 - validation for every entry;
@@ -105,6 +111,8 @@ A refill pass should leave the next runner with one of:
 At closeout, distinguish:
 
 - queue entries drained;
+- slices drained, released, live-proven, blocked, or left queued;
+- issues advanced and issues closed;
 - user-visible done state completed;
 - release/deploy completed, if approved;
 - blockers that stopped automation;
@@ -118,9 +126,9 @@ project-specific, update the project docs or source artifacts instead.
 ### Mining table
 
 ```markdown
-| Candidate | Bucket | Source | Validation | Stop/Human Gate | Queue hint |
-| --- | --- | --- | --- | --- | --- |
-| Add CLI timeout guard | queueable-now | `koder/issues/NNN...` | `go test ...` | one call site only | 45m, yellow, low, harnex-light |
+| Candidate | Bucket | Source | Slice | Validation | Stop/Human Gate | Queue hint |
+| --- | --- | --- | --- | --- | --- | --- |
+| Add CLI timeout guard | queueable-now | `koder/issues/NNN...` | CLI timeout guard | `go test ...` | one call site only | 45m, yellow, low, harnex-light |
 ```
 
 ### Slice handoff
@@ -128,6 +136,7 @@ project-specific, update the project docs or source artifacts instead.
 ```markdown
 Queueable slice:
 - Source: `koder/plans/NNN_S01_slug/INDEX.md`
+- Slice: <stable slice name or child issue ref>
 - Capability: <one line>
 - Validation: `<commands>`
 - Stop: <exact boundary>
@@ -140,6 +149,8 @@ Queueable slice:
 ```markdown
 Conveyor result:
 - Active queue: <drained/refilled/blocked>
+- Slice delta: <queued/drained/blocked/live-gated counts>
+- Issue delta: <closed/advanced/raw-open-count change>
 - Next queue: <ready/path or none>
 - Overlap check: <clean/evidence>
 - User gates: <needed/none>

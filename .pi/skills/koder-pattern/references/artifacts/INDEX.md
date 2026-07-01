@@ -1,6 +1,6 @@
 ---
 title: Koder Artifact Router
-updated: 2026-06-30
+updated: 2026-07-01
 ---
 
 # Koder Artifact Router
@@ -13,6 +13,7 @@ Use this only when the requested artifact type is unclear. Otherwise load the le
 | --- | --- |
 | RFC-scale architecture/product/runtime idea that should converge before issue extraction | `references/artifacts/proposals.md` |
 | Problem, opportunity, decision, audit finding, durable follow-up | `references/artifacts/issues.md` |
+| Broad issue needs mapping/track/live-proof slice progress | `references/artifacts/issues.md`, then `references/shared/slice-accounting.md` |
 | Bounded implementation/investigation slice with validation | `references/artifacts/plans.md` |
 | Verdict on a plan, code, tests, or research output | `references/artifacts/reviews.md` |
 | Open-ended exploration or alternatives synthesis | `references/artifacts/research.md` |

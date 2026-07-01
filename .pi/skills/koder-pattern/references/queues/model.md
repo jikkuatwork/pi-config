@@ -1,6 +1,6 @@
 ---
 title: Koder Queue Model
-updated: 2026-06-20
+updated: 2026-07-01
 ---
 
 # Koder Queue Model
@@ -12,6 +12,7 @@ To file a queue is to create or update a `koder/queue/NNN_slug/INDEX.md` batch w
 - target window and autonomy level;
 - explicit constraints and forbidden risks;
 - a completion contract for unattended or away-window runs;
+- progress accounting for issues touched and slices queued/drained when useful;
 - ordered entries that reference existing issues/plans/tasks;
 - estimate, risk, ambiguity, mode, validation, and stop rule per entry;
 - a concise run log as entries are consumed.
@@ -39,6 +40,11 @@ completion_contract:
   timebox_gate: "Stop starting new work at closeout reserve, when exhausted, or at a named validation/release gate."
   continuation_policy: "What to run next if primary entries finish early, including overflow or the next compatible ready queue."
   early_stop_consent: "Explicit only; otherwise do not stop merely because primary entries drained."
+progress_accounting:
+  issues_touched: 0
+  slices_queued: 0
+  issues_likely_closed: 0
+  issues_moved_to_live_gate: 0
 constraints:
   no_release: true
   no_cloud_spend: true
@@ -51,6 +57,19 @@ constraints:
 ## Purpose
 
 Why this batch exists and what safe theme ties entries together.
+
+## Progress Accounting
+
+Optional but recommended for broad queues. See
+`references/shared/slice-accounting.md`.
+
+| Metric | Count |
+| --- | ---: |
+| Issues touched | 0 |
+| Slices queued | 0 |
+| Likely slices drained | 0 |
+| Likely issues closed | 0 |
+| Likely moved to live-proof-only | 0 |
 
 ## Entries
 
@@ -91,6 +110,14 @@ Do not summarize an underpacked queue as covering the full window. Either add ov
 | `Mode` | `docs-direct`, `direct`, `worker`, `review-only`, `harnex-light`, `harnex-chain`, or repo-local equivalent. |
 | `Validation` | Command or artifact check required before `done`. |
 | `Stop` | Timebox, split trigger, fallback, or approval gate. |
+
+Optional metadata for richer progress accounting:
+
+| Field | Meaning |
+| --- | --- |
+| `slice_id` | Stable short name matching the source issue `Slice Ledger`, if any. |
+| `slice_status_after_done` | Expected ledger state after this entry: `done`, `released`, `live_proven`, etc. |
+| `issue_closure_candidate` | Whether this entry can close its issue if validation passes. |
 
 ## Autonomy levels
 

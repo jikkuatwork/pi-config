@@ -1,6 +1,6 @@
 ---
 title: Koder Plans
-updated: 2026-06-05
+updated: 2026-07-01
 ---
 
 # Koder Plans
@@ -22,6 +22,7 @@ title: Short title
 issue: NNN
 type: implementation # implementation | mapping | analysis | research
 status: draft        # draft | in_review | approved | implemented | superseded
+slice_id: optional-short-slice-id
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 ---
@@ -36,6 +37,7 @@ title: Short title
 issue: NNN
 type: implementation
 status: draft
+# slice_id: optional-short-slice-id
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 ---
@@ -49,6 +51,15 @@ updated: YYYY-MM-DD
 ## Capability Statement
 
 One sentence: this plan proves/adds exactly one capability.
+
+## Slice Accounting (optional)
+
+Use when the source issue has a `Slice Ledger` or when this plan should count as
+one checkable slice in a queue closeout.
+
+- Slice: short stable name.
+- Parent seam: runtime / CLI / docs / live proof / etc.
+- Closure gate: local validation, release, live proof, or user decision.
 
 ## Triage
 
@@ -101,6 +112,7 @@ command that proves this plan
 - Captures user decisions so implementers do not re-litigate them.
 - References current issue/review/source paths instead of copying long prose.
 - Includes a stop rule for scope creep, ambiguous design, or unexpected source drift.
+- For track/mapping issues, names the slice it advances so queue closeouts can report slice deltas, not only issue-count deltas.
 
 ## Thinness checks
 
