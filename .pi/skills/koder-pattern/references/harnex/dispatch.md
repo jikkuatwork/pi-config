@@ -1,6 +1,6 @@
 ---
 title: Harnex Dispatch Shape
-updated: 2026-06-05
+updated: 2026-07-08
 ---
 
 # Harnex Dispatch Shape
@@ -73,6 +73,28 @@ Required in spirit even if exact schema differs:
 - model/effort actually used;
 - reason for model/effort;
 - validation expectation;
-- telemetry output path when supported.
+- telemetry output path when supported;
+- artifact/validation sidecar path when the live harnex version or repo wrapper supports one.
 
 Do not put secrets, full prompts, private payloads, or sensitive account identifiers in metadata.
+
+## Artifact and validation sidecars
+
+Prefer durable plain-text `koder/` artifacts as the canonical source of truth.
+When harnex or a repo wrapper supports machine-readable sidecars, use them as an
+evidence index for queue closeout and telemetry, not as a replacement for the
+plain-text issue/plan/review.
+
+A good worker contract names both outputs:
+
+```text
+Write the canonical review to `koder/reviews/NNN_slug/01_review.md`.
+Write machine-readable validation/artifact proof to `$HARNEX_ARTIFACT_REPORT_PATH`
+if that variable is set; otherwise summarize the validation commands in the
+canonical review.
+```
+
+Sidecar payloads should stay compact: status, validation commands/exit codes,
+typed finding/risk/gate summaries, evidence refs, confidence, canonical refs,
+byte size/hash where available. Never store transcripts, full prompts, secrets,
+or large private payloads in telemetry sidecars.

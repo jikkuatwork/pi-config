@@ -1,6 +1,6 @@
 ---
 title: Harnex Brief Bounds
-updated: 2026-06-05
+updated: 2026-07-08
 ---
 
 # Harnex Brief Bounds
@@ -31,6 +31,7 @@ Effort tier per phase:
 - explicit output path(s);
 - validation command(s);
 - done-marker or return contract;
+- artifact/validation sidecar path when supported, plus the canonical plain-text `koder/` output path;
 - commit policy: whether the worker should commit or leave changes unstaged;
 - forbidden actions, especially deploy/cloud/destructive/secret operations;
 - queue metadata when queue-dispatched.
