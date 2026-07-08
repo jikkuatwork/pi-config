@@ -27,7 +27,7 @@ Thin router for setting up durable `koder/` repo memory and managing `koder/` ar
 | File/update a proposal or RFC | `references/artifacts/proposals.md`, then `references/shared/state-commit-protocol.md` |
 | File/update an issue | `references/artifacts/issues.md`, then `references/shared/state-commit-protocol.md` |
 | File/update a plan | `references/artifacts/plans.md` |
-| Create/process an unblock packet for human decisions blocking queues/tasks/slices | `references/artifacts/unblock.md`, then `references/shared/state-commit-protocol.md` |
+| Ask/process inline unblock questions for human decisions blocking queues/tasks/slices | `references/artifacts/unblock.md` |
 | File/update a review verdict | `references/artifacts/reviews.md` |
 | File research | `references/artifacts/research.md` |
 | File analysis/audit/mapping | `references/artifacts/analysis.md` |
@@ -47,7 +47,7 @@ Thin router for setting up durable `koder/` repo memory and managing `koder/` ar
 - Keep durable non-code operator/docs files under `koder/`; `README.md` is the normal root documentation exception. Folder-first artifacts: `koder/<type>/NNN_slug/INDEX.md`; reviews are numbered files under `koder/reviews/NNN_slug/`. Use `koder/proposals/` for RFC-scale ideas that should converge before issues/plans are extracted.
 - `INDEX.md` is canonical; `turns/` is history. Update canonical state when a turn changes decisions/status. For issues with frontmatter `converged: turns/...`, the pointed turn is the current self-contained planning source while `status` remains independent.
 - Queues contain orchestration metadata and refs, not implementation prose.
-- Queue-conveyor work lives under the queue route: mine issues for safe mechanical slices, write queueable plans, pack compatible queues, and keep active implementation ownership non-overlapping. When human decisions block safe queue drain, create an unblock packet under `koder/unblock/NNN_slug/` with terse numbered questions and recommended option `a.` by default.
+- Queue-conveyor work lives under the queue route: mine issues for safe mechanical slices, write queueable plans, pack compatible queues, and keep active implementation ownership non-overlapping. When human decisions block safe queue drain, ask terse inline numbered questions with recommended option `a.` by default; if the user wants async replies, accept any temporary file under `koder/scratch/` and apply answers back to canonical artifacts.
 - For new issues, set `issue_kind`; legacy absence means `slice`. For ordinary `slice` issues, do not add a ledger. For broad issues, use slice accounting lazily: add `Slice Ledger` and queue slice-delta summaries only when filing/touching/closing relevant artifacts; do not mass-rewrite old backlog.
 - Harnex briefs must be bounded; use live harnex/repo docs over cached examples.
 - Every intentional `koder/` state transition gets a grepable `state:` commit by default; use selected-path commits so unrelated dirty/staged work is not swept in.

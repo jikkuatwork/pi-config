@@ -38,7 +38,7 @@ touched. Split work into:
 | --- | --- | --- |
 | `queueable-now` | Safe mechanical slice with clear validation. | Queue or write a thin executable slice. |
 | `needs-slice` | Good candidate, but source artifact lacks enough shape. | Write/update a plan slice first. |
-| `human-gated` | Product/risk/permission decision required. | Record the gate; create/update an unblock packet if it blocks the target queue/window; do not queue implementation. |
+| `human-gated` | Product/risk/permission decision required. | Record the gate; ask concise inline unblock questions if it blocks the target queue/window; do not queue implementation. |
 | `red-risk` | Release, cloud spend, destructive DB, credentials, production mutation. | Require explicit approval and constraints. |
 | `blocked` | Missing source truth, failing dependency, or unknown ownership. | Record blocker and route separately. |
 
@@ -103,7 +103,7 @@ A refill pass should leave the next runner with one of:
 
 - more eligible entries in the active queue;
 - a next compatible ready queue;
-- an unblock packet for user decisions that would make more slices queueable;
+- concise inline unblock questions for user decisions that would make more slices queueable;
 - an explicit stop because no safe work remains;
 - blockers that need human judgment.
 
@@ -164,6 +164,6 @@ Conveyor result:
 - Packing work that overlaps active implementation ownership.
 - Treating plan writing as enough for an away-window execution promise.
 - Hiding a product decision inside a “mechanical” slice.
-- Asking scattered chat questions instead of filing one answerable unblock packet when decisions block queue drain.
+- Spraying scattered one-off questions instead of batching concise inline unblock questions when decisions block queue drain.
 - Claiming completion because primary entries drained while overflow/next-ready work remains.
 - Reading worker implementation detail to compensate for weak source artifacts.

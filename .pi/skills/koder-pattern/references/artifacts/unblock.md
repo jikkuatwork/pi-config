@@ -1,17 +1,22 @@
 ---
-title: Koder Unblock Packets
+title: Koder Inline Unblock Questions
 updated: 2026-07-08
 ---
 
-# Koder Unblock Packets
+# Koder Inline Unblock Questions
 
-Unblock packets collect the human decisions that block autonomous queue drain.
-They let the user answer many decisions asynchronously while agents keep mining,
-planning, and draining safe work.
+Inline unblock questions collect only the human decisions that block safe
+queue/task/slice progress. Default to asking in the current chat. Do **not**
+create `koder/unblock/`, `INDEX.md` packet folders, or required answer files.
+
+If the user wants to answer asynchronously, let them use any temporary scratch
+file under `koder/scratch/` and tell you the path. Scratch replies are input,
+not canonical state: apply decisions back to the highest source-of-truth
+artifact such as the issue, plan, queue, proposal, review, or run log.
 
 ## Use when
 
-- The user asks for `unblock`, an unblock packet, or "what decisions do you need
+- The user asks for `unblock`, inline decisions, or "what decisions do you need
   from me?".
 - Queue mining finds `human-gated` or `red-risk` choices that prevent otherwise
   queueable slices.
@@ -25,36 +30,7 @@ planning, and draining safe work.
   artifacts.
 - The agent can choose a safe reversible default and proceed without user risk.
 - The question is really an implementation detail; encode it in the plan instead.
-- The user asked for a normal proposal/issue/plan/review, not a decision packet.
-
-## Path
-
-```text
-koder/unblock/NNN_short_slug/
-  INDEX.md       # question packet + answer/application status
-  answers.md     # optional user-filled answer file
-```
-
-Use the repo's local convention if it already has an unblock/question artifact.
-Otherwise use the folder-first shape above. Do not create `turns/` unless a
-substantial discussion needs history.
-
-## Frontmatter
-
-```yaml
----
-status: open        # open | answered | applied | closed
-created: YYYY-MM-DD
-updated: YYYY-MM-DD
-type: unblock-packet
-tags: queue, decisions
-scope: "Queue 066 / Issue 452"
-related:
-  - koder/queue/066_example/INDEX.md
-  - koder/issues/452_example/INDEX.md
-answer_file: answers.md
----
-```
+- The user asked for a normal proposal/issue/plan/review, not decisions.
 
 ## Workflow
 
@@ -66,16 +42,17 @@ possible question:
 
 | Bucket | Action |
 | --- | --- |
-| User decision required | Put in the unblock packet. |
+| User decision required | Ask inline in one compact numbered question block. |
 | Agent can decide safely | Choose the safe default; do not ask. |
 | Source missing shape | Write/update a plan or issue slice instead of asking. |
 | Red-risk permission | Ask explicitly with the safest option first. |
 | Not needed for next queues | Defer unless it blocks the target window. |
 
-### 2. Write the packet
+### 2. Ask inline
 
-Keep the packet small enough to answer quickly. Default cap: 12 questions. If
-there are more, split into multiple packets by queue/window/domain.
+Keep questions quick to answer. Default cap: 8 questions in one response. If
+there are more, split by queue/window/domain and ask the highest-throughput set
+first.
 
 Rules:
 
@@ -85,33 +62,47 @@ Rules:
 - Put the recommended option first as `a.` whenever there is a recommendation.
 - If the safest recommendation is "do not proceed", put that as `a.`.
 - Use 2-4 options. Add free-text allowance instead of inventing many variants.
-- Keep option labels stable after publishing; if a question changes materially,
-  append a new question or create a v2 packet.
+- Keep option labels stable during the exchange; if a question changes
+  materially, ask a new follow-up question.
 - Never hide risk in a recommended option.
+- End with a low-friction reply hint: `Reply like: 1a 2c 3 defer` or `put
+  answers in koder/scratch/<tmp>.md and tell me the path`.
 
 Question format:
 
 ```markdown
+Unblock questions for <scope>:
+
 1. Should queue runners continue into low-risk overflow work after primary entries drain?
    Unblocks: `koder/queue/066_example/INDEX.md` continuation policy.
    Recommended: a
    a. Yes, continue into pre-approved overflow until the timebox gate. // maximizes safe throughput
    b. No, stop when primary entries drain. // safest but leaves idle time
    c. Only continue if the tree is clean and tests are green. // conservative middle path
+
+Reply like: `1a`, or put answers in `koder/scratch/tmp-unblock.md` and tell me the path.
 ```
 
 If no option is clearly recommended, write `Recommended: none` and list the
 safest/reversible option first.
 
-### 3. Create an answer file
+### 3. Optional scratch reply
 
-Create `answers.md` beside the packet when useful. Keep it easy for the user to
-edit:
+Do not create a durable question artifact. If the user wants a file, use a flat,
+temporary scratch file only when useful, for example:
+
+```text
+koder/scratch/tmp-unblock.md
+koder/scratch/YYYY-MM-DD-unblock-answers.md
+```
+
+The user may create the scratch file themselves. If you create it at their
+request, keep it minimal:
 
 ```markdown
-# Answers for Unblock NNN
+# Temporary unblock answers
 
-Reply format examples:
+Reply examples:
 
 1. a
 2. c
@@ -130,34 +121,22 @@ or `blocked`. Do not require perfect syntax.
 
 ### 4. Process answers
 
-When an answer file or chat reply appears:
+When a chat reply or scratch file appears:
 
-1. Parse leniently: `1. a`, `1) a`, `1: a`, and `1 a` all count.
-2. For letter answers, record the selected option in the packet's Decision Log.
-3. For free text, preserve the user's wording and translate it into the nearest
-   operational decision.
-4. For `need more explanation`, add a short explanation and keep that question
-   open or emit a smaller follow-up packet.
+1. Parse leniently: `1a`, `1. a`, `1) a`, `1: a`, and `1 a` all count.
+2. For letter answers, record the selected operational decision in your working
+   notes and in any affected canonical artifact.
+3. For free text, preserve the user's wording when updating artifacts and
+   translate it into the nearest operational decision.
+4. For `need more explanation`, answer briefly and keep only that question open.
 5. For `defer` / `blocked`, mark the affected slice/queue entry blocked and
    route around it.
-6. Update the highest source-of-truth artifact: issue, plan, queue, proposal, or
-   review. The unblock packet is a decision capture tool, not the permanent
-   home for implementation detail.
+6. Update the highest source-of-truth artifact: issue, plan, queue, proposal,
+   review, or run log. Scratch/chat is not permanent implementation truth.
 7. Move newly unblocked slices into plans/queues when safe.
-8. Mark the packet `applied` once source artifacts are updated; mark `closed`
-   when no open questions remain.
+8. Report the applied decisions and remaining blockers.
 
-Decision log format:
-
-```markdown
-## Decision Log
-
-| # | Answer | Decision | Applied refs | Status |
-| ---: | --- | --- | --- | --- |
-| 1 | a | Continue into pre-approved overflow until timebox gate. | `koder/queue/066_example/INDEX.md` | applied |
-```
-
-### 5. Suggest queue movement
+### 5. Report queue movement
 
 After applying answers, report the queue impact:
 
@@ -170,82 +149,36 @@ Unblock result:
 - Next action: refill Queue 066 overflow or build Queue 067.
 ```
 
-## Output contract for a new packet
+## Output contract for new questions
 
-A new packet should contain:
+A new inline unblock request should output only:
 
-1. Frontmatter.
-2. `## Purpose` — one sentence.
-3. `## How to answer` — answer file path and accepted syntax.
-4. `## Questions` — numbered, terse, options labeled `a`, `b`, `c`.
-5. `## Decision Log` — initially `Pending`.
-6. `## Application Notes` — source artifacts to update after answers.
-
-Template:
-
-~~~markdown
----
-status: open
-created: YYYY-MM-DD
-updated: YYYY-MM-DD
-type: unblock-packet
-tags: queue, decisions
-scope: "<scope>"
-related: []
-answer_file: answers.md
----
-
-# Unblock NNN: Short title
-
-## Purpose
-
-Collect decisions needed to unblock <queue/window/slices>.
-
-## How to answer
-
-Edit `answers.md` or reply in chat:
-
-```text
-1. a
-2. c
-3. need more explanation
-```
-
-## Questions
-
-1. <terse question>
-   Unblocks: `<path>` / <slice>
-   Recommended: a
-   a. <recommended option>. // why
-   b. <other option>. // tradeoff
-
-## Decision Log
-
-Pending.
-
-## Application Notes
-
-- After answers, update <source artifact paths>.
-~~~
+1. A short scope line.
+2. Numbered terse questions with options labeled `a`, `b`, `c`.
+3. `Unblocks:` refs for each question.
+4. `Recommended:` labels when useful.
+5. A single reply hint that accepts chat or any `koder/scratch/` temp file.
 
 ## Quality bar
 
-Good unblock packets:
+Good inline unblock questions:
 
 - reduce future human interruptions;
 - maximize safe queue drain and reversible defaults;
 - ask only decisions the agent cannot safely make;
 - make the recommended path obvious without hiding risk;
-- keep user answers durable and easy to apply;
+- let the user answer in chat or a scratch temp file;
 - convert answers into source artifact updates, not chat-only memory.
 
 ## Anti-patterns
 
+- Creating `koder/unblock/` or an `INDEX.md`/`answers.md` packet folder.
+- Requiring the user to edit an answer file before progress can continue.
 - Asking the user to debug implementation details.
 - Asking questions already answered in repo artifacts.
 - Bundling multiple decisions in one numbered question.
 - Leaving recommendations implicit or burying them after lower-value options.
-- Publishing 30-question packets instead of splitting by queue/window.
-- Treating the unblock packet as canonical after applying decisions elsewhere.
+- Publishing 30-question walls instead of splitting by queue/window.
+- Treating chat or scratch as canonical after applying decisions elsewhere.
 - Blocking all work because one red-risk decision is unresolved; route around it
   and keep safe queues draining.

@@ -13,7 +13,7 @@ Use when path shape, numbering, source-of-truth, turns, or statuses are relevant
 
 ## Operator/doc placement
 
-- Keep durable non-code agent/operator files under `koder/`: state, proposals, issues, plans, reviews, unblock packets, research, notes, queues, scratch, local skills, and operator docs.
+- Keep durable non-code agent/operator files under `koder/`: state, proposals, issues, plans, reviews, research, notes, queues, scratch, local skills, and operator docs.
 - Root `AGENTS.md`, `CLAUDE.md`, `.pi/skills/*`, `.claude/skills/*`, and `.agents/skills/*` should be symlinks/adapters to `koder/` when possible.
 - `README.md` is the normal root documentation exception because repository hosts render it directly.
 - Prefer other durable docs under `koder/docs/` unless live project conventions require another location.
@@ -38,7 +38,7 @@ koder/<type>/NNN_short_slug/
 
 Proposals use the same folder-first shape and may use `turns/` for discussion/history while `INDEX.md` remains the canonical current RFC/spec. Use proposals for cross-cutting ideas that should converge before issues/plans are extracted.
 
-Unblock packets use the same folder-first shape under `koder/unblock/NNN_slug/`. `INDEX.md` is the question packet and decision/application log; `answers.md` may be a user-filled sidecar. After answers are applied, update the source issue/plan/queue/proposal as canonical truth.
+Inline unblock questions are not durable artifacts and should not create `koder/unblock/`. If the user answers through a temporary file, keep it flat under `koder/scratch/` and apply the decision back to the source issue/plan/queue/proposal/review as canonical truth.
 
 Reviews usually do **not** use `INDEX.md`; the numbered review files are the artifact and function as turns:
 
@@ -92,7 +92,6 @@ Keep status values boring and finite. Follow repo-local validators when they dif
 - Issue kind: `slice`, `track`, `mapping`, `live-proof`. New issues should declare it; legacy absence means `slice`. See `references/shared/slice-accounting.md`.
 - Slice ledger row (broad issues only): `candidate`, `planned`, `queued`, `running`, `done`, `released`, `live_proven`, `blocked`, `closed`.
 - Plan: `draft`, `in_review`, `approved`, `implemented`, `superseded`.
-- Unblock packet: `open`, `answered`, `applied`, `closed`.
 - Queue batch: `ready`, `active`, `drained`, `paused`, `archived`.
 - Queue entry: `candidate`, `queued`, `running`, `reviewing`, `done`, `blocked`, `skipped`.
 - Research/analysis: `open`, `active`/`in_progress`, `complete`/`completed`, `archived`.

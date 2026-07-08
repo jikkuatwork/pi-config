@@ -61,11 +61,11 @@ This global install is visible to model invocation. Natural-language setup/artif
 
    Expected: load queue-run plus harnex refs; enforce brief bounds; dispatch/monitor with metadata; update queue run log.
 
-9. **Unblock packet**
+9. **Inline unblock questions**
 
    > /skill:koder-pattern unblock Queue 066: ask me only the decisions needed so agents can keep draining safe slices overnight.
 
-   Expected: load `references/artifacts/unblock.md`; inspect queue/source artifacts; create `koder/unblock/NNN_slug/INDEX.md` and optional `answers.md` with terse numbered questions, `Unblocks:` refs, recommended option first as `a.`, stable labels, and no discoverable implementation-detail questions.
+   Expected: load `references/artifacts/unblock.md`; inspect queue/source artifacts; ask terse inline numbered questions in chat with `Unblocks:` refs, recommended option first as `a.`, stable labels, no discoverable implementation-detail questions, and a low-friction reply hint that also accepts any temp file under `koder/scratch/`. Do not create `koder/unblock/`.
 
 10. **External issue into dirty repo**
 
@@ -113,7 +113,7 @@ This global install is visible to model invocation. Natural-language setup/artif
 - [ ] Source-of-truth hierarchy is respected: live repo conventions beat cached refs.
 - [ ] Queue entries reference source artifacts instead of duplicating implementation detail.
 - [ ] Queue-conveyor work separates safe automatable slices from human-gated decisions, checks overlap with active work, includes completion contracts, and reports slice movement when issue count under-represents progress.
-- [ ] Unblock packets ask only human decisions that block queue/task/slice progress, put the recommended option first as `a.` by default, include answer-file instructions, and apply answers back to canonical issue/plan/queue artifacts.
+- [ ] Inline unblock questions ask only human decisions that block queue/task/slice progress, put the recommended option first as `a.` by default, allow chat or `koder/scratch/` temp-file answers, avoid `koder/unblock/`, and apply answers back to canonical issue/plan/queue artifacts.
 - [ ] Harnex dispatches include bounded briefs, metadata, monitoring, and stop/closeout rules.
 - [ ] Reviews include verdict, prioritized findings, passing checks, and verification.
 - [ ] Plans include one capability, defers/non-goals, validation, and stop rules.
