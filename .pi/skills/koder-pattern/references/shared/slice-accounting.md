@@ -1,14 +1,16 @@
 ---
 title: Koder Slice Accounting
-updated: 2026-07-01
+updated: 2026-07-08
 ---
 
 # Koder Slice Accounting
 
-Use this when raw issue counts are too coarse to show progress. Large repos often
-have umbrella issues that require many plans, live proofs, or child issues; a
-queue can drain substantial work while the open issue count barely moves. Slice
-accounting makes that movement visible without pretending parent issues are done.
+Use this to make issue work countable without forcing every issue to carry a
+ledger. New issues should declare an `issue_kind`; ordinary `slice` issues count
+as one checkable slice. Large repos often have umbrella issues that require many
+plans, live proofs, or child issues; a queue can drain substantial work while the
+open issue count barely moves. Slice accounting makes that movement visible
+without pretending parent issues are done.
 
 ## Core terms
 
@@ -24,7 +26,10 @@ A slice should be small enough that a runner can say `done`, `blocked`, or
 
 ## Issue kinds
 
-Add `issue_kind` only when it helps. Do not rewrite old issues just to add it.
+Add `issue_kind` on every new issue. Legacy issues without it are treated as
+`issue_kind: slice`; do not rewrite old issues just to add it. For
+`issue_kind: slice`, the issue itself is the slice and its acceptance criteria are
+the closure gate, so a `Slice Ledger` is usually unnecessary.
 
 | `issue_kind` | Use for | Closure expectation |
 | --- | --- | --- |
@@ -33,22 +38,23 @@ Add `issue_kind` only when it helps. Do not rewrite old issues just to add it.
 | `mapping` | Decomposition issue whose job is to create child issues/plans/slices. | Closes when the map and traceability are complete, not when children ship. |
 | `live-proof` | Bug/fix issue where source can land locally but closure needs release/live evidence. | Closes after source proof plus the required live/release proof. |
 
-Optional frontmatter:
+Frontmatter:
 
 ```yaml
-issue_kind: track     # slice | track | mapping | live-proof
-parent: 123           # for child/slice issues
-slice_count: 12       # optional current ledger total
-slices_done: 5        # optional current done count
+issue_kind: slice     # required for new issues; legacy absence means slice
+parent: 123           # optional: for child/slice issues
+slice_count: 12       # optional: current broad-issue ledger total
+slices_done: 5        # optional: current broad-issue done count
 ```
 
-These fields are hints for humans and queue builders. The canonical truth remains
-the issue body, slice ledger, and evidence.
+`slice_count` and `slices_done` are hints for humans and queue builders. The
+canonical truth remains the issue body, slice ledger, and evidence.
 
 ## Slice Ledger section
 
 For `track`, `mapping`, or large `live-proof` issues, add a concise ledger near
-Acceptance Criteria or Current Status:
+Acceptance Criteria or Current Status. Do not add a ceremonial one-row ledger to
+ordinary `slice` issues unless they grow beyond one checkable unit:
 
 ```markdown
 ## Slice Ledger
@@ -130,12 +136,13 @@ For each broad issue touched, prefer a before/after row:
 
 Do not mass-rewrite existing backlog. Apply slice accounting lazily when:
 
-- filing a new broad issue;
+- filing any new issue: set `issue_kind`;
+- filing a new broad issue: add a `Slice Ledger`;
 - touching a broad issue for a queue;
 - closing or reconciling a queue;
 - extracting child issues from a mapping issue;
 - the user asks why open issue count is not moving.
 
 If old issue format conflicts with this guide, preserve the old artifact and add
-a small `## Slice Ledger` or `## Progress Accounting` section rather than
-rewriting history.
+only the smallest needed `issue_kind`, `## Slice Ledger`, or
+`## Progress Accounting` section rather than rewriting history.

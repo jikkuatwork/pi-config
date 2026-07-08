@@ -1,6 +1,6 @@
 ---
 title: Koder Issues
-updated: 2026-07-01
+updated: 2026-07-08
 ---
 
 # Koder Issues
@@ -25,7 +25,7 @@ created: YYYY-MM-DD
 updated: YYYY-MM-DD
 tags: area, topic
 type: feature       # bug | feature | design | audit | analysis | docs
-issue_kind: slice   # optional: slice | track | mapping | live-proof
+issue_kind: slice   # required for new issues; legacy absence means slice
 context: One-line why this exists.
 converged: turns/NN_label.md  # optional: current self-contained planning source
 ---
@@ -41,7 +41,7 @@ created: YYYY-MM-DD
 updated: YYYY-MM-DD
 tags: area, topic
 type: feature
-# issue_kind: slice   # optional: slice | track | mapping | live-proof
+issue_kind: slice   # slice | track | mapping | live-proof
 context: One-line why this issue exists.
 # converged: turns/NN_label.md
 ---
@@ -67,8 +67,9 @@ Optional. Use when there is a likely path but not yet a thin plan.
 
 ## Slice Ledger (optional for broad issues)
 
-Use only for `issue_kind: track`, `mapping`, large `live-proof` issues, or when
-raw issue count hides meaningful progress. See
+Do not add this for ordinary `issue_kind: slice` issues; the issue itself is
+one checkable slice. Use only for `issue_kind: track`, `mapping`, large
+`live-proof` issues, or when raw issue count hides meaningful progress. See
 `references/shared/slice-accounting.md`.
 
 | Slice | Status | Ref | Queue | Closure gate |
@@ -80,13 +81,23 @@ raw issue count hides meaningful progress. See
 - What this issue explicitly does not cover.
 ```
 
+## Issue kind policy
+
+- Every new issue should declare `issue_kind`.
+- Legacy issues missing `issue_kind` are treated as `issue_kind: slice`.
+- For `issue_kind: slice`, the issue itself is one checkable slice. Its
+  acceptance criteria are the closure gate; do not add a one-row `Slice Ledger`
+  unless the issue later grows.
+- For `issue_kind: track`, `mapping`, or broad `live-proof`, add a compact
+  `Slice Ledger` and optional `slice_count` / `slices_done` hints.
+
 ## Good issue qualities
 
 - Focused on **why** and **what success means**, not detailed implementation.
 - Carries enough context for plan extraction.
 - Links related issues/plans/reviews when known.
 - Uses `turns/` for long discussion. When discussion materially changes the original issue, preserve the original issue body and point `converged:` at a self-contained turn.
-- For broad work, distinguish issue closure from slice progress. Add `issue_kind` and a compact `Slice Ledger` lazily instead of splitting or rewriting the whole backlog up front.
+- For broad work, distinguish issue closure from slice progress. Add a compact `Slice Ledger` lazily instead of splitting or rewriting the whole backlog up front.
 
 ## Converged issue turns
 

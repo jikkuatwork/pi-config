@@ -1,6 +1,6 @@
 ---
 title: Koder Pattern Router
-updated: 2026-07-01
+updated: 2026-07-08
 ---
 
 # Koder Pattern Router
@@ -47,7 +47,7 @@ Thin router for setting up durable `koder/` repo memory and managing `koder/` ar
 - `INDEX.md` is canonical; `turns/` is history. Update canonical state when a turn changes decisions/status. For issues with frontmatter `converged: turns/...`, the pointed turn is the current self-contained planning source while `status` remains independent.
 - Queues contain orchestration metadata and refs, not implementation prose.
 - Queue-conveyor work lives under the queue route: mine issues for safe mechanical slices, write queueable plans, pack compatible queues, and keep active implementation ownership non-overlapping.
-- For broad issues, use slice accounting lazily: add `issue_kind`, `Slice Ledger`, and queue slice-delta summaries only when filing/touching/closing relevant artifacts; do not mass-rewrite old backlog.
+- For new issues, set `issue_kind`; legacy absence means `slice`. For ordinary `slice` issues, do not add a ledger. For broad issues, use slice accounting lazily: add `Slice Ledger` and queue slice-delta summaries only when filing/touching/closing relevant artifacts; do not mass-rewrite old backlog.
 - Harnex briefs must be bounded; use live harnex/repo docs over cached examples.
 - Every intentional `koder/` state transition gets a grepable `state:` commit by default; use selected-path commits so unrelated dirty/staged work is not swept in.
 - `koder/STATE.md` is session handoff, not the `state:` commit ledger; update it at init, close, explicit handoff requests, or external-origin filings.
