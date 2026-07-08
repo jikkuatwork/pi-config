@@ -1,6 +1,6 @@
 ---
 title: Koder Pattern Eval Prompts
-updated: 2026-07-01
+updated: 2026-07-08
 ---
 
 # Koder Pattern Eval Prompts
@@ -61,7 +61,13 @@ This global install is visible to model invocation. Natural-language setup/artif
 
    Expected: load queue-run plus harnex refs; enforce brief bounds; dispatch/monitor with metadata; update queue run log.
 
-9. **External issue into dirty repo**
+9. **Unblock packet**
+
+   > /skill:koder-pattern unblock Queue 066: ask me only the decisions needed so agents can keep draining safe slices overnight.
+
+   Expected: load `references/artifacts/unblock.md`; inspect queue/source artifacts; create `koder/unblock/NNN_slug/INDEX.md` and optional `answers.md` with terse numbered questions, `Unblocks:` refs, recommended option first as `a.`, stable labels, and no discoverable implementation-detail questions.
+
+10. **External issue into dirty repo**
 
    > /skill:koder-pattern file an issue in ../target from this repo. Target has unrelated dirty code; preserve it.
 
@@ -107,6 +113,7 @@ This global install is visible to model invocation. Natural-language setup/artif
 - [ ] Source-of-truth hierarchy is respected: live repo conventions beat cached refs.
 - [ ] Queue entries reference source artifacts instead of duplicating implementation detail.
 - [ ] Queue-conveyor work separates safe automatable slices from human-gated decisions, checks overlap with active work, includes completion contracts, and reports slice movement when issue count under-represents progress.
+- [ ] Unblock packets ask only human decisions that block queue/task/slice progress, put the recommended option first as `a.` by default, include answer-file instructions, and apply answers back to canonical issue/plan/queue artifacts.
 - [ ] Harnex dispatches include bounded briefs, metadata, monitoring, and stop/closeout rules.
 - [ ] Reviews include verdict, prioritized findings, passing checks, and verification.
 - [ ] Plans include one capability, defers/non-goals, validation, and stop rules.
