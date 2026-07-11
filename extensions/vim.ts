@@ -8,7 +8,7 @@
  * - hjkl, 0/$, gg/G, w/b/e/E, f/F: navigation in normal mode
  * - x, r, s/S, yy (copies clipboard), dd, p/P, dG/dgg/d{motion}, c{motion}: basic edits
  * - ctrl+c, ctrl+d, etc. work in both modes
- * - normal mode quick switch: tab (cycle model), ↑/↓ (thinking level), enter (apply), esc (cancel), i (cancel + insert)
+ * - normal mode quick switch: tab (cycle GPT-5.6 model), ↑/↓ (effort), enter (apply), esc (cancel), i (cancel + insert)
  */
 
 import { spawnSync } from "node:child_process";
@@ -53,7 +53,7 @@ type QuickSwitcherCallbacks = {
 const ALL_THINKING_LEVELS: ThinkingLevel[] = ["off", "minimal", "low", "medium", "high", "xhigh", "max"];
 const DEFAULT_QUICK_SWITCH_CONFIG: QuickSwitchConfig = {
 	modelPatterns: ["foundry-zyt/gpt-5.6-sol", "foundry-zyt/gpt-5.6-terra", "foundry-zyt/gpt-5.6-luna"],
-	thinkingLevels: ["max"],
+	thinkingLevels: [...ALL_THINKING_LEVELS],
 	showProviderInLabel: false,
 };
 
@@ -444,7 +444,7 @@ class ModalEditor extends CustomEditor {
 		if (this.quickSwitch.active) {
 			const selectedModel = this.currentQuickSwitchModel();
 			const thinkingLevel = this.quickSwitch.thinkingLevels[this.quickSwitch.thinkingIndex] ?? "high";
-			const details = selectedModel ? ` ${selectedModel.label} [${thinkingLevel}] ` : " model unavailable ";
+			const details = selectedModel ? ` ${selectedModel.label} [effort: ${thinkingLevel}] ` : " model unavailable ";
 			const detailsStyled = `${FG_BLUE}${details}${ANSI_RESET}`;
 			const detailsClipped = truncateToWidth(detailsStyled, width, "");
 			const detailsPad = " ".repeat(Math.max(0, width - visibleWidth(detailsClipped)));
