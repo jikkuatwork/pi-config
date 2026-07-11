@@ -7,7 +7,7 @@ updated: 2026-06-30
 
 Use when the user asks to set up, install, initialize, or bootstrap the koder pattern in a repository/folder.
 
-Goal: leave the target with the thinnest durable operator scaffold: `koder/AGENTS.md`, `koder/STATE.md`, `koder/issues/`, `koder/skills/open/`, `koder/skills/close/`, plus root/agent-surface symlinks where safe. By default, setup is a state transition: initialize git if needed and commit created scaffold paths with `state: init - koder pattern scaffold`.
+Goal: leave the target with the thinnest durable operator scaffold: `koder/AGENTS.md`, `koder/STATE.md`, `koder/issues/`, and complete `koder/skills/{open,close}/` front doors with routed references and Holm-style pretty-print formats, plus root/agent-surface symlinks where safe. By default, setup is a state transition: initialize git if needed and commit created scaffold paths with `state: init - koder pattern scaffold`.
 
 Read `references/shared/state-commit-protocol.md` before overriding commit behavior.
 
@@ -81,8 +81,10 @@ koder/
   skills/
     open/
       SKILL.md
+      references/{INDEX,FORMAT}.md
     close/
       SKILL.md
+      references/{INDEX,FORMAT}.md
 .pi/
   skills/
     open -> ../../koder/skills/open
@@ -123,13 +125,15 @@ If the script cannot run, manually create the same thin scaffold and make a stat
 
 1. Create directories:
    ```bash
-   mkdir -p koder/issues koder/skills/open koder/skills/close
+   mkdir -p koder/issues koder/skills/open/references koder/skills/close/references
    touch koder/issues/.gitkeep
    ```
 2. Copy templates from the skill root:
    - `templates/koder/AGENTS.md` -> `koder/AGENTS.md`
    - `templates/koder/skills/open/SKILL.md.template` -> `koder/skills/open/SKILL.md`
+   - `templates/koder/skills/open/references/{INDEX,FORMAT}.md` -> `koder/skills/open/references/`
    - `templates/koder/skills/close/SKILL.md.template` -> `koder/skills/close/SKILL.md`
+   - `templates/koder/skills/close/references/{INDEX,FORMAT}.md` -> `koder/skills/close/references/`
 3. Create `koder/STATE.md` with India-time frontmatter and concise handoff sections:
    ```markdown
    ---
@@ -171,8 +175,8 @@ If the script cannot run, manually create the same thin scaffold and make a stat
 6. Initialize git if needed and commit only scaffold paths. Write the default commit body shown above to `/tmp/koder-state-init-message`; include optional adapter paths only if you created them:
    ```bash
    git rev-parse --is-inside-work-tree >/dev/null 2>&1 || git init
-   git add -- AGENTS.md koder/AGENTS.md koder/STATE.md koder/issues/.gitkeep koder/skills/open/SKILL.md koder/skills/close/SKILL.md .pi/skills/open .pi/skills/close
-   git commit -F /tmp/koder-state-init-message -- AGENTS.md koder/AGENTS.md koder/STATE.md koder/issues/.gitkeep koder/skills/open/SKILL.md koder/skills/close/SKILL.md .pi/skills/open .pi/skills/close
+   git add -- AGENTS.md koder/AGENTS.md koder/STATE.md koder/issues/.gitkeep koder/skills/open koder/skills/close .pi/skills/open .pi/skills/close
+   git commit -F /tmp/koder-state-init-message -- AGENTS.md koder/AGENTS.md koder/STATE.md koder/issues/.gitkeep koder/skills/open koder/skills/close .pi/skills/open .pi/skills/close
    ```
 
 If `AGENTS.md`, `CLAUDE.md`, or skill paths already exist, do not replace them. Report that a manual merge/pointer may be needed. If the user explicitly says not to commit, skip step 6 and report the uncommitted scaffold paths.
@@ -199,7 +203,8 @@ If `AGENTS.md`, `CLAUDE.md`, or skill paths already exist, do not replace them. 
 - `koder/AGENTS.md` exists and states the koder placement/safety/state-commit policy.
 - `koder/STATE.md` has `updated_at`, Past/Present/Future, and is under 100 lines.
 - `koder/issues/` exists; other artifact dirs are absent unless requested or pre-existing.
-- `koder/skills/open/SKILL.md` and `koder/skills/close/SKILL.md` exist and have valid frontmatter.
+- `koder/skills/open/SKILL.md` and `koder/skills/close/SKILL.md` exist and have valid frontmatter-only routers.
+- Both skills have `references/INDEX.md` workflow instructions and `references/FORMAT.md` pretty-print output contracts.
 - Root `AGENTS.md` is a symlink to `koder/AGENTS.md`, or an existing root file was preserved and a merge need was reported.
 - Requested agent surfaces symlink `open` and `close` to `koder/skills/*`.
 - A `state: init - koder pattern scaffold` commit exists unless `--no-commit`/explicit no-commit was used or no scaffold paths changed.

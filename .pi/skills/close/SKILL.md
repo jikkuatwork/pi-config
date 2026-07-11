@@ -1,11 +1,12 @@
 ---
 name: close
-description: "End-of-session hand-off for this repo. Use when finishing work; updates koder/STATE.md under 100 lines, reviews changes, commits intentional safe work with a grepable state: close subject, and reports final repo state."
+description: "End-of-session hand-off for this repo; commit reviewed intentional work, refresh koder/STATE.md, and do not report success until Git is clean."
 metadata:
   structure: tiny_front_door_v1
   references:
     index: references/INDEX.md
-  tags: [koder, session-handoff, state]
-  updated_at: "2026-06-13"
+    format: references/FORMAT.md
+  tags: [koder, session-handoff, state, clean-close]
+  updated_at: "2026-07-11"
   status: reviewed
 ---

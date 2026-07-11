@@ -331,7 +331,11 @@ init_cmd() {
   create_state "$root/koder/STATE.md"
   create_gitkeep_dir "$root/koder/issues"
   create_from_template "$root/koder/skills/open/SKILL.md" "$TEMPLATE_DIR/koder/skills/open/SKILL.md.template"
+  create_from_template "$root/koder/skills/open/references/INDEX.md" "$TEMPLATE_DIR/koder/skills/open/references/INDEX.md"
+  create_from_template "$root/koder/skills/open/references/FORMAT.md" "$TEMPLATE_DIR/koder/skills/open/references/FORMAT.md"
   create_from_template "$root/koder/skills/close/SKILL.md" "$TEMPLATE_DIR/koder/skills/close/SKILL.md.template"
+  create_from_template "$root/koder/skills/close/references/INDEX.md" "$TEMPLATE_DIR/koder/skills/close/references/INDEX.md"
+  create_from_template "$root/koder/skills/close/references/FORMAT.md" "$TEMPLATE_DIR/koder/skills/close/references/FORMAT.md"
 
   create_symlink "$root/AGENTS.md" "koder/AGENTS.md"
 
@@ -398,7 +402,11 @@ doctor_cmd() {
   check_path "koder/STATE.md" "$root/koder/STATE.md" || failures=$((failures + 1))
   check_path "koder/issues/" "$root/koder/issues" || failures=$((failures + 1))
   check_path "koder/skills/open/SKILL.md" "$root/koder/skills/open/SKILL.md" || failures=$((failures + 1))
+  check_path "koder/skills/open/references/INDEX.md" "$root/koder/skills/open/references/INDEX.md" || failures=$((failures + 1))
+  check_path "koder/skills/open/references/FORMAT.md" "$root/koder/skills/open/references/FORMAT.md" || failures=$((failures + 1))
   check_path "koder/skills/close/SKILL.md" "$root/koder/skills/close/SKILL.md" || failures=$((failures + 1))
+  check_path "koder/skills/close/references/INDEX.md" "$root/koder/skills/close/references/INDEX.md" || failures=$((failures + 1))
+  check_path "koder/skills/close/references/FORMAT.md" "$root/koder/skills/close/references/FORMAT.md" || failures=$((failures + 1))
   check_symlink "AGENTS.md" "$root/AGENTS.md" "koder/AGENTS.md" || failures=$((failures + 1))
 
   if [ -e "$root/.pi" ] || [ -L "$root/.pi" ]; then
