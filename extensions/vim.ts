@@ -34,7 +34,7 @@ type Position = { line: number; col: number };
 type Operator = "c" | "d" | "y";
 type FindDirection = "forward" | "backward";
 type YankRegister = { kind: "line"; lines: string[] };
-type ThinkingLevel = "off" | "minimal" | "low" | "medium" | "high" | "xhigh";
+type ThinkingLevel = "off" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max";
 type QuickModelOption = { provider: string; id: string; label: string };
 type QuickSwitchConfig = {
 	modelPatterns: string[];
@@ -50,10 +50,10 @@ type QuickSwitcherCallbacks = {
 	notify: (message: string, type: "info" | "warning" | "error") => void;
 };
 
-const ALL_THINKING_LEVELS: ThinkingLevel[] = ["off", "minimal", "low", "medium", "high", "xhigh"];
+const ALL_THINKING_LEVELS: ThinkingLevel[] = ["off", "minimal", "low", "medium", "high", "xhigh", "max"];
 const DEFAULT_QUICK_SWITCH_CONFIG: QuickSwitchConfig = {
-	modelPatterns: ["gpt-5.5", "gpt-5.3-codex"],
-	thinkingLevels: [...ALL_THINKING_LEVELS],
+	modelPatterns: ["foundry-zyt/gpt-5.6-sol", "foundry-zyt/gpt-5.6-terra", "foundry-zyt/gpt-5.6-luna"],
+	thinkingLevels: ["max"],
 	showProviderInLabel: false,
 };
 
