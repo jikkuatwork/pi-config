@@ -1,32 +1,31 @@
 ---
-updated_at: "11 Jul 2026 | 09:58 PM IST"
+updated_at: "12 Jul 2026 | 04:13 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
-- Session handoff open/close flow is active; `koder/STATE.md` remains source-of-truth, while grepable `state:` commits are the semantic movement ledger.
-- Local `.pi/skills/*/SKILL.md` files use tiny front doors with `metadata.references.index` routers.
-- Existing durable context remains: reviewed `speak` and `council` skills, Foundry/ZYT Codex shell mode in dotfiles, `ui-ux-pro-max`, symlink-gated `gopls-mcp`, koder-pattern queue-conveyor/slice-accounting guidance, and deferred `last30days` import review.
-- Evaluated `professorpalmer/Puppetmaster` from `/tmp/Puppetmaster` at `59b57ff` for ideas to adapt; read docs/source only, no install/setup/runtime invoked. Decision: lift narrow typed-artifact/report ideas, not the broader orchestrator/hooks/SQLite-memory model.
-- Filed Harnex #52 in `/home/glasscube/Projects/harnex` (`3bf6025`): typed artifact and validation sidecar reports for dispatches, keeping plain-text `koder/` artifacts canonical.
-- Updated koder-pattern Harnex guidance (`717b552`) to prefer `harnex watch --id --until done`, treat marker files as compatibility outputs, and add sidecar guidance.
-- Added then corrected koder-pattern unblock guidance: human decisions should now be asked inline in chat, with optional temporary `koder/scratch/` replies, not a `koder/unblock/` artifact tree.
-- Reworked open/close hand-offs with Holm-style pretty-print formats; close now requires a verified clean Git state, and fresh koder-pattern setup vendors the routed format references.
+- Session handoffs and koder durable memory are active; `koder/STATE.md` is the compact narrative while grepable `state:` commits record semantic movement.
+- Local skills use tiny front doors with routed references; open/close enforce live Git facts, reviewed commits, and a verified clean close.
+- Harnex dispatch guidance now prefers native work-terminal watches and typed artifact sidecars while keeping plain-text `koder/` artifacts canonical.
+- Designed a portable, opt-in context-rotation protocol: only explicit long queue drains may use it; the model chooses semantic boundaries, completes `close`, then a harness capability may reset and optionally run `open`. Unsupported Codex/Claude harnesses simply continue.
+- Audited Holm blind orchestration. Q089's two entries produced 53 worker dispatches and a growing Markdown run log, showing that implementation blindness alone does not keep the primary context light.
+- Converged on an event-thin direction: a durable conductor handles mechanics, fresh entry captains own bounded chains, and the primary governor sees only compact terminal receipts or exceptions.
+- Filed Harnex #54 and #55 in `/home/glasscube/Projects/harnex` at `262f55e`: active context-window high-water telemetry and logical primary-orchestrator/queue-tax telemetry.
 
 ## Present
 
-- Pi repo branch `master` is clean after `e554521` and this close hand-off; recent intentional state commits include `717b552`, `ee90ebd`, and `3e409ea`.
-- Harnex repo branch `main` is clean at `3bf6025 state: file typed artifact sidecar issue`.
-- Repo has no root test/build harness; validation this session was docs/manual review plus `git diff --check` in Pi and Harnex.
-- Koder-pattern now has an inline `unblock` route in artifacts/router/evals and queue-conveyor integration; it explicitly avoids `koder/unblock/` packet folders.
-- Fresh init creates frontmatter-only open/close routers plus `references/INDEX.md` and `references/FORMAT.md`; doctor validates the complete skill shape.
+- Pi branch `master` has no code/config changes; this close updates only the durable handoff.
+- Harnex branch `main` is clean at `262f55e state: file #54 and #55 from pi - capture orchestration telemetry`.
+- Pi RPC exposes `contextUsage`, but Harnex currently drops it; interactive primary sessions also sit outside child-dispatch usage telemetry.
+- An autonomous Harnex implementation/release/install prompt is available at `/tmp/harnex-54-55-autonomous.md` and was supplied in chat.
+- This repo has no root test/build harness; validation was source/docs review, YAML frontmatter parsing for both Harnex issues, and `git diff --check`.
 
 ## Future
 
-- Use `/skill:koder-pattern unblock ...` when queue building finds user decisions blocking safe autonomous drain; ask concise inline numbered questions and accept optional temp replies under `koder/scratch/`.
-- If implementing Harnex #52, start with sidecar ingestion and docs/tests; keep `koder/` plain text canonical and avoid prose scraping.
-- Reload/source dotfiles before using `cx-zyt`; run real Foundry/ZYT calls only with key/cost awareness.
-- If desired, switch `cx()` default from `cx-azure` to `cx-zyt`, add wider council symlinks, or revisit `last30days` import with explicit approval before running upstream executables/installers.
-- Use the new `open`/`close` render contracts on the next session; keep close blocked when unknown or unsafe dirty paths prevent a safe commit.
+- User will run the autonomous prompt in Harnex to resolve #54/#55, publish the next release, push/tag it, install the gem locally, and verify the installed binary.
+- On return, verify the released telemetry surfaces before refining the portable rotation skill and optional Pi extension.
+- Then converge and file the separate event-thin queue-conductor/entry-captain issue; telemetry should measure the baseline before orchestration policy changes.
+- Keep rotation default-off and advisory: model-selected clean boundaries, optional small temp capsule, successful `close`, capability-gated reset, and canonical-state-first `open`.
+- Retain native compaction/normal continuation when reset capability is absent; never simulate resets with shell process tricks from portable skills.
