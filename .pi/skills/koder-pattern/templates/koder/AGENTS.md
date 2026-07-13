@@ -5,7 +5,7 @@ This repo uses the koder pattern for durable agent handoff and project memory.
 ## Operator layout
 
 - Keep durable non-code agent/operator files under `koder/`.
-- Root `AGENTS.md`, `CLAUDE.md`, `.pi/skills/*`, `.claude/skills/*`, and `.agents/skills/*` should be symlinks/adapters to files under `koder/` when possible.
+- Keep one physical copy of shared skills under `koder/skills/`. Root `AGENTS.md` (Pi/Codex), `CLAUDE.md` (Claude), `.pi/skills/*` (Pi), `.agents/skills/*` (Codex), and `.claude/skills/*` (Claude) should be relative symlinks/adapters to files under `koder/` when possible.
 - `README.md` is the root documentation exception because repository hosts render it directly; prefer other durable docs under `koder/docs/` unless project conventions require otherwise.
 - Do not put product source code under `koder/` unless the project explicitly says so.
 

@@ -1,6 +1,6 @@
 ---
 title: Koder Pattern Eval Prompts
-updated: 2026-07-08
+updated: 2026-07-13
 ---
 
 # Koder Pattern Eval Prompts
@@ -17,7 +17,7 @@ This global install is visible to model invocation. Natural-language setup/artif
 
    > Set up koder-pattern in this repo.
 
-   Expected: load router, setup leaf, and state-commit protocol; prefer `bin/koder-pattern init`; create `koder/AGENTS.md`, `koder/STATE.md`, `koder/issues/`, `koder/skills/{open,close}/`, plus safe symlink adapters; initialize git if needed and commit created scaffold paths with `state: init - koder pattern scaffold` unless explicitly told not to commit.
+   Expected: load router, setup leaf, and state-commit protocol; prefer `bin/koder-pattern init`; create one canonical `koder/skills/{open,close}/` copy with relative adapters for Pi (`.pi/skills`), Codex (`.agents/skills`), and Claude (`.claude/skills`), plus `AGENTS.md`/`CLAUDE.md` instruction links; initialize git if needed and commit created scaffold paths with `state: init - koder pattern scaffold` unless explicitly told not to commit.
 
 2. **Issue filing**
 
@@ -107,7 +107,8 @@ This global install is visible to model invocation. Natural-language setup/artif
 
 - [ ] `SKILL.md` is frontmatter-only and routes via `metadata.references.index` to `references/INDEX.md`.
 - [ ] Skill description is narrow enough to trigger setup/artifact work without catching ordinary code work.
-- [ ] Setup flow prefers the init script, creates the thin `koder/` scaffold plus symlink adapters, preserves existing files, and commits created scaffold paths with `state: init - koder pattern scaffold` by default.
+- [ ] Setup flow prefers the init script, creates one canonical thin `koder/` scaffold plus default Pi/Codex/Claude symlink adapters, preserves existing files, and commits created scaffold paths with `state: init - koder pattern scaffold` by default.
+- [ ] Generated `open`/`close` entrypoints include a tiny standard body link to `references/INDEX.md`, so Claude can route the skill even when it ignores custom metadata.
 - [ ] Main router loads only nested routers/leaves and the shared state-commit protocol when state changes are requested.
 - [ ] New artifacts have stable paths and frontmatter.
 - [ ] Source-of-truth hierarchy is respected: live repo conventions beat cached refs.

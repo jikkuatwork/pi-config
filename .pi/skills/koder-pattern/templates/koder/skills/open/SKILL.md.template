@@ -8,3 +8,5 @@ metadata:
     format: references/FORMAT.md
   tags: [koder, session-handoff, state]
 ---
+
+Load and follow [`references/INDEX.md`](references/INDEX.md), resolving it relative to this skill directory.

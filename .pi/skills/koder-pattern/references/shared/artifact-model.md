@@ -1,6 +1,6 @@
 ---
 title: Koder Artifact Model
-updated: 2026-07-08
+updated: 2026-07-13
 ---
 
 # Koder Artifact Model
@@ -14,7 +14,7 @@ Use when path shape, numbering, source-of-truth, turns, or statuses are relevant
 ## Operator/doc placement
 
 - Keep durable non-code agent/operator files under `koder/`: state, proposals, issues, plans, reviews, research, notes, queues, scratch, local skills, and operator docs.
-- Root `AGENTS.md`, `CLAUDE.md`, `.pi/skills/*`, `.claude/skills/*`, and `.agents/skills/*` should be symlinks/adapters to `koder/` when possible.
+- Keep one physical copy of shared skills under `koder/skills/`. Root `AGENTS.md` (Pi/Codex), `CLAUDE.md` (Claude), `.pi/skills/*` (Pi), `.agents/skills/*` (Codex), and `.claude/skills/*` (Claude) should be relative symlinks/adapters to `koder/` when possible.
 - `README.md` is the normal root documentation exception because repository hosts render it directly.
 - Prefer other durable docs under `koder/docs/` unless live project conventions require another location.
 

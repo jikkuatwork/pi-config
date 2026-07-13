@@ -10,15 +10,19 @@ Usage:
 
 Commands:
   init      Create the thin koder operator scaffold in a folder/repo.
-  doctor    Check whether the thin scaffold is present.
+  doctor    Check the canonical scaffold and all three harness adapters.
   help      Show this help.
 
 Init options:
   --pi          Create .pi/skills/{open,close} adapters. Default.
   --no-pi       Do not create .pi skill adapters.
-  --claude      Create CLAUDE.md and .claude/skills/{open,close} adapters.
-  --agents      Create .agents/skills/{open,close} adapters.
-  --all         Create pi, claude, and generic .agents adapters.
+  --claude      Create CLAUDE.md and .claude/skills/{open,close} adapters. Default.
+  --no-claude   Do not create Claude adapters.
+  --codex       Create .agents/skills/{open,close} adapters for Codex. Default.
+  --no-codex    Do not create Codex adapters.
+  --agents      Alias for --codex.
+  --no-agents   Alias for --no-codex.
+  --all         Create Pi, Codex, and Claude adapters (the default).
   --no-commit   Do not initialize git or create the default state: init commit.
   --dry-run     Print actions without writing files or committing.
   -h, --help    Show this help.
@@ -287,8 +291,8 @@ EOF
 init_cmd() {
   local target="."
   local pi=1
-  local claude=0
-  local agents=0
+  local claude=1
+  local codex=1
   local commit_enabled=1
   local positional=0
 
@@ -297,8 +301,10 @@ init_cmd() {
       --pi) pi=1 ;;
       --no-pi) pi=0 ;;
       --claude) claude=1 ;;
-      --agents) agents=1 ;;
-      --all) pi=1; claude=1; agents=1 ;;
+      --no-claude) claude=0 ;;
+      --codex|--agents) codex=1 ;;
+      --no-codex|--no-agents) codex=0 ;;
+      --all) pi=1; claude=1; codex=1 ;;
       --no-commit) commit_enabled=0 ;;
       --dry-run) DRY_RUN=1 ;;
       -h|--help) usage; return 0 ;;
@@ -346,14 +352,14 @@ init_cmd() {
     create_symlink "$root/CLAUDE.md" "koder/AGENTS.md"
     create_skill_adapters "$root" ".claude"
   fi
-  if [ "$agents" -eq 1 ]; then
+  if [ "$codex" -eq 1 ]; then
     create_skill_adapters "$root" ".agents"
   fi
 
   commit_init_state "$root" "$commit_enabled"
 
   say "done"
-  say "next: read $root/koder/STATE.md, then use the open/close skills through your agent surface."
+  say "next: read $root/koder/STATE.md, then use the shared open/close skills from Pi, Codex, or Claude."
 }
 
 check_path() {
@@ -389,6 +395,28 @@ check_symlink() {
   return 1
 }
 
+check_skill_router() {
+  local label="$1"
+  local path="$2"
+
+  if [ ! -f "$path" ]; then
+    say "missing $label"
+    return 1
+  fi
+
+  if awk '
+    /^---[[:space:]]*$/ { separators += 1; next }
+    separators >= 2 && /references\/INDEX\.md/ { found = 1 }
+    END { exit(found ? 0 : 1) }
+  ' "$path"; then
+    say "ok      $label (cross-harness body router)"
+    return 0
+  fi
+
+  say "warn    $label has no body route to references/INDEX.md"
+  return 1
+}
+
 doctor_cmd() {
   local target="${1:-.}"
   [ "$#" -le 1 ] || fail "doctor accepts at most one path"
@@ -401,26 +429,20 @@ doctor_cmd() {
   check_path "koder/AGENTS.md" "$root/koder/AGENTS.md" || failures=$((failures + 1))
   check_path "koder/STATE.md" "$root/koder/STATE.md" || failures=$((failures + 1))
   check_path "koder/issues/" "$root/koder/issues" || failures=$((failures + 1))
-  check_path "koder/skills/open/SKILL.md" "$root/koder/skills/open/SKILL.md" || failures=$((failures + 1))
+  check_skill_router "koder/skills/open/SKILL.md" "$root/koder/skills/open/SKILL.md" || failures=$((failures + 1))
   check_path "koder/skills/open/references/INDEX.md" "$root/koder/skills/open/references/INDEX.md" || failures=$((failures + 1))
   check_path "koder/skills/open/references/FORMAT.md" "$root/koder/skills/open/references/FORMAT.md" || failures=$((failures + 1))
-  check_path "koder/skills/close/SKILL.md" "$root/koder/skills/close/SKILL.md" || failures=$((failures + 1))
+  check_skill_router "koder/skills/close/SKILL.md" "$root/koder/skills/close/SKILL.md" || failures=$((failures + 1))
   check_path "koder/skills/close/references/INDEX.md" "$root/koder/skills/close/references/INDEX.md" || failures=$((failures + 1))
   check_path "koder/skills/close/references/FORMAT.md" "$root/koder/skills/close/references/FORMAT.md" || failures=$((failures + 1))
   check_symlink "AGENTS.md" "$root/AGENTS.md" "koder/AGENTS.md" || failures=$((failures + 1))
-
-  if [ -e "$root/.pi" ] || [ -L "$root/.pi" ]; then
-    check_symlink ".pi/skills/open" "$root/.pi/skills/open" "../../koder/skills/open" || failures=$((failures + 1))
-    check_symlink ".pi/skills/close" "$root/.pi/skills/close" "../../koder/skills/close" || failures=$((failures + 1))
-  fi
-  if [ -e "$root/.claude" ] || [ -L "$root/.claude" ]; then
-    check_symlink ".claude/skills/open" "$root/.claude/skills/open" "../../koder/skills/open" || failures=$((failures + 1))
-    check_symlink ".claude/skills/close" "$root/.claude/skills/close" "../../koder/skills/close" || failures=$((failures + 1))
-  fi
-  if [ -e "$root/.agents" ] || [ -L "$root/.agents" ]; then
-    check_symlink ".agents/skills/open" "$root/.agents/skills/open" "../../koder/skills/open" || failures=$((failures + 1))
-    check_symlink ".agents/skills/close" "$root/.agents/skills/close" "../../koder/skills/close" || failures=$((failures + 1))
-  fi
+  check_symlink "CLAUDE.md" "$root/CLAUDE.md" "koder/AGENTS.md" || failures=$((failures + 1))
+  check_symlink ".pi/skills/open" "$root/.pi/skills/open" "../../koder/skills/open" || failures=$((failures + 1))
+  check_symlink ".pi/skills/close" "$root/.pi/skills/close" "../../koder/skills/close" || failures=$((failures + 1))
+  check_symlink ".agents/skills/open" "$root/.agents/skills/open" "../../koder/skills/open" || failures=$((failures + 1))
+  check_symlink ".agents/skills/close" "$root/.agents/skills/close" "../../koder/skills/close" || failures=$((failures + 1))
+  check_symlink ".claude/skills/open" "$root/.claude/skills/open" "../../koder/skills/open" || failures=$((failures + 1))
+  check_symlink ".claude/skills/close" "$root/.claude/skills/close" "../../koder/skills/close" || failures=$((failures + 1))
 
   if [ "$failures" -eq 0 ]; then
     say "doctor: ok"
