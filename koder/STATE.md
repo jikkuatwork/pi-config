@@ -1,31 +1,30 @@
 ---
-updated_at: "12 Jul 2026 | 04:13 PM IST"
+updated_at: "14 Jul 2026 | 03:39 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
-- Session handoffs and koder durable memory are active; `koder/STATE.md` is the compact narrative while grepable `state:` commits record semantic movement.
-- Local skills use tiny front doors with routed references; open/close enforce live Git facts, reviewed commits, and a verified clean close.
-- Harnex dispatch guidance now prefers native work-terminal watches and typed artifact sidecars while keeping plain-text `koder/` artifacts canonical.
-- Designed a portable, opt-in context-rotation protocol: only explicit long queue drains may use it; the model chooses semantic boundaries, completes `close`, then a harness capability may reset and optionally run `open`. Unsupported Codex/Claude harnesses simply continue.
-- Audited Holm blind orchestration. Q089's two entries produced 53 worker dispatches and a growing Markdown run log, showing that implementation blindness alone does not keep the primary context light.
-- Converged on an event-thin direction: a durable conductor handles mechanics, fresh entry captains own bounded chains, and the primary governor sees only compact terminal receipts or exceptions.
-- Filed Harnex #54 and #55 in `/home/glasscube/Projects/harnex` at `262f55e`: active context-window high-water telemetry and logical primary-orchestrator/queue-tax telemetry.
+- Session handoffs and durable koder memory are active; `koder/STATE.md` is the compact narrative while grepable `state:` commits record semantic movement.
+- Local skills use tiny routed front doors; generated open/close surfaces work across Pi, Codex, and Claude and enforce live Git facts plus clean closeout.
+- Audited the completed Holm SDK blind Queue `001` at `fe37f85`: 16 serial slices, independent review on every slice, nine slices fixed, bounded coordinator rollovers, recovery without replay, and a separate passing final gate.
+- Generalized that evidence in `4132a6c feat: generalize blind queue orchestration`: explicit opt-in, governor/coordinator/phase-worker ownership, current-row context firewall, fail-closed launch gates, first-unproven-phase recovery, `1-4` entry rollover caps, and fresh final review.
+- Added reusable blind routes under `.pi/skills/koder-pattern/references/queues/` plus SDK provenance, queue/Harnex integration, canonical review verdict counts, and generated `AGENTS.md`/`open` discovery hooks.
+- Hardened global natural-language invocation and a standard body route; the Pi, Codex, and Claude global skill symlinks all resolve to this koder-pattern source.
 
 ## Present
 
-- Pi branch `master` has no code/config changes; this close updates only the durable handoff.
-- Harnex branch `main` is clean at `262f55e state: file #54 and #55 from pi - capture orchestration telemetry`.
-- Pi RPC exposes `contextUsage`, but Harnex currently drops it; interactive primary sessions also sit outside child-dispatch usage telemetry.
-- An autonomous Harnex implementation/release/install prompt is available at `/tmp/harnex-54-55-autonomous.md` and was supplied in chat.
-- This repo has no root test/build harness; validation was source/docs review, YAML frontmatter parsing for both Harnex issues, and `git diff --check`.
+- Pi `master` contains the reviewed koder-pattern feature commit; this close updates only the durable handoff.
+- Harnex-backed blind phases prefer `harnex.artifact_report.v1`, first-class attribution, terminal summaries, and canonical review frontmatter; the portable phase schema remains only for equivalent harnesses.
+- The core protocol needs no Pi extension. Any future Pi integration should remain an optional telemetry/session-rotation producer, never the queue conductor, trigger mechanism, or correctness boundary.
+- Harnex `main` is clean at `d33016f`; Issue `#54` context-pressure telemetry is implemented but unreleased, installed `harnex` remains `0.7.12`, and Issue `#55` remains open.
+- Validation passed: cross-harness smoke, shell syntax, 34 YAML frontmatter blocks, Markdown routes, four JSON examples, global skill routes, trailing whitespace, and `git diff --check`.
 
 ## Future
 
-- User will run the autonomous prompt in Harnex to resolve #54/#55, publish the next release, push/tag it, install the gem locally, and verify the installed binary.
-- On return, verify the released telemetry surfaces before refining the portable rotation skill and optional Pi extension.
-- Then converge and file the separate event-thin queue-conductor/entry-captain issue; telemetry should measure the baseline before orchestration policy changes.
-- Keep rotation default-off and advisory: model-selected clean boundaries, optional small temp capsule, successful `close`, capability-gated reset, and canonical-state-first `open`.
-- Retain native compaction/normal continuation when reset capability is absent; never simulate resets with shell process tricks from portable skills.
+- Exercise the generalized blind route on the next real multi-entry queue and tune coordinator caps from observed complexity/context pressure rather than treating four entries as a target.
+- If pressure-aware rollover is wanted, release/install the existing Harnex `#54` work and verify installed telemetry before depending on it.
+- Narrow Harnex `#55` portable-first: stable orchestration-run/generation identity and rollups for Harnex-managed coordinators/workers; external interactive-primary producers stay optional with explicit unsupported states.
+- Consider a Harnex result/reconciliation view only after real use shows repeated friction; keep process, work, artifact, semantic, and Git outcomes separate.
+- Keep native compaction and clean bounded stops as the cross-harness fallback; do not require Pi-only extensions or simulate session resets with shell tricks.
