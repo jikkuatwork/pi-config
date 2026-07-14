@@ -1,6 +1,6 @@
 ---
 title: Harnex Dispatch Shape
-updated: 2026-07-08
+updated: 2026-07-14
 ---
 
 # Harnex Dispatch Shape
@@ -16,14 +16,28 @@ Use harnex when work should be delegated to a separate agent session and tracked
 - long unattended queue entries;
 - cross-agent review loops where the orchestrator should stay thin.
 
-Do not use harnex for tiny edits the current agent can safely complete directly, or when the repo lacks harnex and no worker harness is available.
+Do not use harnex for tiny ordinary edits the current agent can safely complete directly, or when the repo lacks harnex and no worker harness is available. Exception: once a queue explicitly selects blind mode, even a small implementation/review phase must preserve worker isolation; stop rather than collapsing it into coordinator code.
+
+## Blind hierarchy
+
+For a multi-entry blind drain, the root session should act as a thin governor and dispatch fresh bounded coordinator sessions. Each coordinator dispatches fresh phase workers. Carry queue/entry/phase/attempt/coordinator identity through task files and metadata so harnex telemetry and receipts can be reconciled without reading transcripts.
+
+If nested dispatch is unavailable, one current session may act as a bounded blind coordinator, but it must stop at its declared cap. Fresh phase-worker isolation and independent review remain mandatory.
 
 ## Command shape
 
 Generic shape:
 
 ```bash
-harnex run codex --id <session-id> --tmux <session-id> --timeout 30   --description "Short description"   --meta '<json metadata>'   --summary-out koder/scratch/dispatch-telemetry.jsonl   --context "Read and execute /tmp/task-impl-NNN.md"   -- -c model=<model> -c model_reasoning_effort=<effort>
+harnex run codex \
+  --id <session-id> \
+  --tmux <session-id> \
+  --timeout 30 \
+  --description "Short description" \
+  --meta '<json metadata>' \
+  --summary-out /tmp/koder-run/dispatch-telemetry.jsonl \
+  --context "Read and execute /tmp/task-impl-NNN-attempt-01.md" \
+  -- -c model=<model> -c model_reasoning_effort=<effort>
 ```
 
 Use repo-local model names and effort values. If the repo has no model policy, record the actual choice and why in `--meta`.
@@ -51,6 +65,10 @@ Include enough metadata to reconstruct why the dispatch happened:
 ```json
 {
   "phase": "implement",
+  "role": "phase-worker",
+  "attempt": 1,
+  "coordinator_id": "cx-o-004-01",
+  "base_commit": "<sha>",
   "issue": 340,
   "plan": 450,
   "queue_id": "004_app_readiness_cli_foundation",
@@ -67,7 +85,8 @@ Include enough metadata to reconstruct why the dispatch happened:
 
 Required in spirit even if exact schema differs:
 
-- phase;
+- phase and role;
+- attempt, parent/coordinator identity, and expected base commit for retryable/blind work;
 - source issue/plan/task/review path or number;
 - queue id/entry id when queue-dispatched;
 - model/effort actually used;
@@ -94,7 +113,6 @@ if that variable is set; otherwise summarize the validation commands in the
 canonical review.
 ```
 
-Sidecar payloads should stay compact: status, validation commands/exit codes,
-typed finding/risk/gate summaries, evidence refs, confidence, canonical refs,
-byte size/hash where available. Never store transcripts, full prompts, secrets,
-or large private payloads in telemetry sidecars.
+Sidecar payloads should stay compact and versioned: identity, status, commit, changed paths, validation commands/exit codes, typed finding/risk/gate summaries, evidence refs, confidence, canonical refs, byte size/hash where available. Never store transcripts, full prompts, review finding prose, secrets, or large private payloads in telemetry sidecars.
+
+For blind queues, use the phase and coordinator contracts in `references/queues/blind-briefs.md`. Prefer Harnex's native `--artifact-report` / `harnex.artifact_report.v1` as the phase receipt and combine it with first-class attribution plus the terminal dispatch summary; do not require a duplicate `koder.blind.phase.v1` file. Write reports atomically and only after canonical artifacts, validation, commit/push, and Git checks. Runtime reports are an execution API, not the sole durable proof.

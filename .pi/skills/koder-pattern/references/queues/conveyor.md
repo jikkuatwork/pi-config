@@ -21,9 +21,7 @@ This repo, its docs, its harnesses, and its agents are a machine that builds the
 project. The conveyor improves that machine by turning broad work into small,
 validated, automatable pieces without hiding human-gated decisions.
 
-Blind orchestrator means blind to implementation detail, not blind to process.
-Track queue state, active refs/files/dependencies, validation, commits,
-release/deploy permissions, blockers, and closeout evidence.
+Blind orchestration is explicit opt-in, not a synonym for any unattended queue. When selected, load `references/queues/blind-orchestration.md`: track queue state, ownership/dependencies, compact receipts, validation, commits, review verdicts, permissions, blockers, and closeout evidence while keeping implementation detail behind fresh phase-worker boundaries.
 
 ## Workflow
 

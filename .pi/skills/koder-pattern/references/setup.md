@@ -1,13 +1,13 @@
 ---
 title: Koder Pattern Setup
-updated: 2026-07-13
+updated: 2026-07-14
 ---
 
 # Koder Pattern Setup
 
 Use when the user asks to set up, install, initialize, or bootstrap the koder pattern in a repository/folder.
 
-Goal: leave the target with the thinnest durable operator scaffold: `koder/AGENTS.md`, `koder/STATE.md`, `koder/issues/`, and complete `koder/skills/{open,close}/` front doors with routed references and Holm-style pretty-print formats. Pi, Codex, and Claude should all receive symlink adapters to that one canonical copy by default. Setup is a state transition: initialize git if needed and commit created scaffold paths with `state: init - koder pattern scaffold`.
+Goal: leave the target with the thinnest durable operator scaffold: `koder/AGENTS.md`, `koder/STATE.md`, `koder/issues/`, and complete `koder/skills/{open,close}/` front doors with routed references and Holm-style pretty-print formats. The baseline instructions conditionally recognize explicit blind queues, and `open` surfaces an active execution window/mode/stop gate when the repo later defines one; init does not create queue or execution docs. Pi, Codex, and Claude should all receive symlink adapters to that one canonical copy by default. Setup is a state transition: initialize git if needed and commit created scaffold paths with `state: init - koder pattern scaffold`.
 
 Read `references/shared/state-commit-protocol.md` before overriding commit behavior.
 
@@ -18,7 +18,7 @@ Read `references/shared/state-commit-protocol.md` before overriding commit behav
 - Use direct, relative per-skill symlinks for `.pi/skills/*` (Pi), `.agents/skills/*` (Codex's project skill path), and `.claude/skills/*` (Claude). Per-skill adapters are portable and can coexist with harness-specific skills.
 - Do not create a project `.codex/skills/` adapter: current Codex project discovery uses `.agents/skills/`.
 - `README.md` is the root documentation exception because GitHub/repo hosts render it directly; prefer other durable docs under `koder/docs/` unless live project conventions differ.
-- Create artifact directories lazily. Do not create `proposals/`, `plans/`, `reviews/`, `research/`, `analysis/`, `notes/`, `tasks/`, `queues/`, or `scratch/` during thin init unless explicitly requested.
+- Create artifact directories lazily. Do not create `proposals/`, `plans/`, `reviews/`, `research/`, `analysis/`, `notes/`, `tasks/`, `queue/`, or `scratch/` during thin init unless explicitly requested.
 
 ## 1. Inspect before writing
 
@@ -194,11 +194,11 @@ If `AGENTS.md`, `CLAUDE.md`, or skill paths already exist, do not replace them. 
 
 ## Manual validation checklist
 
-- `koder/AGENTS.md` exists and states the koder placement/safety/state-commit policy.
+- `koder/AGENTS.md` exists and states the koder placement/safety/state-commit policy plus the conditional fail-closed boundary for queues that explicitly declare blind mode.
 - `koder/STATE.md` has `updated_at`, Past/Present/Future, and is under 100 lines.
 - `koder/issues/` exists; other artifact dirs are absent unless requested or pre-existing.
 - `koder/skills/open/SKILL.md` and `koder/skills/close/SKILL.md` have valid Agent Skills frontmatter plus a tiny body link to `references/INDEX.md`; the body link keeps Claude compatible while preserving progressive disclosure in all three harnesses.
-- Both skills have `references/INDEX.md` workflow instructions and `references/FORMAT.md` pretty-print output contracts.
+- Both skills have `references/INDEX.md` workflow instructions and `references/FORMAT.md` pretty-print output contracts; `open` conditionally reports active execution window, orchestration mode, and stop gate without starting work.
 - Root `AGENTS.md` and `CLAUDE.md` are symlinks to `koder/AGENTS.md`, or existing root files were preserved and merge needs were reported.
 - `.pi/skills/{open,close}`, `.agents/skills/{open,close}`, and `.claude/skills/{open,close}` are relative symlinks to the same `koder/skills/*` directories.
 - Canonical path resolution (`pwd -P` from each directory, or an equivalent) maps every harness adapter to its matching `koder/skills/*` directory; there are only two physical generated `SKILL.md` files.

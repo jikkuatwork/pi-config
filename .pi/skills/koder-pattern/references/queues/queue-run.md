@@ -1,6 +1,6 @@
 ---
 title: Koder Queue Run Workflow
-updated: 2026-07-01
+updated: 2026-07-14
 ---
 
 # Koder Queue Run Workflow
@@ -17,7 +17,22 @@ Before running entries, determine:
 - completion contract: done state, timebox gate, continuation policy, and early-stop consent;
 - progress accounting expectations: issues touched, slices queued, likely closures, and live-gated outcomes;
 - whether each entry should be direct, review-only, harnex-light, harnex-chain, or another repo-local mode;
+- queue-wide `orchestration_mode`, plus coordinator/fix caps and final-review policy when it is `blind`;
 - whether release/deploy/peer mutation is explicitly allowed after full drain and final validation.
+
+## Mode fork
+
+For ordinary/direct queues, use the execution loop below.
+
+For explicit `orchestration_mode: blind`:
+
+1. Load `references/queues/blind-orchestration.md`, `references/queues/blind-briefs.md`, and the harnex route before launch.
+2. Enforce the blind launch gate from `references/queues/gates.md`; no isolated workers or independent review means no launch.
+3. For a long/multi-entry drain, keep the current root session as governor and launch a fresh bounded coordinator. The governor consumes only coordinator receipts/exceptions.
+4. The coordinator applies the accounting parts of the loop below but delegates implementation, review, fix, re-review, recovery, and final review to fresh phase workers.
+5. On any process/receipt/Git disagreement, load `references/queues/blind-recovery.md` and resume from the first unproven phase.
+
+Never silently execute a blind row directly to keep the queue moving.
 
 ## Execution loop
 
@@ -28,7 +43,7 @@ Before running entries, determine:
 5. Execute according to entry mode:
    - `docs-direct` / `direct` for small green work;
    - `review-only` for existing diffs/artifacts;
-   - `harnex-light` or `harnex-chain` for larger, riskier, or blind-orchestrated work.
+   - `harnex-light` or `harnex-chain` for larger or riskier ordinary work; explicit blind work follows the mode fork and fresh phase-worker state machine.
 6. For harnex entries, read `references/harnex/INDEX.md` and generate a bounded task brief with queue metadata.
 7. If the repo has `koder/queue/log.jsonl` or a queue log helper, append an
    `entry_started` record with the queue-row estimate and any calibrated wall
@@ -45,27 +60,13 @@ Before running entries, determine:
 
 ## Block rules
 
-Never wait unattended on one blocked entry. If an entry exceeds its max estimate, commit only green partial value if useful; otherwise reset WIP, mark blocked with evidence, and continue.
+Never wait unattended on one blocked entry. If an entry exceeds its max estimate, the worker that owns implementation may commit only a safe green partial when the repo allows it; otherwise it must leave an explicit blocked receipt and safe Git state. A blind coordinator must not inspect, finish, or reset unknown product WIP—dispatch a fresh recovery worker or stop.
 
-## Blind orchestrator rule
+## Blind orchestrator invariant
 
-A queue runner manages state and routing, not huge implementation context. Blind means blind to implementation detail, not blind to process.
+Blind means blind to implementation detail, not process state. The governor/coordinator verifies queue identity, locks, authorization, compact receipts, changed paths, commits, command exits, verdict/counts/path, blockers, and Git safety. It does not read source, full diffs, test bodies, review findings, transcripts, routine panes, or long logs.
 
-It may read:
-
-- queue metadata and run log;
-- `STATE.md` and tick/handoff notes;
-- worker summaries, review verdicts, changed-path lists, and test output;
-- active refs/files/dependencies, validation status, commit state, release/deploy permissions, and blockers.
-
-It should avoid reading:
-
-- large implementation diffs;
-- generated source files from workers;
-- full transcripts/prompts;
-- implementation reasoning that should be captured by tests, review verdicts, or source artifacts.
-
-If implementation judgment is needed, dispatch a review or mark the entry too risky for blind queue execution.
+Each row follows fresh `implement -> review -> (fix -> rereview)*` phases. Fix workers read committed review artifacts directly. Coordinators roll over after the queue-declared `1-4` entry cap or earlier under complexity/context pressure; a separate fresh final review handles integrated milestone gates. Harness outcome, receipts, commits, and canonical artifacts are reconciled independently rather than treating any one as unquestionable truth.
 
 ## Closeout evidence
 

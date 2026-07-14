@@ -1,6 +1,6 @@
 ---
 title: Koder Queue Gates
-updated: 2026-07-01
+updated: 2026-07-14
 ---
 
 # Koder Queue Gates
@@ -43,6 +43,21 @@ Launch is blocked for unattended or away-window queues unless the queue declares
 - progress accounting for broad work: issues touched, slices queued, likely closures, and live-gated outcomes.
 
 A green checkpoint, plan completion, primary-entry drain, or low raw issue-closure count is not a stop condition by itself. If the target window is larger than eligible queued effort, add safe overflow/next-queue work or state clearly that the queue will drain and stop early. If issue count will barely move, report slice movement explicitly.
+
+## Blind-orchestration launch gate
+
+When `orchestration_mode: blind`, launch is additionally blocked unless:
+
+- harnex or an explicitly equivalent harness can isolate fresh phase workers;
+- a fresh independent reviewer is available after every implementation and fix;
+- the queue declares a `1-4` coordinator entry cap and fix-cycle cap;
+- compact versioned phase/coordinator receipts can be written outside tracked source or in ignored scratch;
+- implementation ownership is serial or explicitly isolated/non-overlapping;
+- the first eligible row has a reviewed source artifact, exact validation, commit policy, wall cap, and stop rule;
+- Git is clean/synchronized as expected, or a named recovery worker owns known WIP;
+- a fresh coordinator can resume at rollover, or the queue explicitly permits a clean stop there.
+
+Do not fall back from explicit blind mode to direct implementation. For long drains, prefer a thin governor that launches bounded fresh coordinators and sees only terminal receipts/exceptions. Load `references/queues/blind-orchestration.md` for the full role and recovery contract.
 
 ## Gate failure fixes
 

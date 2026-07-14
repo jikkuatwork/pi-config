@@ -1,11 +1,11 @@
 ---
 title: Koder Pattern Router
-updated: 2026-07-13
+updated: 2026-07-14
 ---
 
 # Koder Pattern Router
 
-Thin router for setting up durable `koder/` repo memory and managing `koder/` artifacts. Do ordinary code work normally unless the user asked to set up koder-pattern or file/manage artifacts.
+Thin router for setting up durable `koder/` repo memory, managing `koder/` artifacts, and routing bounded queue/worker workflows. Do ordinary code work normally unless the user asked to set up koder-pattern, file/manage artifacts, or design/run/recover a koder queue or worker chain.
 
 ## Start
 
@@ -37,8 +37,10 @@ Thin router for setting up durable `koder/` repo memory and managing `koder/` ar
 | Extract queueable slices / build a queue conveyor | `references/queues/INDEX.md`, then `references/queues/conveyor.md` |
 | File/add/refill a queue | `references/queues/INDEX.md`, then `references/queues/model.md`, `references/queues/gates.md`, `references/queues/queue-add.md` |
 | Run a queue | `references/queues/INDEX.md`, then `references/queues/model.md`, `references/queues/queue-run.md` |
+| Design/adopt/run a blind-orchestrator queue | `references/queues/blind-orchestration.md`, then `references/queues/blind-briefs.md`, plus the normal queue and harnex routes |
+| Recover an interrupted or inconsistent blind run | `references/queues/blind-recovery.md`, after `references/queues/blind-orchestration.md` |
 | Harnex/worker dispatch | `references/harnex/INDEX.md`, then only required harnex leaves |
-| Source pattern/origin | `references/meta/holm-pattern-review.md` |
+| Source pattern/origin | `references/meta/holm-pattern-review.md`; for blind queues also `references/meta/sdk-blind-orchestration-review.md` |
 | Trigger/quality tests for this skill | `references/meta/eval-prompts.md` |
 
 ## Defaults
@@ -50,6 +52,7 @@ Thin router for setting up durable `koder/` repo memory and managing `koder/` ar
 - Queue-conveyor work lives under the queue route: mine issues for safe mechanical slices, write queueable plans, pack compatible queues, and keep active implementation ownership non-overlapping. When human decisions block safe queue drain, ask terse inline numbered questions with recommended option `a.` by default; if the user wants async replies, accept any temporary file under `koder/scratch/` and apply answers back to canonical artifacts.
 - For new issues, set `issue_kind`; legacy absence means `slice`. For ordinary `slice` issues, do not add a ledger. For broad issues, use slice accounting lazily: add `Slice Ledger` and queue slice-delta summaries only when filing/touching/closing relevant artifacts; do not mass-rewrite old backlog.
 - Harnex briefs must be bounded; use live harnex/repo docs over cached examples.
+- Blind orchestration is explicit opt-in. Keep the universal protocol in this skill and the repo overlay small: active window, queue/stop gates, ownership, exact validation, and permissions. Use fresh implementation/review/fix/re-review workers, compact receipts, independent review, first-unproven-phase recovery, and coordinator rollover; fail closed when isolation cannot be enforced.
 - Every intentional `koder/` state transition gets a grepable `state:` commit by default; use selected-path commits so unrelated dirty/staged work is not swept in.
 - `koder/STATE.md` is session handoff, not the `state:` commit ledger; update it at init, close, explicit handoff requests, or external-origin filings.
 - Keep artifacts concise, source-linked, validated, and safe to commit.

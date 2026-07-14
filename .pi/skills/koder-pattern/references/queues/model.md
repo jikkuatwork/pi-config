@@ -1,6 +1,6 @@
 ---
 title: Koder Queue Model
-updated: 2026-07-01
+updated: 2026-07-14
 ---
 
 # Koder Queue Model
@@ -9,14 +9,15 @@ updated: 2026-07-01
 
 To file a queue is to create or update a `koder/queue/NNN_slug/INDEX.md` batch with:
 
-- target window and autonomy level;
+- target window, autonomy level, and explicit orchestration mode;
 - explicit constraints and forbidden risks;
 - a completion contract for unattended or away-window runs;
 - progress accounting for issues touched and slices queued/drained when useful;
 - ordered entries that reference existing issues/plans/tasks;
 - estimate, risk, ambiguity, mode, validation, and stop rule per entry;
 - optional estimate/actual telemetry in `koder/queue/log.jsonl` for calibration;
-- a concise run log as entries are consumed.
+- a concise run log as entries are consumed;
+- for explicit blind mode, coordinator/fix caps, independent/final review policy, phase attempts, and compact receipt/recovery expectations.
 
 ## Path
 
@@ -37,6 +38,12 @@ updated: YYYY-MM-DD
 target_window: 6h
 queued_effort_target: 9h
 autonomy_level: A2
+orchestration_mode: direct # direct | blind
+coordinator_entry_cap: null # blind only; integer 1-4
+max_fix_cycles: null # blind only; usually 1-2
+independent_review: optional # required for blind
+implementation_ownership: serial # serial | isolated; blind mode must be unambiguous
+final_review_required: false
 completion_contract:
   done_state: "What the user should expect when they return."
   timebox_gate: "Stop starting new work at closeout reserve, when exhausted, or at a named validation/release gate."
@@ -89,6 +96,19 @@ Optional but recommended for broad queues. See
 - Pending.
 ```
 
+## Blind mode overlay
+
+Use blind mode only when explicitly selected. Before launch, load `references/queues/blind-orchestration.md` and `references/queues/blind-briefs.md`.
+
+- Set `orchestration_mode: blind` at queue level; do not encode it only in chat.
+- Set `coordinator_entry_cap` to `1-4`. Four is a hard ceiling, not a throughput target; choose lower caps for complex/fix-heavy rows.
+- Set `max_fix_cycles` and stop for owner/architecture judgment when exhausted.
+- Set `independent_review: required` and make `implementation_ownership` serial or explicitly isolated/non-overlapping.
+- Set `final_review_required: true` when the queue done state claims an integrated milestone rather than isolated row completion.
+- Keep branch/worktree ownership and review requirements in `constraints` or a concise repo execution overlay.
+- Do not paste the universal blind protocol into every row. Rows still carry only source ref, validation, stop rule, and local risk facts.
+- Runtime task files/receipts live outside tracked source or in ignored scratch; durable queue/run-log/review artifacts retain the minimum proof.
+
 ## Completion contract fields
 
 | Field | Meaning |
@@ -130,7 +150,7 @@ Rules:
 | Field | Meaning |
 | --- | --- |
 | `Ref` | Exact source artifact path/anchor. The source holds implementation detail. |
-| `Status` | `candidate`, `queued`, `running`, `reviewing`, `done`, `blocked`, or `skipped`. |
+| `Status` | `candidate`, `queued`, `running`, `implemented`, `reviewing`, `fixing`, `rereviewing`, `approved`/`done`, `blocked`, or `skipped`. Repos may keep a smaller vocabulary if the run log records the active phase. |
 | `Estimate` | Expected active work time. Keep runnable entries `<=120m` unless investigation-only. |
 | `Risk` | `green`, `yellow`, or `red` based on blast radius. |
 | `Ambiguity` | `low`, `medium`, or `high` based on unresolved decisions/source clarity. |
@@ -145,6 +165,8 @@ Optional metadata for richer progress accounting:
 | `slice_id` | Stable short name matching the source issue `Slice Ledger`, if any. |
 | `slice_status_after_done` | Expected ledger state after this entry: `done`, `released`, `live_proven`, etc. |
 | `issue_closure_candidate` | Whether this entry can close its issue if validation passes. |
+| `active_phase` | Blind-mode recovery hint: `implement`, `review`, `fix`, `rereview`, or `final_review`. Canonical receipts/commits still require reconciliation. |
+| `phase_attempt` | Monotonic attempt number for the active phase; prevents duplicate receipt/session reuse. |
 
 ## Autonomy levels
 

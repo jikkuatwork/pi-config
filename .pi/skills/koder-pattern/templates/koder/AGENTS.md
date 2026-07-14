@@ -30,13 +30,21 @@ This repo uses the koder pattern for durable agent handoff and project memory.
 ## Koder artifacts
 
 - Minimum scaffold: `koder/STATE.md`, `koder/issues/`, `koder/skills/open/`, and `koder/skills/close/`.
-- Create other artifact directories only when needed, for example `koder/proposals/`, `koder/plans/`, `koder/reviews/`, `koder/research/`, `koder/analysis/`, `koder/notes/`, `koder/tasks/`, `koder/queues/`, or `koder/scratch/`.
+- Create other artifact directories only when needed, for example `koder/proposals/`, `koder/plans/`, `koder/reviews/`, `koder/research/`, `koder/analysis/`, `koder/notes/`, `koder/tasks/`, `koder/queue/`, or `koder/scratch/`.
 - Use folder-first artifacts for durable records: `koder/<type>/NNN_short_slug/INDEX.md`.
 - Use `koder/proposals/` for RFC-scale ideas that should converge before issues/plans are extracted.
 - Treat `INDEX.md` as canonical current state; use `turns/` only for optional discussion/history.
 - Scan existing artifacts before choosing the next number; each artifact type has its own sequence.
 - Prefer source links, file paths, command names, commits, and concise evidence over copied detail.
 - Run local validators before finalizing artifacts when validators exist.
+
+## Queue orchestration
+
+- A queue's declared orchestration mode controls execution. Ordinary queues may use direct or worker modes; `orchestration_mode: blind` is explicit opt-in and must use the koder-pattern blind-orchestration route.
+- In blind mode, the primary/coordinator routes isolated fresh implementation, review, fix, and re-review workers and consumes compact receipts. It must not implement product work or ingest source, full diffs, test bodies, review findings, transcripts, routine panes, or long logs.
+- Blind mode fails closed when fresh worker isolation, independent review, compact receipts, ownership, or coordinator rollover cannot be enforced. Never silently turn it into a direct mega-session.
+- Phase workers do not mutate queue/run-log/`koder/STATE.md` metadata; the coordinator owns process accounting. On interruption, reconcile receipts, commits, canonical artifacts, and Git, then resume from the first unproven phase.
+- Keep repo-local blind policy concise: active authorization/stop gate, queue identity, branch/worktree ownership, exact validation, caps, and forbidden actions. Do not duplicate the full generic protocol across every artifact.
 
 ## Safety
 

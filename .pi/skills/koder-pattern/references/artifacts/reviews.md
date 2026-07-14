@@ -1,6 +1,6 @@
 ---
 title: Koder Reviews
-updated: 2026-06-05
+updated: 2026-07-14
 ---
 
 # Koder Reviews
@@ -25,6 +25,9 @@ plan: NNN
 issue: NNN
 type: plan-review    # plan-review | code-review | tests-review | audit
 verdict: needs fixes # pass | approve | approve with fixes | needs fixes | revise | reject
+p1: 1
+p2: 1
+p3: 0
 reviewer: codex      # codex | claude | user | other
 created: YYYY-MM-DD
 ---
@@ -38,6 +41,9 @@ plan: NNN
 issue: NNN
 type: plan-review
 verdict: needs fixes
+p1: 1
+p2: 1
+p3: 0
 reviewer: codex
 created: YYYY-MM-DD
 ---
@@ -81,6 +87,12 @@ PASS / APPROVE / NEEDS FIXES / REVISE / REJECT, with the next action.
 - Confirms what passed to avoid repeated debate.
 - Cites source evidence and validation results.
 - Does not expand scope beyond the reviewed issue/plan unless it files a follow-up issue.
+
+## Blind-queue review handoff
+
+In explicit blind mode, the canonical review must be self-contained because the coordinator will not read or paraphrase findings. Put normalized `verdict`, `p1`, `p2`, and `p3` in frontmatter so the coordinator may read only that bounded header. Return compact machine proof containing review commit/path, validation exits, metrics, Git state, and blocker; with Harnex, prefer one native artifact report referencing the canonical review rather than a duplicate custom phase sidecar. A fresh fix worker reads the committed review body directly.
+
+Review and fix must be separate fresh roles. Re-review writes a new canonical artifact and compact verdict receipt. See `references/queues/blind-briefs.md`.
 
 ## Follow-ups
 

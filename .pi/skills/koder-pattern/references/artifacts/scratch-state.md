@@ -1,6 +1,6 @@
 ---
 title: Koder Scratch, State, and Evidence Stores
-updated: 2026-06-11
+updated: 2026-07-14
 ---
 
 # Koder Scratch, State, and Evidence Stores
@@ -13,6 +13,7 @@ Use when handling transient work products, session handoff, or reproducible evid
 
 - worker briefs;
 - temporary proofs;
+- compact phase/coordinator receipts;
 - dispatch summaries;
 - command output snapshots;
 - session-specific notes.
@@ -24,6 +25,8 @@ Rules:
 - Do not store secrets or private payloads.
 - Do not require future agents to read huge scratch logs to understand current state.
 - Link scratch artifacts only when they are concise evidence and likely to remain useful.
+- For blind queues, prefer an external runtime root or explicitly ignored scratch for task files, receipts, and long logs. Use versioned identities and atomic writes.
+- Promote durable phase/commit/validation/review/blocker facts into the canonical queue/review/run log before closeout. Never make a durable claim depend only on an ephemeral `/tmp` receipt.
 - Clean or archive scratch according to repo policy; do not churn large generated files casually.
 
 ## Session state

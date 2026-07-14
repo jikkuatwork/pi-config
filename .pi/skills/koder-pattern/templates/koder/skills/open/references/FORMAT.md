@@ -10,7 +10,10 @@ Git           `clean` or `dirty — <count> path(s)`
 Sync          `✔` or `✘ <ahead/behind detail>`
 Last Session  `<timestamp>` (`<time ago>`)
 Commits       `<total>` total · `<since hand-off>` since hand-off
-State         `<READY | IN_PROGRESS | BLOCKED | unknown>`
+State         `<READY | IN_PROGRESS | REVIEW_READY | BLOCKED | DONE | unknown>`
+Window        `<active authorization window>`
+Mode          `<blind orchestrator | direct | unspecified>`
+Stop Gate     `<hard boundary>`
 
 ━━━
 **Notes** (optional — only when something needs attention)
@@ -37,4 +40,5 @@ State         `<READY | IN_PROGRESS | BLOCKED | unknown>`
 - Use inline code for branches, commits, issue numbers, and file paths.
 - Omit **Notes** when the tree is clean, upstream is synchronized, and the hand-off has no warning.
 - **Past**, **Present**, and **Future** come from `koder/STATE.md`; they are not a substitute for live Git facts.
-- The final judgment is an interpretation, not another status list. The suggested action should be the most useful item from **Future** and answerable with “yes”.
+- **Window**, **Mode**, and **Stop Gate** come from `koder/STATE.md` plus `koder/docs/EXECUTION.md`; omit them when no bounded execution contract exists. When Mode is `blind orchestrator`, the suggestion must say the primary routes isolated workers and does not read implementation detail.
+- The final judgment is an interpretation, not another status list. Prefer the active bounded window from **Future**, include its stop condition, and phrase the suggestion so “yes” is enough.

@@ -1,6 +1,6 @@
 ---
 title: Koder Queue Add Workflow
-updated: 2026-07-01
+updated: 2026-07-14
 ---
 
 # Koder Queue Add Workflow
@@ -21,11 +21,12 @@ Use when the user asks to add, prepare, pack, or refill queue work. If the task 
    - create the next numbered batch when the current one is full, incompatible, active, or nearly drained;
    - if an implementation queue is already running, plan only sequentially compatible next work and check for ref/file/dependency overlap.
 5. Add or refresh the queue completion contract: `done_state`, `timebox_gate`, `continuation_policy`, and `early_stop_consent`.
-6. Add thin entries with only `Ref`, `Status`, `Estimate`, `Risk`, `Ambiguity`, `Mode`, `Validation`, and `Stop`; add optional slice metadata only when it improves progress accounting.
-7. Keep packed effort above the target window; include fallback work when possible. For away windows, prefer overflow or a next-ready queue over a single underpacked batch.
-8. Add or update queue progress accounting (`issues_touched`, `slices_queued`, likely closures/live gates) when raw issue count will understate movement.
-9. Run local validators if present; otherwise perform manual frontmatter/path/status checks.
-10. Commit queue changes with source artifact refinements when the repo workflow expects commits.
+6. If the user explicitly selects blind mode, load `references/queues/blind-orchestration.md` and add only the local overlay: `orchestration_mode`, coordinator/fix caps, independent/final review policy, implementation ownership, exact validation, and stop gates. Do not paste the full protocol into every row.
+7. Add thin entries with only `Ref`, `Status`, `Estimate`, `Risk`, `Ambiguity`, `Mode`, `Validation`, and `Stop`; add optional slice metadata only when it improves progress accounting.
+8. Keep packed effort above the target window; include fallback work when possible. For away windows, prefer overflow or a next-ready queue over a single underpacked batch.
+9. Add or update queue progress accounting (`issues_touched`, `slices_queued`, likely closures/live gates) when raw issue count will understate movement.
+10. Run local validators if present; otherwise perform manual frontmatter/path/status checks.
+11. Commit queue changes with source artifact refinements when the repo workflow expects commits.
 
 ## Conveyor strategy
 
@@ -45,3 +46,5 @@ A successful queue-add leaves a runner able to consume the batch without asking 
 - Mixing incompatible autonomy levels or constraints in one batch.
 - Building the next queue without checking active queue refs/files/dependencies.
 - Claiming an away-window queue is sufficient when it has no overflow, next-ready queue, or explicit early-stop consent.
+- Labeling a queue blind without fresh worker isolation, independent review, compact receipts, rollover/recovery rules, and a fail-closed gate.
+- Duplicating the generic blind protocol across repo instructions, execution docs, plans, and every queue row instead of keeping a small local overlay.
