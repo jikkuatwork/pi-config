@@ -27,20 +27,31 @@ assert_link() {
 }
 
 for blind_doc in \
+  references/queues/mode-selection.md \
   references/queues/blind-orchestration.md \
   references/queues/blind-briefs.md \
   references/queues/blind-recovery.md \
   references/meta/sdk-blind-orchestration-review.md; do
   [ -s "$SKILL_ROOT/$blind_doc" ] || fail "missing blind orchestration reference: $blind_doc"
 done
+grep -Fq 'references/queues/mode-selection.md' "$SKILL_ROOT/references/INDEX.md" || fail "main router does not expose delivery-first mode selection"
 grep -Fq 'references/queues/blind-orchestration.md' "$SKILL_ROOT/references/INDEX.md" || fail "main router does not expose blind orchestration"
 grep -Fq 'references/queues/blind-recovery.md' "$SKILL_ROOT/references/INDEX.md" || fail "main router does not expose blind recovery"
+grep -Fq 'a queue does **not** imply blind orchestration' "$SKILL_ROOT/references/queues/mode-selection.md" || fail "mode selection lacks queue/blind separation"
+grep -Fq 'two no-op' "$SKILL_ROOT/references/queues/mode-selection.md" || fail "mode selection lacks no-op circuit breaker"
+grep -Fq 'Do not ask a model to invent or expand a commit SHA' "$SKILL_ROOT/references/queues/mode-selection.md" || fail "mode selection lacks Git-owned commit identity"
+grep -Fq 'Routine artifact and queue movement should ride with the logical' "$SKILL_ROOT/references/shared/state-commit-protocol.md" || fail "state protocol still encourages commit amplification"
+grep -Fq 'A clean row review may remain compact execution proof' "$SKILL_ROOT/references/artifacts/reviews.md" || fail "review policy still requires an artifact for every clean row"
+if grep -Fq 'run the repo close workflow' "$SKILL_ROOT/references/queues/blind-briefs.md" "$SKILL_ROOT/references/queues/blind-orchestration.md"; then
+  fail "blind coordinators still invoke session close at rollover"
+fi
 awk '
   /^---[[:space:]]*$/ { separators += 1; next }
   separators >= 2 && /references\/INDEX\.md/ { found = 1 }
   END { exit(found ? 0 : 1) }
 ' "$SKILL_ROOT/SKILL.md" || fail "koder-pattern has no cross-harness body route to references/INDEX.md"
 grep -Fq 'with koder-pattern' "$SKILL_ROOT/SKILL.md" || fail "koder-pattern description lacks explicit natural-language trigger wording"
+grep -Fq 'Do not trigger for ordinary coding, planning, review, research' "$SKILL_ROOT/SKILL.md" || fail "koder-pattern description still catches ordinary work"
 
 repo="$TMP_ROOT/repo"
 "$KODER_PATTERN" init --no-commit "$repo" >/dev/null
@@ -64,6 +75,13 @@ for skill in open close; do
 done
 
 grep -Fq 'orchestration_mode: blind' "$repo/koder/AGENTS.md" || fail "generated AGENTS lacks the conditional blind queue boundary"
+grep -Fq 'A queue does not imply blind mode' "$repo/koder/AGENTS.md" || fail "generated AGENTS lacks delivery-first queue separation"
+grep -Fq 'Do not dispatch metadata-finalizer workers' "$repo/koder/AGENTS.md" || fail "generated AGENTS lacks direct metadata ownership"
+grep -Fq 'Two no-op/boot/permission attempts' "$repo/koder/AGENTS.md" || fail "generated AGENTS lacks dispatch circuit breaker"
+grep -Fq 'Routine artifact/status changes ride with the logical work commit' "$repo/koder/AGENTS.md" || fail "generated AGENTS lacks commit-economy rule"
+if grep -Fq 'Every intentional `koder/` state transition' "$repo/koder/AGENTS.md"; then
+  fail "generated AGENTS still mandates one commit per koder transition"
+fi
 grep -Fq 'koder/docs/EXECUTION.md' "$repo/koder/skills/open/references/INDEX.md" || fail "generated open skill does not surface execution windows"
 grep -Fq 'Mode' "$repo/koder/skills/open/references/FORMAT.md" || fail "generated open format does not surface orchestration mode"
 grep -Fq 'Stop Gate' "$repo/koder/skills/open/references/FORMAT.md" || fail "generated open format does not surface the stop gate"

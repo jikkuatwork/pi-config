@@ -7,22 +7,45 @@ updated: 2026-07-14
 
 ## When to use harnex
 
-Use harnex when work should be delegated to a separate agent session and tracked as an artifact-producing operation:
+Load `references/queues/mode-selection.md` first. Use Harnex when fresh-session
+isolation or supervision materially helps:
 
-- plan writing or plan review;
+- substantial plan writing or independent plan review after the planning budget is disclosed;
 - test-suite creation;
 - implementation from a bounded plan;
 - code review or fix pass;
 - long unattended queue entries;
 - cross-agent review loops where the orchestrator should stay thin.
 
-Do not use harnex for tiny ordinary edits the current agent can safely complete directly, or when the repo lacks harnex and no worker harness is available. Exception: once a queue explicitly selects blind mode, even a small implementation/review phase must preserve worker isolation; stop rather than collapsing it into coordinator code.
+Do not use Harnex for ordinary owner-present planning, docs, frontmatter/status
+updates, queue accounting, or tiny edits the current agent can safely complete
+directly. Harnex does not imply a chain: one supervised worker may be enough.
+Exception: once a queue explicitly selects blind mode, declared
+implementation/review isolation must be preserved; stop rather than collapsing
+it into coordinator code.
+
+## Preflight and circuit breaker
+
+Before a long phase or chain:
+
+1. run `harnex doctor` and live adapter guidance;
+2. verify runtime report/log paths are external or ignored;
+3. verify the selected adapter/config can write the scoped workspace and receipt;
+4. use a short first work fence before granting the full wall cap.
+
+One acknowledgment/progress-only completion may receive one continuation turn.
+Two no-op, boot, registration, permission, or receipt-free attempts for the same
+phase stop retries until the adapter/config/brief or execution shape changes.
+Do not spend the implementation budget debugging orchestration.
 
 ## Blind hierarchy
 
-For a multi-entry blind drain, the root session should act as a thin governor and dispatch fresh bounded coordinator sessions. Each coordinator dispatches fresh phase workers. Carry queue/entry/phase/attempt/coordinator identity through task files and metadata so harnex telemetry and receipts can be reconciled without reading transcripts.
+For a long unattended multi-entry blind drain, the root session should act as a thin governor and dispatch fresh bounded coordinator sessions. Each coordinator dispatches fresh phase workers. Carry queue/entry/phase/attempt/coordinator identity through task files and metadata so harnex telemetry and receipts can be reconciled without reading transcripts.
 
-If nested dispatch is unavailable, one current session may act as a bounded blind coordinator, but it must stop at its declared cap. Fresh phase-worker isolation and independent review remain mandatory.
+For owner-present or short blind work, the current session should normally act
+as the bounded coordinator and omit a governor layer. If nested dispatch is
+unavailable, it must stop at its declared cap. Fresh phase-worker isolation and
+the queue-declared review boundary remain mandatory.
 
 ## Command shape
 
@@ -104,15 +127,22 @@ When harnex or a repo wrapper supports machine-readable sidecars, use them as an
 evidence index for queue closeout and telemetry, not as a replacement for the
 plain-text issue/plan/review.
 
-A good worker contract names both outputs:
+A good review contract names typed proof first and a conditional durable output:
 
 ```text
-Write the canonical review to `koder/reviews/NNN_slug/01_review.md`.
-Write machine-readable validation/artifact proof to `$HARNEX_ARTIFACT_REPORT_PATH`
-if that variable is set; otherwise summarize the validation commands in the
-canonical review.
+Write machine-readable verdict/counts/validation proof to
+`$HARNEX_ARTIFACT_REPORT_PATH`. Write a canonical review at
+`koder/reviews/NNN_slug/01_review.md` only for findings, a milestone/authority
+review, or when repo policy requires one. A clean row approval may return no
+review path.
 ```
 
-Sidecar payloads should stay compact and versioned: identity, status, commit, changed paths, validation commands/exit codes, typed finding/risk/gate summaries, evidence refs, confidence, canonical refs, byte size/hash where available. Never store transcripts, full prompts, review finding prose, secrets, or large private payloads in telemetry sidecars.
+Sidecar payloads should stay compact and versioned: semantic status,
+validation commands/exit codes, typed finding/risk/gate summaries, evidence
+refs, confidence, and canonical refs. Harnex terminal telemetry plus live Git
+own observed commit identity, changed paths, and clean/sync state; do not ask a
+model to invent or expand those values in summary prose. Never store
+transcripts, full prompts, review finding prose, secrets, or large private
+payloads in telemetry sidecars.
 
 For blind queues, use the phase and coordinator contracts in `references/queues/blind-briefs.md`. Prefer Harnex's native `--artifact-report` / `harnex.artifact_report.v1` as the phase receipt and combine it with first-class attribution plus the terminal dispatch summary; do not require a duplicate `koder.blind.phase.v1` file. Write reports atomically and only after canonical artifacts, validation, commit/push, and Git checks. Runtime reports are an execution API, not the sole durable proof.

@@ -17,15 +17,13 @@ This repo uses the koder pattern for durable agent handoff and project memory.
 - Keep `koder/STATE.md` short and current; update it at init, close, explicit handoff requests, or external-origin filings into this repo.
 - Do not put secrets, private payloads, full prompts, credentials, or large copied source/output into `koder/`.
 
-## State commits
+## Commits and state
 
-- Every intentional `koder/` state transition gets a `state:` commit by default.
-- Use subjects like `state: init - koder pattern scaffold`, `state: close - <result>`, `state: file #NNN from <origin> - <reason>`, or `state: update #NNN - <reason>`.
-- `state:` commits are the semantic movement ledger; `koder/STATE.md` is the session handoff, not a commit-by-commit changelog.
-- Do not edit `koder/STATE.md` solely because a local in-session artifact state commit happened; summarize at close if it matters.
-- Do not force ordinary code-only commits to use `state:`; the ledger tracks semantic operator/repo-state movement.
-- In dirty repos, commit only the intended state paths and preserve unrelated dirty/staged work.
-- If the user explicitly says not to commit, leave state uncommitted and report the dirty paths.
+- Routine artifact/status changes ride with the logical work commit or a batched resumable checkpoint; do not create one commit per queue row, review approval, or frontmatter edit.
+- Use standalone `state:` commits only when operator state is itself the milestone: scaffold init, real session handoff, external filing, owner authorization/block/acceptance, or a process-only checkpoint.
+- `koder/STATE.md` is the compact session handoff, not a commit-by-commit ledger. Update it only at init, real close/handoff, explicit user request, or external filing.
+- Phase workers and internal coordinators do not run the user-facing close skill merely to rotate context.
+- In dirty repos, commit selected intended paths and preserve unrelated dirty/staged work. If the user says not to commit, report the remaining paths.
 
 ## Koder artifacts
 
@@ -40,11 +38,11 @@ This repo uses the koder pattern for durable agent handoff and project memory.
 
 ## Queue orchestration
 
-- A queue's declared orchestration mode controls execution. Ordinary queues may use direct or worker modes; `orchestration_mode: blind` is explicit opt-in and must use the koder-pattern blind-orchestration route.
-- In blind mode, the primary/coordinator routes isolated fresh implementation, review, fix, and re-review workers and consumes compact receipts. It must not implement product work or ingest source, full diffs, test bodies, review findings, transcripts, routine panes, or long logs.
-- Blind mode fails closed when fresh worker isolation, independent review, compact receipts, ownership, or coordinator rollover cannot be enforced. Never silently turn it into a direct mega-session.
-- Phase workers do not mutate queue/run-log/`koder/STATE.md` metadata; the coordinator owns process accounting. On interruption, reconcile receipts, commits, canonical artifacts, and Git, then resume from the first unproven phase.
-- Keep repo-local blind policy concise: active authorization/stop gate, queue identity, branch/worktree ownership, exact validation, caps, and forbidden actions. Do not duplicate the full generic protocol across every artifact.
+- Apply koder-pattern's delivery-first gate before adding machinery. A queue does not imply blind mode, Harnex does not imply a chain, and owner-present planning/docs/metadata default to direct work or one supervised worker.
+- Disclose product outcome, expected workers/artifacts, wall budget, and stop gate before planning-only or blind work. Stop planning after two dispatches or 30 minutes without product delta unless the owner re-authorizes it.
+- `orchestration_mode: blind` is explicit opt-in. Load the skill's blind route only then; keep repo-local policy to authorization, review boundary, ownership, validation, caps, and forbidden actions.
+- Coordinators own compact process accounting directly. Do not dispatch metadata-finalizer workers or require clean-review Markdown artifacts when a typed receipt plus queue checkpoint is sufficient. Two no-op/boot/permission attempts open the circuit breaker.
+- Blind mode fails closed if its declared isolation/review boundary cannot be enforced. Recover from receipts, commits, artifacts, and Git at the first unproven phase rather than replaying work.
 
 ## Safety
 

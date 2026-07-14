@@ -1,6 +1,6 @@
 ---
 name: koder-pattern
-description: Set up the koder/ durable agent-memory pattern and manage durable koder artifacts, queues, and isolated worker workflows. Always use when the user explicitly says "koder-pattern", "with koder-pattern", "use koder-pattern", or invokes /skill:koder-pattern. Also use for setup/bootstrap; open/close hand-offs; proposals, issues, plans, reviews, research, analysis, notes, tasks, or turns; queue/conveyor work; harnex dispatch; or blind-orchestrator queues with compact receipts, recovery, and coordinator rollovers.
+description: Durable repo memory and optional automated queue orchestration. Use when the user explicitly says "koder-pattern", "with koder-pattern", or "use koder-pattern"; asks to install/bootstrap it; explicitly requests a durable koder/ artifact; or asks to build/run/recover a koder queue or Harnex workflow. Do not trigger for ordinary coding, planning, review, research, or repo opening unless durable koder output or orchestration is requested.
 metadata:
   structure: tiny_front_door_v1
   references:

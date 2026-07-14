@@ -20,7 +20,7 @@ Check these independently:
 1. active harness sessions and work-level terminal state;
 2. expected phase/coordinator receipt existence, parseability, schema, and identity;
 3. referenced commit existence/reachability and expected parent/base relationship;
-4. canonical review/queue/run-log artifacts;
+4. typed review proof plus canonical review artifacts when findings/gates required them, and queue/run-log artifacts;
 5. changed-path list and current Git HEAD/status/upstream drift;
 6. required validation exits and verdict fields;
 7. authorization, deadline, ownership, and stop gates.
@@ -32,11 +32,11 @@ No single surface is sufficient in every failure mode. Harness status proves pro
 1. **Fence ownership.** Identify and stop/park duplicate or stale sessions. Never launch another implementation owner while one may still be writing.
 2. **Snapshot process and Git facts.** Record bounded status, HEAD, branch/worktree, dirty paths, and upstream counts without opening diffs.
 3. **Validate receipts.** Parse JSON; verify schema, queue, entry, phase, attempt, commit, required fields, and timestamps. Malformed/partial JSON is unknown.
-4. **Verify durable claims.** Confirm referenced commits and canonical review paths exist. Check changed paths and validation summaries without reading implementation content.
+4. **Verify durable claims.** Confirm referenced commits and any claimed canonical review paths exist. Check changed paths, typed verdict/counts, and validation summaries without reading implementation content.
 5. **Compare canonical state.** Determine which phase queue/run-log state says should be active and whether accounting lags durable work.
 6. **Choose the first unproven phase** using the table below.
 7. **Dispatch recovery or the next normal phase.** Give the fresh worker only reconciled process facts and canonical paths, not old transcript/pane content.
-8. **Repair orchestration metadata.** After proof, update queue/run-log/state with selected paths and continue or close blocked.
+8. **Repair orchestration metadata.** After proof, batch queue/run-log metadata with selected paths and continue or stop blocked. Update `koder/STATE.md` only at the owner handoff boundary.
 
 ## First-unproven-phase table
 
@@ -44,11 +44,11 @@ No single surface is sufficient in every failure mode. Harness status proves pro
 | --- | --- |
 | No implementation commit, clean tree, no active worker | Dispatch fresh `implement`. |
 | No implementation commit, product/config WIP present | Dispatch fresh `recovery` implementation worker; coordinator does not inspect or reset source. |
-| Implementation commit + valid receipt, no canonical review | Dispatch fresh `review`; do not reimplement. |
+| Implementation commit + valid receipt, no independent review proof | Dispatch fresh `review`; do not reimplement. |
 | Implementation commit exists but receipt is missing/invalid | Dispatch a bounded verifier/review worker to validate the commit and reconstruct compact proof; do not blindly rerun implementation. |
-| Review verdict `needs_fixes`, no fix commit | Dispatch `fix` pointing directly to canonical review. |
+| Review verdict `needs_fixes` + canonical finding review, no fix commit | Dispatch `fix` pointing directly to that review. |
 | Fix commit + receipt, no re-review | Dispatch fresh `rereview`. |
-| Approving review + required validation + safe Git, queue accounting stale | Coordinator updates queue/run-log/issue accounting; no product worker needed. |
+| Approving typed review proof + required validation + safe Git, queue accounting stale | Coordinator batches queue/run-log/issue accounting at the next checkpoint; no product or finalizer worker needed. |
 | Coordinator receipt missing, child phase commits/receipts present | Launch a fresh recovery coordinator at the first unproven phase. |
 | Queue claims done but required final review absent | Launch fresh `final_review`. |
 | Required proof cannot be reconstructed safely | Mark blocked with the shortest missing proof and close. |

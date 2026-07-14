@@ -7,17 +7,18 @@ updated: 2026-07-14
 
 ## What “file a queue” means
 
-To file a queue is to create or update a `koder/queue/NNN_slug/INDEX.md` batch with:
+To file a queue is to create or update a
+`koder/queue/NNN_slug/INDEX.md` with the minimum state needed to resume:
 
-- target window, autonomy level, and explicit orchestration mode;
-- explicit constraints and forbidden risks;
-- a completion contract for unattended or away-window runs;
-- progress accounting for issues touched and slices queued/drained when useful;
-- ordered entries that reference existing issues/plans/tasks;
-- estimate, risk, ambiguity, mode, validation, and stop rule per entry;
-- optional estimate/actual telemetry in `koder/queue/log.jsonl` for calibration;
-- a concise run log as entries are consumed;
-- for explicit blind mode, coordinator/fix caps, independent/final review policy, phase attempts, and compact receipt/recovery expectations.
+- purpose, status, explicit orchestration mode, and constraints;
+- ordered refs to executable issues/plans/tasks;
+- validation and stop rule for each entry;
+- a done/stop/continuation contract only for unattended or away-window runs;
+- a concise batched run log or checkpoint evidence.
+
+Add estimates, risk, ambiguity, autonomy, progress accounting, telemetry, blind
+caps, or final-review fields only when they change scheduling or safety. Do not
+fill null/zero boilerplate merely because the full schema supports it.
 
 ## Path
 
@@ -33,77 +34,43 @@ koder/queue/log.jsonl        # optional cross-queue estimate/actual ledger
 queue: NNN
 title: Short queue title
 status: ready
-created: YYYY-MM-DD
-updated: YYYY-MM-DD
-target_window: 6h
-queued_effort_target: 9h
-autonomy_level: A2
 orchestration_mode: direct # direct | blind
-coordinator_entry_cap: null # blind only; integer 1-4
-max_fix_cycles: null # blind only; usually 1-2
-independent_review: optional # required for blind
-implementation_ownership: serial # serial | isolated; blind mode must be unambiguous
-final_review_required: false
-completion_contract:
-  done_state: "What the user should expect when they return."
-  timebox_gate: "Stop starting new work at closeout reserve, when exhausted, or at a named validation/release gate."
-  continuation_policy: "What to run next if primary entries finish early, including overflow or the next compatible ready queue."
-  early_stop_consent: "Explicit only; otherwise do not stop merely because primary entries drained."
-progress_accounting:
-  issues_touched: 0
-  slices_queued: 0
-  issues_likely_closed: 0
-  issues_moved_to_live_gate: 0
 constraints:
   no_release: true
   no_cloud_spend: true
-  no_destructive_db: true
-  serial_master: true
 ---
 
 # Queue NNN: Short Title
 
 ## Purpose
 
-Why this batch exists and what safe theme ties entries together.
-
-## Progress Accounting
-
-Optional but recommended for broad queues. See
-`references/shared/slice-accounting.md`.
-
-| Metric | Count |
-| --- | ---: |
-| Issues touched | 0 |
-| Slices queued | 0 |
-| Likely slices drained | 0 |
-| Likely issues closed | 0 |
-| Likely moved to live-proof-only | 0 |
+The result this batch should deliver.
 
 ## Entries
 
-| Order | Ref | Status | Estimate | Risk | Ambiguity | Mode | Validation | Stop |
-| ---: | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | `koder/plans/123_example/INDEX.md#layer-1` | queued | 60m | green | low | direct | `test command` | stop at 90m; commit green partial or mark blocked |
-
-## Orchestration Notes
-
-- Queue-specific constraints only.
-- Do not restate implementation detail from referenced artifacts.
+| Order | Ref | Status | Validation | Stop |
+| ---: | --- | --- | --- | --- |
+| 1 | `koder/issues/123_example/INDEX.md` | queued | `test command` | stop on source contradiction |
 
 ## Run Log
 
-- Pending.
+- Pending; batch updates at resumable checkpoints.
 ```
+
+For an away window, add `target_window` plus `completion_contract`. For capacity
+planning, add only the estimates/risk/ambiguity fields actually used. For a broad
+track, add progress accounting. For blind mode, add the overlay below.
 
 ## Blind mode overlay
 
 Use blind mode only when explicitly selected. Before launch, load `references/queues/blind-orchestration.md` and `references/queues/blind-briefs.md`.
 
+- Apply `mode-selection.md` first; queue existence does not imply blind mode.
 - Set `orchestration_mode: blind` at queue level; do not encode it only in chat.
+- Set `assurance_profile` and `review_granularity`. Use `strict` + `entry` for auth/security/protocol/release/destructive/credential risk; bounded lower-risk blind work may declare batch boundaries.
 - Set `coordinator_entry_cap` to `1-4`. Four is a hard ceiling, not a throughput target; choose lower caps for complex/fix-heavy rows.
 - Set `max_fix_cycles` and stop for owner/architecture judgment when exhausted.
-- Set `independent_review: required` and make `implementation_ownership` serial or explicitly isolated/non-overlapping.
+- Set `independent_review: required` at the declared boundary and make `implementation_ownership` serial or explicitly isolated/non-overlapping.
 - Set `final_review_required: true` when the queue done state claims an integrated milestone rather than isolated row completion.
 - Keep branch/worktree ownership and review requirements in `constraints` or a concise repo execution overlay.
 - Do not paste the universal blind protocol into every row. Rows still carry only source ref, validation, stop rule, and local risk facts.
@@ -151,10 +118,10 @@ Rules:
 | --- | --- |
 | `Ref` | Exact source artifact path/anchor. The source holds implementation detail. |
 | `Status` | `candidate`, `queued`, `running`, `implemented`, `reviewing`, `fixing`, `rereviewing`, `approved`/`done`, `blocked`, or `skipped`. Repos may keep a smaller vocabulary if the run log records the active phase. |
-| `Estimate` | Expected active work time. Keep runnable entries `<=120m` unless investigation-only. |
-| `Risk` | `green`, `yellow`, or `red` based on blast radius. |
-| `Ambiguity` | `low`, `medium`, or `high` based on unresolved decisions/source clarity. |
-| `Mode` | `docs-direct`, `direct`, `worker`, `review-only`, `harnex-light`, `harnex-chain`, or repo-local equivalent. |
+| `Estimate` (optional) | Expected active work time when capacity planning matters. Keep runnable entries `<=120m` unless investigation-only. |
+| `Risk` (optional) | `green`, `yellow`, or `red` when it changes review/authorization. |
+| `Ambiguity` (optional) | `low`, `medium`, or `high` when it changes dispatch/stop policy. |
+| `Mode` (optional) | `docs-direct`, `direct`, `worker`, `review-only`, `harnex-light`, `harnex-chain`, or repo-local equivalent when rows differ. Harnex does not itself select blind mode. |
 | `Validation` | Command or artifact check required before `done`. |
 | `Stop` | Timebox, split trigger, fallback, or approval gate. |
 

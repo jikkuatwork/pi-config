@@ -1,6 +1,6 @@
 ---
 title: Koder State Commit Protocol
-updated: 2026-06-30
+updated: 2026-07-14
 ---
 
 # Koder State Commit Protocol
@@ -9,26 +9,42 @@ Use this when setup, close, artifact filing, artifact status changes, or cross-r
 
 ## Core rule
 
-Every intentional `koder/` state transition gets a grepable `state:` commit by default.
+Commit semantic milestones, not every metadata transition. `state:` is a useful
+subject prefix when operator state itself is the deliverable; it is not a second
+commit stream that mirrors every plan, review, queue-row, or frontmatter edit.
 
-`state:` commits are the git-level semantic movement ledger. `koder/STATE.md` is **not** that ledger; it is a compact session-to-session handoff. Do not edit `koder/STATE.md` for every `state:` commit.
+Routine artifact and queue movement should ride with the logical product, review,
+or checkpoint commit whenever practical. Batch related status/run-log changes at
+a resumable checkpoint instead of committing each worker phase. `koder/STATE.md`
+is a compact session handoff, not a commit-by-commit ledger.
 
-The escape hatch must be explicit: `--no-commit`, “do not commit”, or equivalent. If a state change is left uncommitted, say so clearly and list the dirty paths.
+If the user says not to commit, preserve the dirty paths and report them. That is
+the normal explicit escape hatch for changes that otherwise need a commit.
 
-## What counts as a state transition
+## When to use a standalone `state:` commit
 
-Commit these with `state:`:
+Use one when the state change is independently meaningful and has no better
+logical commit:
 
 - initializing the koder scaffold;
-- updating `koder/STATE.md` during close;
-- filing a proposal/issue/plan/review/research/note/task/queue artifact;
-- changing artifact status or acceptance/resolution state;
+- updating `koder/STATE.md` during a real session close/handoff;
 - filing into this repo from another repo/session;
-- durable queue/harnex run-log movement.
+- recording an owner authorization, acceptance, block, resolution, or comparable
+  process-only milestone;
+- checkpointing a batch of queue/run-log movement needed for safe interruption or
+  coordinator rollover.
 
-Do not force ordinary implementation commits to use `state:` when they do not change koder/operator state. The ledger tracks independent semantic repo movements, not every code diff.
+Do **not** create a standalone commit merely for:
 
-Dry-runs and read-only inspections are not state transitions.
+- routine local plan/issue/review filing that can accompany the work it describes;
+- each queue row or phase status change;
+- approval/frontmatter normalization after an already-proven review;
+- a metadata-finalizer phase;
+- every worker or coordinator boundary.
+
+A logical implementation or review commit may include its directly related
+`koder/` artifact changes and keep its normal `feat:`, `fix:`, `test:`, `review:`,
+or repo-local subject. Dry-runs and read-only inspections are not state movement.
 
 ## When to update `koder/STATE.md`
 
@@ -39,7 +55,9 @@ Update `koder/STATE.md` only when the handoff itself must move:
 - when an external repo/agent/session files an issue or similar artifact into this repo mid-session;
 - when the user explicitly asks to update handoff state.
 
-Do **not** update `koder/STATE.md` solely because a local in-session `state:` commit files/updates/resolves an artifact. Record that movement in the artifact and commit body; summarize it in `koder/STATE.md` at close if it matters to the next session.
+Do **not** update `koder/STATE.md` solely because a local artifact or queue row
+moved. Record routine movement in the artifact, compact run proof, or logical
+work commit; summarize only what matters to the next session at close.
 
 Use `State file: koder/STATE.md` in a commit body only when the commit actually touches `koder/STATE.md`.
 
@@ -51,18 +69,20 @@ Use concise subjects that are easy to grep:
 state: init - koder pattern scaffold
 state: close - <semantic session result>
 state: file #NNN from <origin-repo> - <short reason>
-state: update #NNN - <short reason>
-state: resolve #NNN - <short result>
+state: authorize #NNN - <bounded owner decision>
+state: resolve #NNN - <process-only result>
 ```
 
-For non-issue artifacts, include the artifact type when useful:
+For process-only milestones, include the artifact type when useful:
 
 ```text
-state: update plan #NNN - <short reason>
-state: file review #NNN - <short reason>
+state: authorize queue #NNN - <bounded window>
+state: checkpoint queue #NNN - <resumable result>
 ```
 
-Always include the exact artifact path in the body when a number could be ambiguous.
+Ordinary plan/review commits use the repository's normal subject vocabulary.
+Always include the exact artifact path in a `state:` commit body when a number
+could be ambiguous.
 
 ## Commit body schemas
 
@@ -112,15 +132,15 @@ Delta:
 - <operator-facing impact>
 ```
 
-### Artifact update
+### Process-only checkpoint
 
 ```text
-State event: artifact_update
+State event: checkpoint
 Artifact: koder/<type>/NNN_slug/INDEX.md
-Reason: <one line>
+Reason: <why this movement needs an independent durable milestone>
 
 Delta:
-- <state change>
+- <batched state change>
 - <next operator implication>
 
 Validation:
@@ -140,25 +160,25 @@ Rules:
 
 - If the paths you need to touch are already dirty/staged from someone else, stop and coordinate.
 - Unrelated dirty or staged paths may remain, but must not be swept into the `state:` commit.
-- Prefer selected-path staging and pathspec commits for state-only movement. External issue filings touch both handoff and issue paths:
+- Prefer selected-path staging and pathspec commits for state-only milestones. External issue filings touch both handoff and issue paths:
   ```bash
   git add -- koder/STATE.md koder/issues/NNN_slug/INDEX.md
   git commit -F /tmp/state-message -- koder/STATE.md koder/issues/NNN_slug/INDEX.md
   ```
-- Ordinary local artifact updates usually do **not** touch `koder/STATE.md`:
-  ```bash
-  git add -- koder/issues/NNN_slug/INDEX.md
-  git commit -F /tmp/state-message -- koder/issues/NNN_slug/INDEX.md
-  ```
+- Routine local artifact changes should normally be included in their logical
+  product/review commit or batched checkpoint; they do not require a standalone
+  `state:` commit and usually do **not** touch `koder/STATE.md`.
 - Avoid blind `git add -A` when unrelated dirty work exists.
 - If a repo has no git repository and a state transition is being committed, run `git init` in the target root first. Do not add remotes or rewrite history.
 
 ## Analysis invariant
 
-This should produce a compact semantic repo-evolution stream:
+This should produce a **sparse** semantic milestone stream:
 
 ```bash
 git log --grep='^state:' --oneline
 ```
 
-Use full commit bodies for cross-repo reconstruction before reading long chats or large artifact history.
+If the stream is dominated by queue-row, review-approval, or worker-boundary
+commits, batching failed. Use full commit bodies for cross-repo reconstruction
+before reading long chats or large artifact history.

@@ -5,7 +5,31 @@ updated: 2026-07-14
 
 # Koder Queue Gates
 
-Use before adding work to a queue. If a candidate fails because the source artifact is weak, fix the issue/plan first; do not compensate with a long queue row.
+Use before adding work to a queue. First load `mode-selection.md`: queueing and
+blind orchestration are separate decisions. If a candidate fails because the
+source artifact is weak, fix the issue/plan first; do not compensate with a long
+queue row.
+
+## Delivery and process-cost gate
+
+Before creating artifacts or dispatching workers, identify the expected product
+outcome and choose the lightest safe shape.
+
+- Owner-present work of one bounded capability defaults to direct execution.
+- A fresh context may use one supervised worker without making the queue blind.
+- Planning/docs/metadata default to direct or supervised work; do not inherit an
+  implementation-grade governor/coordinator/phase hierarchy.
+- An executable issue may be queued by path/anchor without a separate mapping or
+  child plan.
+- Before planning-only or blind authorization, disclose whether code will change,
+  expected workers/phases, artifact count, wall budget, and stop gate.
+- Default planning circuit: at most two dispatches and 30 minutes (or about 20%
+  of expected implementation effort) before explicit re-authorization.
+- Two no-op/boot/permission attempts for one phase block further retries until
+  the adapter, brief, or execution shape changes.
+
+A candidate fails this gate when expected process cost is disproportionate to
+its product or quality delta. Remove machinery rather than padding the queue.
 
 ## Effort gate
 
@@ -46,10 +70,11 @@ A green checkpoint, plan completion, primary-entry drain, or low raw issue-closu
 
 ## Blind-orchestration launch gate
 
-When `orchestration_mode: blind`, launch is additionally blocked unless:
+When `orchestration_mode: blind`, launch is additionally blocked unless the
+mode-selection gate justifies unattended/context-isolated execution and:
 
 - harnex or an explicitly equivalent harness can isolate fresh phase workers;
-- a fresh independent reviewer is available after every implementation and fix;
+- the declared assurance profile states review granularity; blind-strict work has a fresh independent reviewer after every implementation and fix;
 - the queue declares a `1-4` coordinator entry cap and fix-cycle cap;
 - compact versioned phase/coordinator receipts can be written outside tracked source or in ignored scratch;
 - implementation ownership is serial or explicitly isolated/non-overlapping;
@@ -61,8 +86,9 @@ Do not fall back from explicit blind mode to direct implementation. For long dra
 
 ## Gate failure fixes
 
+- Wrong execution shape → remove queue/Harnex/blind machinery or obtain explicit authorization for its cost.
 - Vague issue → update/file the issue.
-- Vague plan → update/extract a thin plan.
+- Vague plan → update/extract a thin plan only when the issue itself cannot be made executable.
 - Missing validation → add validation to the source artifact.
 - Unresolved product/risk choice → ask the user.
 - Red-risk work → require explicit approval and constraints.

@@ -79,3 +79,21 @@ The SDK also repeated the same generic law across several repo artifacts for dis
 - product architecture and source-of-truth files.
 
 A target repo may adopt stronger local rules. It should not weaken worker isolation, independent review, compact returns, or fail-closed recovery while still calling the mode blind.
+
+## Delivery-cost calibration
+
+The subsequent SDK A2R **planning-only** run exposed a mode mismatch: strict
+blind machinery was applied to mapping, plan packing, plan review/fix/re-review,
+and metadata finalization. Nine dispatches included three no-op/boot attempts, a
+missed completion signal, and zero product-code delta. The canonical diagnosis
+is `koder/analysis/001_koder_pattern_delivery_overhead/INDEX.md` in the Pi skill
+source repository.
+
+This does not invalidate Queue `#001`'s strict implementation evidence. It
+narrows applicability:
+
+- queue does not imply blind;
+- planning/docs/metadata default to direct or one supervised worker;
+- blind strict remains appropriate for high-consequence implementation;
+- mode selection must disclose process cost and product outcome first;
+- no-op/monitor/receipt failures must fail fast rather than create more phases.

@@ -9,7 +9,27 @@ Use this route only when the user or queue explicitly selects `orchestration_mod
 
 Blind means **blind to implementation detail, not blind to process state**. The orchestration layer still verifies identity, authorization, queue state, commits, changed paths, validation, review verdicts, blockers, and Git safety.
 
-Read `blind-briefs.md` before dispatch. Read `blind-recovery.md` whenever process state, receipts, Git, or queue state disagree.
+Read `mode-selection.md` before adopting blind mode, `blind-briefs.md` before
+dispatch, and `blind-recovery.md` whenever process state, receipts, Git, or queue
+state disagree.
+
+## Applicability and delivery-cost gate
+
+Blind mode is exceptional machinery for substantial unattended or explicitly
+context-isolated implementation. A queue does not imply blind mode, and Harnex
+does not imply a nested chain.
+
+Do not use this protocol by default for:
+
+- owner-present planning, docs, research, or metadata;
+- one bounded capability the primary can safely implement and validate;
+- status/frontmatter/run-log transitions;
+- work whose expected process cost exceeds its product/quality delta.
+
+Planning normally uses direct work or one supervised worker plus one reviewer.
+Before any planning-only or blind authorization, disclose the output type,
+expected phases/workers, artifact count, wall budget, and stop gate. Apply the
+planning and no-op circuit breakers from `mode-selection.md`.
 
 ## Keep the repo overlay small
 
@@ -47,13 +67,17 @@ Omit fields that do not apply. Four entries is a ceiling learned from a successf
 
 ## Adoption workflow
 
-1. Confirm the user/active window explicitly wants blind mode; do not infer it merely from “overnight” or “use workers.”
-2. Read live repo instructions, state, execution window, queue, current source artifact, and live harness guidance.
-3. Add or normalize only the queue fields and concise project overlay listed above. Keep implementation detail in issues/plans and generic orchestration law in this skill.
-4. Choose branch/worktree ownership, coordinator/fix caps, final-review policy, runtime receipt root, exact validation, and closeout reserve.
-5. Apply the fail-closed launch gate. If isolation, independent review, receipts, or safe resume cannot be enforced, record the blocker instead of weakening the mode.
-6. Generate a self-contained coordinator brief from `blind-briefs.md`; for a long drain, have a thin governor launch it and consume only its terminal receipt.
-7. Run the per-entry state machine, roll coordinators at the declared boundary, and close with canonical evidence rather than runtime logs.
+1. Apply `mode-selection.md` and show why direct or one supervised worker is
+   insufficient. Do not infer blind from “queue,” “overnight,” or “use workers.”
+2. Confirm the user/active window explicitly accepts the disclosed blind process
+   cost and product outcome.
+3. Read live repo instructions, state, execution window, queue, current source artifact, and live harness guidance.
+4. Add or normalize only the queue fields and concise project overlay listed above. Keep implementation detail in issues/plans and generic orchestration law in this skill.
+5. Choose branch/worktree ownership, coordinator/fix caps, review granularity,
+   final-review policy, runtime receipt root, exact validation, and closeout reserve.
+6. Apply the fail-closed launch gate. If declared isolation, review, receipts, or safe resume cannot be enforced, record the blocker instead of weakening the mode.
+7. Generate a self-contained coordinator brief from `blind-briefs.md`; add a governor layer only when unattended relaunch or context isolation requires it.
+8. Run the declared entry/batch state machine, roll coordinators at the declared boundary, and close with canonical evidence rather than runtime logs.
 
 ## Three-layer ownership model
 
@@ -92,9 +116,9 @@ The coordinator may directly edit only orchestration metadata that the repo assi
 Use separate fresh sessions for:
 
 - `implement` — reads the current plan/source/tests, edits product work, validates, and commits according to repo policy;
-- `review` — independently reads the plan and implementation, writes the canonical review, and returns only verdict/counts/path to the coordinator;
-- `fix` — reads the committed review directly and fixes only its findings;
-- `rereview` — independently checks the fix and writes the canonical re-review;
+- `review` — independently reads the plan and implementation, returns typed verdict/counts/validation, and writes a canonical artifact only for findings or a required gate;
+- `fix` — reads the committed finding review directly and fixes only its findings;
+- `rereview` — independently checks the fix and writes another canonical artifact only if findings remain or policy requires one;
 - `final_review` — checks the integrated queue outcome when the queue requires a final gate;
 - `recovery` — owns source-level reconciliation when a previous worker left unknown WIP.
 
@@ -109,7 +133,7 @@ The coordinator consumes only:
 - compact typed receipts;
 - changed-path lists and commit refs;
 - command/exit validation results and compact metrics;
-- review path, verdict, and finding counts;
+- review verdict and finding counts, plus a path only when a canonical artifact was required;
 - blockers and clean/synchronized Git facts.
 
 It does not consume:
@@ -133,16 +157,30 @@ Do not start or continue blind execution unless all applicable checks pass:
 - implementation ownership is unambiguous and non-overlapping;
 - Git is clean/synchronized as expected, or a known recovery worker owns the recorded WIP;
 - phase and coordinator receipt contracts can be enforced;
-- independent review is available;
-- validation, commit policy, wall caps, and forbidden actions are explicit;
+- independent review is available at the queue-declared entry or batch boundary;
+- validation, commit policy, wall caps, forbidden actions, and process budget are explicit;
 - the coordinator cap has not been reached;
 - no release/deploy/cloud/destructive/credential or owner gate would be crossed.
 
 If any gate fails, record the shortest actionable blocker and stop. Never degrade an explicitly blind queue into one giant direct-coding session.
 
+## Review granularity
+
+Declare one of these in the queue/overlay:
+
+- `entry` (**blind strict**): fresh review after every implementation/fix; use
+  for auth, security, protocol, release, destructive, credential, or similarly
+  high-consequence work.
+- `batch`: only for bounded lower-risk non-overlapping rows; name batch
+  boundaries and require independent review before dependent work or milestone
+  claims.
+
+Metadata approval/finalization is coordinator work after a normalized review
+verdict; never dispatch a worker solely to change statuses.
+
 ## Entry state machine
 
-Treat every row as a resumable phase machine:
+For `review_granularity: entry`, treat every row as a resumable phase machine:
 
 ```text
 queued
@@ -156,18 +194,36 @@ queued
 
 A queue row is complete only when its required implementation commit exists, required validation is green, independent review approves, Git safety checks pass, and orchestration accounting is updated. A harness process exiting is not itself row completion.
 
-## Per-entry loop
+## Strict per-entry loop
 
 1. Verify the launch gate and identify only the first eligible row.
 2. Reconcile existing receipts, commits, queue state, and active sessions. Resume at the **first unproven phase**; do not assume the whole row must restart.
 3. Generate a bounded self-contained implementation brief and dispatch a fresh worker.
 4. Fence on work-level completion. Validate the receipt's schema/identity, commit, changed paths, validation exits, and Git state without reading the diff.
 5. Dispatch a different fresh independent review worker.
-6. Consume only review path, verdict, finding counts, validation summary, commit, and blocker.
-7. On `needs_fixes`, dispatch a fresh fix worker that reads the canonical review directly; then dispatch a fresh re-review worker. The coordinator never paraphrases findings.
+6. Consume only verdict, finding counts, validation summary, reviewed ref, optional review path/commit, and blocker. A clean approval needs no Markdown artifact unless policy says otherwise.
+7. On `needs_fixes`, require a canonical finding review, then dispatch a fresh fix worker that reads it directly followed by a fresh re-review worker. The coordinator never paraphrases findings.
 8. Stop and escalate when `max_fix_cycles` is reached, a finding changes architecture/product scope, or validation cannot be made reliable.
-9. On approval, update queue/run-log/issue evidence and make any required selected-path state commit.
+9. On approval, hold compact row proof and batch queue/run-log/issue evidence at the next resumable coordinator checkpoint; do not create an approval-only metadata commit.
 10. Stop completed sessions promptly, verify branch ownership and Git state, then advance one row.
+
+For `review_granularity: batch`, implementation workers remain fresh and
+non-overlapping, but the coordinator fences the declared batch and dispatches one
+fresh reviewer over its integrated commit range. On findings, route a fresh fix
+worker and re-review before dependent work. Never use batch review to hide
+entry-level high risk.
+
+## Dispatch circuit breaker
+
+- One acknowledgment/progress-only completion may receive one continuation; a
+  second is a failed attempt.
+- Two no-op, boot, permission, or registration failures for one phase stop
+  retries until the adapter/config/brief or execution shape changes.
+- Start with a short monitor fence, then reconcile artifact, Git, receipt, and
+  process facts before extending. Do not wait the full wall cap after durable
+  proof already exists.
+- If planning or process-only work crosses its disclosed budget with no product
+  delta, stop and return to the owner.
 
 ## Proof and signal ordering
 
@@ -181,13 +237,14 @@ Workers and coordinators should finish in this order:
 6. signal work-level completion;
 7. let the parent stop the completed session.
 
-This order makes recovery possible when transport disconnects after useful work lands. A receipt does not replace commit/artifact verification, and a successful harness signal does not replace a receipt.
+This order makes recovery possible when transport disconnects after useful work lands. A receipt does not replace commit/artifact verification, and a successful harness signal does not replace a receipt. Harnex terminal telemetry and live Git own observed commit identity; workers must not synthesize expanded SHAs in prose. Verify any worker-reported ref with `git rev-parse`.
 
 ## Coordinator rollover
 
 - Declare `coordinator_entry_cap` in the queue; use `1-4`, with `4` as a hard default maximum.
 - Roll over earlier at an issue/milestone boundary, after complex fix loops, near a deadline, or when live context telemetry reaches the configured high-water mark.
-- Before rollover: stop children, update queue/run-log/issue evidence, commit/push as required, verify Git safety, run the repo close workflow, and write the coordinator receipt.
+- Before rollover: stop children, batch queue/run-log evidence at one resumable checkpoint, commit/push only what policy requires, verify Git safety, and write the coordinator receipt.
+- Internal coordinator rollover does not invoke the user-facing close skill or update `koder/STATE.md` merely to rotate context. The root session performs one real handoff/close at the owner stop gate.
 - A fresh coordinator resumes from canonical state and the first unproven phase. It does not replay worker output.
 - If no fresh coordinator can relaunch, a clean stop at the rollover boundary is correct; context accumulation is not.
 
@@ -213,7 +270,7 @@ Leave:
 - queue status and first next entry/phase;
 - implementation/review/fix commit refs;
 - validation results and compact quality metrics;
-- canonical review paths and verdict counts;
+- review verdict counts and canonical paths only for findings or required gates;
 - issue/slice delta and whether the user-visible done state was reached;
 - blocker or `null`;
 - clean/dirty and upstream state;

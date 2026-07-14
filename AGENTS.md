@@ -13,7 +13,7 @@ This repo is the staging area for pi configuration, extensions, and locally revi
 
 - Read `koder/STATE.md` at the start of a session.
 - Keep `koder/STATE.md` under 100 lines and update it at close; external-origin filings may update it mid-session.
-- Commit intentional koder state transitions with grepable `state:` subjects; preserve unrelated dirty/staged work with selected-path commits.
+- Keep `state:` commits sparse: init, real handoff, external filing, owner/process milestones, and batched resumable checkpoints. Routine artifacts/statuses ride with logical work or review commits; preserve unrelated dirty/staged work with selected paths.
 - Treat `koder/STATE.md` as session handoff, not a commit-by-commit ledger.
 - Do not edit global pi extension files directly; source-of-truth extensions live in `extensions/`.
 

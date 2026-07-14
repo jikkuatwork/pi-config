@@ -9,7 +9,11 @@ Use these to verify trigger boundaries and output quality after changing the ski
 
 ## Invocation boundary
 
-This global install is visible to model invocation through the Pi, Codex, and Claude global skill symlinks. Explicit natural-language naming (`koder-pattern`, `with koder-pattern`, `use koder-pattern`) and `/skill:koder-pattern ...` should load the skill. Natural-language setup/artifact/queue requests should also match. Ordinary code work, generic repo opening, and chat-only research should not trigger it.
+This global install is visible to model invocation through the Pi, Codex, and Claude global skill symlinks. Explicit natural-language naming (`koder-pattern`, `with koder-pattern`, `use koder-pattern`) and `/skill:koder-pattern ...` should load the skill. Natural-language setup, explicit durable `koder/` artifact, and koder queue/Harnex requests should also match. Ordinary coding, planning, review, research, and generic repo opening should not trigger it merely because those activities could produce an artifact.
+
+Loading koder-pattern does not authorize queue/Harnex/blind machinery. Mode
+selection must still choose the lightest safe workflow and disclose when a
+window produces process artifacts rather than product code.
 
 ## Should trigger
 
@@ -29,7 +33,7 @@ This global install is visible to model invocation through the Pi, Codex, and Cl
 
    > /skill:koder-pattern file an issue for the flaky app request command. Include acceptance criteria and link the failing test output.
 
-   Expected: load router, issue leaf, and state-commit protocol; create/update `koder/issues/NNN_slug/INDEX.md`; do not update `koder/STATE.md` for an ordinary local issue filing; validate if possible; commit intentional artifact paths with a `state:` subject unless explicitly told not to commit.
+   Expected: load router and issue leaf; create/update `koder/issues/NNN_slug/INDEX.md`; do not update `koder/STATE.md` for an ordinary local issue filing; validate if possible; include the issue with the logical work/checkpoint commit rather than manufacturing a standalone `state:` commit.
 
 4. **Queue creation**
 
@@ -71,7 +75,7 @@ This global install is visible to model invocation through the Pi, Codex, and Cl
 
    > /skill:koder-pattern turn Queue 001 into a blind overnight run. Keep this primary context out of implementation, require independent review and fix/re-review, and roll coordinators before they bloat.
 
-   Expected: load blind orchestration, briefs, queue model/gates/run, and harnex routes; keep the repo overlay small; set explicit blind mode, `1-4` coordinator cap, fix cap, final-review policy, ownership, validation, and stop gate; fail closed without fresh worker isolation; use governor -> bounded coordinator -> fresh phase workers. With Harnex, prefer `harnex.artifact_report.v1` plus first-class attribution/terminal summary rather than a duplicate custom phase receipt; retain the portable fallback for equivalent harnesses.
+   Expected: load mode selection before blind orchestration, briefs, queue model/gates/run, and harnex routes; disclose product outcome, phases/workers, artifact count, wall budget, and stop gate; prove why direct/supervised work is insufficient; keep the repo overlay small; set explicit blind mode, assurance/review granularity, `1-4` coordinator cap, fix cap, final-review policy, ownership, and validation; fail closed without declared isolation. With Harnex, prefer `harnex.artifact_report.v1` plus first-class attribution/terminal summary rather than a duplicate custom phase receipt; retain the portable fallback for equivalent harnesses.
 
 11. **Blind run recovery**
 
@@ -90,6 +94,22 @@ This global install is visible to model invocation through the Pi, Codex, and Cl
    > /skill:koder-pattern file an issue in ../target from this repo. Target has unrelated dirty code; preserve it.
 
    Expected: inspect `git status --short` and `git diff --cached --name-only` in target; stop if `koder/STATE.md` or target issue path is dirty/staged; create issue; update `koder/STATE.md`; commit only those paths with `state: file #NNN from <origin> - <reason>`; leave unrelated dirty/staged work untouched.
+
+14. **Owner-present planning economy**
+
+   > /skill:koder-pattern write a thin plan for this one-hour fix while I am here.
+
+   Expected: file one concise plan directly. Do not create a queue, conveyor map,
+   Harnex session, independent plan-review chain, or metadata finalizer unless
+   specific risk/repo policy requires it. State clearly that the result is a
+   plan, not product code.
+
+15. **Queue without blind mode**
+
+   > /skill:koder-pattern run these three green owner-present queue rows.
+
+   Expected: load mode selection and use direct or supervised execution. Queue
+   existence alone must not select blind mode or a governor hierarchy.
 
 ## Should not trigger unless explicitly loaded
 
@@ -111,6 +131,12 @@ This global install is visible to model invocation through the Pi, Codex, and Cl
 
    Expected: normal/deep research; do not create `koder/research` unless asked to file it.
 
+4. **Ordinary planning or review**
+
+   > Plan the smallest fix, then review the implementation.
+
+   Expected: normal coding workflow. Do not load koder-pattern, create a plan/review artifact, queue work, or add state commits unless the user/repo explicitly requests durable koder output.
+
 ## Edge cases
 
 - User says “set up koder-pattern” in a folder without `.git/`: create the thin scaffold, initialize git, and make `state: init - koder pattern scaffold` unless explicitly told not to commit.
@@ -119,7 +145,11 @@ This global install is visible to model invocation through the Pi, Codex, and Cl
 - Duplicate numbers: route by full path and avoid renumbering history.
 - Missing validators: perform manual checks and state that no validator exists.
 - Red-risk queue item: do not queue without explicit approval and constraints.
-- Harnex unavailable for ordinary worker-mode work: use an explicitly equivalent repo-local worker harness or ask; do not invent telemetry. If the queue explicitly declares blind mode and fresh implementation plus independent-review isolation cannot be enforced, fail closed rather than fall back to direct work.
+- Harnex unavailable for ordinary worker-mode work: execute directly when mode selection and repo policy allow, use an explicitly equivalent repo-local worker harness, or ask; do not invent telemetry. If the queue explicitly declares blind mode and its declared isolation/review cannot be enforced, fail closed rather than fall back to direct work.
+- Planning crosses two worker attempts or 30 minutes with no product delta: stop, disclose elapsed/process artifacts/product delta, and request explicit re-authorization instead of extending the chain.
+- Two no-op/boot/permission attempts for one phase: open the circuit breaker; change adapter/config/brief/mode or stop. Do not keep retrying.
+- PTY worker produced canonical artifact/commit but monitor missed completion: use bounded recovery reconciliation immediately rather than waiting the full wall cap.
+- Approving review requires only status/frontmatter movement: coordinator updates metadata directly; do not launch a finalizer worker.
 - Blind worker leaves dirty source WIP: coordinator does not inspect/reset/finish it; dispatch a fresh recovery implementation worker or stop.
 - Harnex reports failure after a valid pushed commit and atomic receipt: reconcile all evidence; do not automatically rerun and do not automatically declare success.
 - Coordinator receipt missing but child phase receipts/commits exist: launch a fresh recovery coordinator at the first unproven phase; do not replay the prior transcript.
@@ -127,21 +157,25 @@ This global install is visible to model invocation through the Pi, Codex, and Cl
 ## Quality checklist
 
 - [ ] `SKILL.md` routes through both `metadata.references.index` and a tiny standard body link to `references/INDEX.md`, so Pi, Codex, and Claude can all follow the front door.
-- [ ] Skill description always matches explicit `koder-pattern` naming and remains narrow enough not to catch ordinary unnamed code work.
+- [ ] Skill description always matches explicit `koder-pattern` naming and remains narrow enough not to catch ordinary unnamed coding, planning, review, research, or repo opening.
 - [ ] Setup flow prefers the init script, creates one canonical thin `koder/` scaffold plus default Pi/Codex/Claude symlink adapters, preserves existing files, and commits created scaffold paths with `state: init - koder pattern scaffold` by default.
 - [ ] Generated `open`/`close` entrypoints include a tiny standard body link to `references/INDEX.md`, so Claude can route the skill even when it ignores custom metadata.
 - [ ] Main router loads only nested routers/leaves and the shared state-commit protocol when state changes are requested.
 - [ ] New artifacts have stable paths and frontmatter.
 - [ ] Source-of-truth hierarchy is respected: live repo conventions beat cached refs.
+- [ ] Mode selection runs before queue/Harnex/blind adoption; a queue does not imply blind, Harnex does not imply a chain, and planning/docs/metadata default to direct or supervised work.
+- [ ] Planning-only/blind authorization discloses product outcome, phase/worker count, artifacts, wall budget, and stop gate; process-only movement is never reported as product completion.
+- [ ] Existing executable issues may be queue refs without redundant mapping/child plans, and coordinators update process metadata without finalizer workers.
 - [ ] Queue entries reference source artifacts instead of duplicating implementation detail.
 - [ ] Queue-conveyor work separates safe automatable slices from human-gated decisions, checks overlap with active work, includes completion contracts, and reports slice movement when issue count under-represents progress.
 - [ ] Inline unblock questions ask only human decisions that block queue/task/slice progress, put the recommended option first as `a.` by default, allow chat or `koder/scratch/` temp-file answers, avoid `koder/unblock/`, and apply answers back to canonical issue/plan/queue artifacts.
-- [ ] Harnex dispatches include bounded briefs, role/attempt/base/coordinator metadata, monitoring, atomic native artifact reports, and stop/closeout rules; they do not duplicate the same phase proof into a second custom receipt.
+- [ ] Harnex dispatches include bounded briefs, role/attempt/base/coordinator metadata, short first monitor fences, atomic native artifact reports, and stop/closeout rules; they obey the two-attempt circuit breaker and do not duplicate phase proof.
+- [ ] Harnex terminal telemetry and live Git own observed commit refs/changed paths/clean state; workers do not synthesize expanded SHAs.
 - [ ] Explicit blind queues use the governor/coordinator/phase-worker firewall, fresh independent review, direct review-to-fix handoff, configurable `1-4` rollover cap, separate final review when required, and fail-closed launch gates.
 - [ ] Blind recovery reconciles process, receipt, commit/canonical artifact, queue, and Git independently; resumes from the first unproven phase; and delegates unknown product WIP to a recovery worker.
 - [ ] Runtime prompts/receipts/logs remain external or ignored, while durable queue/review/run-log artifacts retain the minimum proof.
 - [ ] Reviews include verdict, prioritized findings, passing checks, and verification.
 - [ ] Plans include one capability, defers/non-goals, validation, and stop rules.
-- [ ] State-changing setup/artifact flows use grepable `state:` commits and selected-path dirty-repo guardrails.
+- [ ] `state:` commits remain sparse (init, real handoff, external filing, owner/process milestone, batched checkpoint); routine artifacts ride with logical work/review commits and selected-path dirty-repo guardrails.
 - [ ] `koder/STATE.md` remains a session handoff, not a commit-by-commit ledger; only init, close, explicit handoff requests, and external-origin filings update it immediately.
 - [ ] No secrets, full prompts, credentials, private payloads, or sensitive account IDs are written.

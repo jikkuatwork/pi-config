@@ -10,8 +10,10 @@ with explicit queueable slices, prepare multiple queues, refill an active
 queue, or improve the repo's automation throughput.
 
 A queue conveyor separates judgment-heavy planning from execution-heavy queue
-running. Use human-present time to classify, slice, approve constraints, and
-pack compatible work. Use away/unattended time to consume already-approved
+running, but use it only when a broad source actually needs extraction. An
+executable issue may be queued directly; do not create a conveyor map and child
+plans for ceremony. Use human-present time to classify, slice, approve
+constraints, and pack compatible work. Use away/unattended time to consume already-approved
 mechanical slices quickly and safely. For broad issues, count slice movement as
 well as issue closure so progress remains visible when parent issues stay open.
 
@@ -21,7 +23,7 @@ This repo, its docs, its harnesses, and its agents are a machine that builds the
 project. The conveyor improves that machine by turning broad work into small,
 validated, automatable pieces without hiding human-gated decisions.
 
-Blind orchestration is explicit opt-in, not a synonym for any unattended queue. When selected, load `references/queues/blind-orchestration.md`: track queue state, ownership/dependencies, compact receipts, validation, commits, review verdicts, permissions, blockers, and closeout evidence while keeping implementation detail behind fresh phase-worker boundaries.
+Blind orchestration is explicit opt-in after `mode-selection.md`, not a synonym for any queue, Harnex use, or planning. When selected, load `references/queues/blind-orchestration.md`: track queue state, ownership/dependencies, compact receipts, validation, commits, review verdicts, permissions, blockers, and closeout evidence while keeping implementation detail behind fresh phase-worker boundaries.
 
 ## Workflow
 

@@ -1,6 +1,6 @@
 ---
 title: Koder Artifact Model
-updated: 2026-07-13
+updated: 2026-07-14
 ---
 
 # Koder Artifact Model
@@ -20,7 +20,13 @@ Use when path shape, numbering, source-of-truth, turns, or statuses are relevant
 
 ## State movement ledger
 
-Every intentional `koder/` state transition gets a grepable `state:` commit by default. This includes scaffold init, close handoffs, external filings, and artifact status changes. `koder/STATE.md` is not the ledger; do not update it for every local artifact state commit. Do not force ordinary code-only commits into the ledger. Use selected-path commits when unrelated dirty/staged work exists.
+Use sparse `state:` commits for independently meaningful operator milestones:
+init, real session handoff, external filing, owner authorization/block/acceptance,
+or a batched resumable queue checkpoint. Routine artifact/status changes ride
+with the logical product/review commit or the next checkpoint; do not manufacture
+one commit per row, phase, or frontmatter edit. `koder/STATE.md` remains the
+compact session handoff. Use selected paths whenever unrelated dirty/staged work
+exists.
 
 ## Folder-first layout
 

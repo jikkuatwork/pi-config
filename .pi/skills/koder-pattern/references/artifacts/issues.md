@@ -1,13 +1,18 @@
 ---
 title: Koder Issues
-updated: 2026-07-08
+updated: 2026-07-14
 ---
 
 # Koder Issues
 
 Use an issue when there is a problem, opportunity, design decision, audit finding, or follow-up that needs durable tracking. If the idea is RFC-scale and should converge before work is split, file a proposal first and extract issues from it later.
 
-Creating or materially updating an issue is a `koder/` state transition. Follow `references/shared/state-commit-protocol.md` unless the user explicitly says not to commit. This does not automatically mean editing `koder/STATE.md`; ordinary in-session issue changes are recorded in the issue artifact and `state:` commit, then summarized in `koder/STATE.md` at close if needed.
+Create or update an issue as durable work, but do not automatically create a
+standalone `state:` commit. Include routine local issue movement with the logical
+implementation/review commit or a batched checkpoint. External filings and
+owner-visible process-only milestones follow
+`references/shared/state-commit-protocol.md`. Ordinary in-session issue changes
+do not require a `koder/STATE.md` update.
 
 ## Path
 
@@ -172,9 +177,8 @@ When resolving or superseding:
 2. edit frontmatter `status`;
 3. add a short `resolved:` or `superseded_by:` note if the repo uses those fields;
 4. mention evidence path/commit in the body;
-5. create a `state:` commit for the issue state change, for example:
-   ```text
-   state: resolve #NNN - <short result>
-   ```
+5. commit the status with the implementation/review evidence when practical;
+   use a standalone `state: resolve #NNN - <short result>` only when resolution
+   is an independent process-only milestone.
 
 Use selected-path commits when unrelated dirty work exists.

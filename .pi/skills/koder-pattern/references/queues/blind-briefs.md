@@ -5,7 +5,10 @@ updated: 2026-07-14
 
 # Blind Orchestration Briefs and Receipts
 
-Use with `blind-orchestration.md`. Task files are runtime control surfaces; canonical plans, reviews, queue state, and commits remain project truth.
+Use with `mode-selection.md` and `blind-orchestration.md` only after the
+blind delivery-cost gate passes. Task files are runtime control surfaces;
+canonical plans, reviews, queue state, and commits remain project truth. Do not
+use these briefs for ordinary planning, docs, or metadata.
 
 ## Runtime layout
 
@@ -35,7 +38,14 @@ When Harnex is available, do not create a second custom phase sidecar. Use live 
 - `harnex.artifact_report.v1` for canonical refs, validation, typed gate/review/blocker summaries, and semantic outcome;
 - the Harnex terminal summary for process/work state, commit/Git observations, changed paths, usage/context, reliability, and artifact-report ingestion status.
 
-For review phases, require normalized `verdict`, `p1`, `p2`, and `p3` in canonical review frontmatter; the coordinator may read that bounded header without opening finding prose. Together, the Harnex surfaces plus canonical frontmatter provide the phase contract without duplicating identity and Git facts in another JSON file. The coordinator may normalize them in memory or into a concise queue run-log event, but should not require both a Harnex report and `koder.blind.phase.v1` for the same phase.
+For review phases, always require normalized `verdict`, `p1`, `p2`, and `p3`
+in the typed report. Require canonical review frontmatter only when findings,
+a milestone/authority gate, repo policy, or the user needs durable prose. A clean
+row approval may have no review path or review commit. The coordinator may
+normalize compact proof into a queue checkpoint, but must not require both a
+Harnex report and `koder.blind.phase.v1` for the same phase. Commit identity,
+changed paths, and clean/sync state come from Harnex terminal telemetry plus live
+Git; do not ask the worker to invent or expand those values in summaries.
 
 Use the portable fallback schema below only when the active isolated harness lacks an equivalent typed report, or when writing a harness-neutral fixture/evaluation. The coordinator terminal receipt remains separate because it carries queue continuation state (`next_entry`, `next_phase`) that Harnex's current artifact report does not model directly.
 
@@ -43,19 +53,21 @@ Use the portable fallback schema below only when the active isolated harness lac
 
 Every coordinator or phase brief must state:
 
-1. **Role and non-role** — e.g. “fresh review worker, not implementer or coordinator.”
-2. **Authorization** — active window, exact entry/phase, and hard stop gate.
-3. **Prior digestion** — canonical issue/plan/review already encodes semantics; do not re-derive unrelated architecture.
-4. **Identity** — repo, branch/worktree, queue, entry, phase, attempt, relevant base/commit refs, parent coordinator.
-5. **Read budget** — numeric artifact/file cap and forbidden future/unrelated reads.
-6. **Write ownership** — exact allowed output paths and explicit queue/STATE prohibitions.
-7. **Output ceiling** — canonical artifact and final-response limits; no pasted diffs/logs.
-8. **Exact validation** — commands, expected exits, quality thresholds, and whether red evidence is required.
-9. **Commit policy** — commit/push or leave unstaged, subject policy, generated artifacts, and clean/sync expectation.
-10. **Return contract** — receipt path/schema and proof-before-signal ordering.
-11. **Override/block path** — conditions that stop work rather than broaden scope.
-12. **Forbidden actions** — release/deploy/cloud/destructive/credential/cross-repo or project-specific gates.
-13. **Wall-clock cap** — phase cap plus global no-new-work/closeout deadlines.
+1. **Promised outcome** — product/tests/docs/review delta, expected phase count,
+   process budget, and stop gate.
+2. **Role and non-role** — e.g. “fresh review worker, not implementer or coordinator.”
+3. **Authorization** — active window, exact entry/phase, and hard stop gate.
+4. **Prior digestion** — canonical issue/plan/review already encodes semantics; do not re-derive unrelated architecture.
+5. **Identity** — repo, branch/worktree, queue, entry, phase, attempt, relevant base/commit refs, parent coordinator.
+6. **Read budget** — numeric artifact/file cap and forbidden future/unrelated reads.
+7. **Write ownership** — exact allowed output paths and explicit queue/STATE prohibitions.
+8. **Output ceiling** — canonical artifact and final-response limits; no pasted diffs/logs.
+9. **Exact validation** — commands, expected exits, quality thresholds, and whether red evidence is required.
+10. **Commit policy** — commit/push or leave unstaged, subject policy, generated artifacts, and clean/sync expectation.
+11. **Return contract** — receipt path/schema and proof-before-signal ordering.
+12. **Override/block path** — conditions that stop work rather than broaden scope.
+13. **Forbidden actions** — release/deploy/cloud/destructive/credential/cross-repo or project-specific gates.
+14. **Wall-clock cap** — phase cap plus global no-new-work/closeout deadlines and the short first monitor fence.
 
 Reference canonical artifacts by path. Do not paste their full bodies into the brief.
 
@@ -64,9 +76,9 @@ Reference canonical artifacts by path. Do not paste their full bodies into the b
 | Phase | May read | May write | Must return |
 | --- | --- | --- | --- |
 | `implement` | current plan, required source/tests/config | scoped product/tests/generated artifacts | commit, paths, red proof when required, validation, Git state |
-| `review` | plan, implementation diff/source/tests, required rules | canonical review only | review commit/path, verdict/counts, validation, Git state |
-| `fix` | plan, canonical review, scoped implementation | finding-scoped product/tests/generated artifacts | fix commit, paths, red proof when applicable, validation, Git state |
-| `rereview` | plan, review, fix diff/source/tests | canonical re-review only | review commit/path, verdict/counts, validation, Git state |
+| `review` | plan, implementation diff/source/tests, required rules | canonical review only for findings/gates; otherwise typed report | verdict/counts, validation, reviewed ref, optional review path/commit, Git state |
+| `fix` | plan, canonical finding review, scoped implementation | finding-scoped product/tests/generated artifacts | fix commit, paths, red proof when applicable, validation, Git state |
+| `rereview` | plan, review, fix diff/source/tests | canonical re-review only if findings remain/policy requires | verdict/counts, validation, optional review path/commit, Git state |
 | `recovery` | recorded WIP plus current plan/review | only the interrupted phase's scope | reconciled commit or blocker, validation, Git state |
 | `final_review` | integrated range and milestone contracts | canonical final review only | verdict/counts, full-gate validation, metrics, Git state |
 
@@ -139,7 +151,7 @@ Use this versioned compact object only when no harness-native typed phase report
   "validation": [{"command": "...", "exit": 0}],
   "metrics": {"name": 100},
   "review": {
-    "path": "koder/reviews/...",
+    "path": "koder/reviews/...|null",
     "verdict": "approve|needs_fixes|blocked",
     "p1": 0,
     "p2": 0,
@@ -155,10 +167,10 @@ Rules:
 
 - `status: completed` means the phase contract finished, not necessarily that the row is approved.
 - A completed review may legitimately return `needs_fixes`.
-- `commit` is the phase's implementation/fix/review commit, not whatever HEAD happens to be later.
+- `commit` is the phase's implementation/fix/review commit, obtained with `git rev-parse HEAD`, not an expanded SHA invented from an abbreviation and not whatever HEAD happens to be later.
 - `changed_paths` is a list only; no diff content.
 - `validation` records command and exit, not full output. Store long logs outside the repo and include a bounded failure excerpt only in a blocker artifact when needed.
-- `review` contains path/verdict/counts only. Finding prose stays in the canonical review for the fix worker.
+- `review` always contains verdict/counts; `path` is null/omitted for a clean row approval when policy does not require an artifact. Finding prose stays in a canonical review for the fix worker.
 - Use `clean_synced: null` when no upstream exists rather than claiming synchronization.
 - A blocker must be short, actionable, and free of implementation dumps.
 
@@ -175,8 +187,8 @@ A coordinator task uses the same controls plus:
 - child session naming and receipt root;
 - max fix cycles;
 - final-review policy;
-- permission to edit queue/run-log/state metadata only;
-- requirement to run the repo close workflow before terminal receipt;
+- permission to batch queue/run-log metadata directly; `STATE.md` only at the owner stop gate; never launch a metadata-finalizer worker;
+- requirement to leave one batched resumable queue checkpoint before the terminal receipt; internal rollover does not invoke the user-facing close skill or rewrite `koder/STATE.md`;
 - prohibition on launching its own successor.
 
 The parent governor launches successors. This keeps the coordinator bounded and gives the governor one compact terminal event per segment.
@@ -217,13 +229,18 @@ Then it either launches a fresh coordinator with a new self-contained task file 
 
 ## Review and fix handoff
 
+On a clean approval, the coordinator records the typed verdict/counts,
+validation, reviewed ref, and optional review path in the next batched queue
+checkpoint; no metadata-finalizer or approval-only review commit is needed.
+
 On `needs_fixes`:
 
-1. coordinator records only review path, verdict, and counts;
-2. fix brief points directly to the committed review artifact;
-3. fix worker reads findings and returns a compact fix receipt;
-4. fresh re-review worker reads review plus fix;
-5. coordinator consumes only the new verdict/counts/path.
+1. reviewer writes a canonical finding artifact and returns only its path,
+   verdict, and counts;
+2. fix brief points directly to that committed review artifact;
+3. fix worker reads findings and returns compact fix proof;
+4. fresh re-review worker reads the review plus fix;
+5. coordinator consumes only the new verdict/counts and optional path.
 
 Never translate findings through coordinator or governor context.
 
@@ -233,7 +250,7 @@ Receipts are an execution API. Before closeout, promote durable facts needed lat
 
 - phase and commit refs;
 - exact commands and pass/fail;
-- review path/verdict/counts;
+- review verdict/counts and path only when a canonical artifact was required;
 - required red-evidence fact or quality metrics;
 - blocker and next phase.
 

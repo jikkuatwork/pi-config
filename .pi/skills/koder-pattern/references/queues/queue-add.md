@@ -10,7 +10,8 @@ Use when the user asks to add, prepare, pack, or refill queue work. If the task 
 ## Workflow
 
 1. Read only the candidate source artifacts and current queue batches.
-2. Apply effort, risk, and ambiguity gates from `references/queues/gates.md`.
+2. Apply delivery mode/process cost, effort, risk, and ambiguity gates from
+   `references/queues/mode-selection.md` and `references/queues/gates.md`.
 3. Resolve gate failures at the source:
    - vague issue → update/file the issue;
    - vague plan → update/extract the plan;
@@ -21,8 +22,8 @@ Use when the user asks to add, prepare, pack, or refill queue work. If the task 
    - create the next numbered batch when the current one is full, incompatible, active, or nearly drained;
    - if an implementation queue is already running, plan only sequentially compatible next work and check for ref/file/dependency overlap.
 5. Add or refresh the queue completion contract: `done_state`, `timebox_gate`, `continuation_policy`, and `early_stop_consent`.
-6. If the user explicitly selects blind mode, load `references/queues/blind-orchestration.md` and add only the local overlay: `orchestration_mode`, coordinator/fix caps, independent/final review policy, implementation ownership, exact validation, and stop gates. Do not paste the full protocol into every row.
-7. Add thin entries with only `Ref`, `Status`, `Estimate`, `Risk`, `Ambiguity`, `Mode`, `Validation`, and `Stop`; add optional slice metadata only when it improves progress accounting.
+6. If the user explicitly selects blind mode after the cost disclosure, load `references/queues/blind-orchestration.md` and add only the local overlay: `orchestration_mode`, assurance profile/review granularity, coordinator/fix caps, independent/final review policy, implementation ownership, exact validation, and stop gates. Do not paste the full protocol into every row.
+7. Add thin entries with `Ref`, `Status`, `Validation`, and `Stop`. Add `Estimate`, `Risk`, `Ambiguity`, `Mode`, or slice metadata only when those fields affect packing, review, authorization, or progress accounting.
 8. Keep packed effort above the target window; include fallback work when possible. For away windows, prefer overflow or a next-ready queue over a single underpacked batch.
 9. Add or update queue progress accounting (`issues_touched`, `slices_queued`, likely closures/live gates) when raw issue count will understate movement.
 10. Run local validators if present; otherwise perform manual frontmatter/path/status checks.
@@ -40,6 +41,7 @@ A successful queue-add leaves a runner able to consume the batch without asking 
 
 ## Anti-patterns
 
+- Creating a queue, mapping family, or Harnex chain when an executable issue and direct/supervised work are enough.
 - Stuffing design/implementation detail into the queue row.
 - Queueing high-ambiguity product work as implementation.
 - Queueing red-risk work without explicit user approval.

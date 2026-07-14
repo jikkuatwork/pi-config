@@ -5,7 +5,9 @@ updated: 2026-07-14
 
 # Koder Reviews
 
-Use a review when a plan, implementation, tests, or research output needs an explicit verdict before the next step.
+Use a durable review artifact when a verdict, findings, or authority decision must
+outlive the execution receipt. Independent review does not automatically require
+a Markdown file for every clean queue row.
 
 ## Path
 
@@ -88,11 +90,34 @@ PASS / APPROVE / NEEDS FIXES / REVISE / REJECT, with the next action.
 - Cites source evidence and validation results.
 - Does not expand scope beyond the reviewed issue/plan unless it files a follow-up issue.
 
+## Artifact economy
+
+A clean row review may remain compact execution proof when all of these hold:
+
+- the queue/repo does not explicitly require a canonical per-row review artifact;
+- the independent verdict is approve/pass with `p1: 0`, `p2: 0`, and `p3: 0`;
+- exact validation outcomes and reviewed commit/range are captured by the harness
+  report plus verified Git/queue checkpoint;
+- no finding, new decision, exception, or authority claim needs prose.
+
+Write a canonical review artifact when there are findings, the verdict blocks or
+requires fixes, the review is a milestone/final/authority gate, the repo requires
+one, or the user asks for it. This keeps review independence while avoiding a
+file and commit whose only content is “approved.”
+
 ## Blind-queue review handoff
 
-In explicit blind mode, the canonical review must be self-contained because the coordinator will not read or paraphrase findings. Put normalized `verdict`, `p1`, `p2`, and `p3` in frontmatter so the coordinator may read only that bounded header. Return compact machine proof containing review commit/path, validation exits, metrics, Git state, and blocker; with Harnex, prefer one native artifact report referencing the canonical review rather than a duplicate custom phase sidecar. A fresh fix worker reads the committed review body directly.
+In explicit blind mode, a review with findings must be self-contained because the
+coordinator will not read or paraphrase them. Put normalized `verdict`, `p1`,
+`p2`, and `p3` in frontmatter; the fresh fix worker reads that committed artifact
+directly. A clean row review may instead return one compact typed report with a
+null/omitted review path, verdict/counts, validation, and reviewed ref; the
+coordinator batches it into queue evidence.
 
-Review and fix must be separate fresh roles. Re-review writes a new canonical artifact and compact verdict receipt. See `references/queues/blind-briefs.md`.
+Review and fix remain separate fresh roles. A clean re-review can use compact
+proof plus disposition in the originating review/queue checkpoint; create a new
+canonical artifact only when findings remain or policy requires one. See
+`references/queues/blind-briefs.md`.
 
 ## Follow-ups
 
