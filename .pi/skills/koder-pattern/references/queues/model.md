@@ -63,12 +63,15 @@ track, add progress accounting. For blind mode, add the overlay below.
 
 ## Blind mode overlay
 
-Use blind mode only when explicitly selected. Before launch, load `references/queues/blind-orchestration.md` and `references/queues/blind-briefs.md`.
+Use blind mode only when explicitly selected. Before launch, load
+`references/queues/blind-orchestration.md` (it includes brief and recovery
+guidance).
 
 - Apply `mode-selection.md` first; queue existence does not imply blind mode.
 - Set `orchestration_mode: blind` at queue level; do not encode it only in chat.
-- Set `assurance_profile` and `review_granularity`. Use `strict` + `entry` for auth/security/protocol/release/destructive/credential risk; bounded lower-risk blind work may declare batch boundaries.
-- Set `coordinator_entry_cap` to `1-4`. Four is a hard ceiling, not a throughput target; choose lower caps for complex/fix-heavy rows.
+- Set `review_granularity`: `entry` for auth/security/protocol/release/destructive/credential risk; bounded lower-risk blind work may declare `batch` boundaries.
+- Set `coordinator_entry_cap`; prefer `1-2` for complex or fix-heavy rows, hard maximum `4`.
+- Set `process_failure_budget` (queue-global; adapter/config changes do not reset it).
 - Set `max_fix_cycles` and stop for owner/architecture judgment when exhausted.
 - Set `independent_review: required` at the declared boundary and make `implementation_ownership` serial or explicitly isolated/non-overlapping.
 - Set `final_review_required: true` when the queue done state claims an integrated milestone rather than isolated row completion.

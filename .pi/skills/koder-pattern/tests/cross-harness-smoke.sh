@@ -29,20 +29,30 @@ assert_link() {
 for blind_doc in \
   references/queues/mode-selection.md \
   references/queues/blind-orchestration.md \
-  references/queues/blind-briefs.md \
-  references/queues/blind-recovery.md \
   references/meta/sdk-blind-orchestration-review.md; do
   [ -s "$SKILL_ROOT/$blind_doc" ] || fail "missing blind orchestration reference: $blind_doc"
 done
+for merged_doc in \
+  references/queues/blind-briefs.md \
+  references/queues/blind-recovery.md; do
+  [ ! -e "$SKILL_ROOT/$merged_doc" ] || fail "merged blind doc resurfaced: $merged_doc"
+done
 grep -Fq 'references/queues/mode-selection.md' "$SKILL_ROOT/references/INDEX.md" || fail "main router does not expose delivery-first mode selection"
 grep -Fq 'references/queues/blind-orchestration.md' "$SKILL_ROOT/references/INDEX.md" || fail "main router does not expose blind orchestration"
-grep -Fq 'references/queues/blind-recovery.md' "$SKILL_ROOT/references/INDEX.md" || fail "main router does not expose blind recovery"
+grep -Fq 'includes briefs and recovery' "$SKILL_ROOT/references/INDEX.md" || fail "main router does not route briefs/recovery through the consolidated blind doc"
 grep -Fq 'a queue does **not** imply blind orchestration' "$SKILL_ROOT/references/queues/mode-selection.md" || fail "mode selection lacks queue/blind separation"
 grep -Fq 'two no-op' "$SKILL_ROOT/references/queues/mode-selection.md" || fail "mode selection lacks no-op circuit breaker"
 grep -Fq 'Do not ask a model to invent or expand a commit SHA' "$SKILL_ROOT/references/queues/mode-selection.md" || fail "mode selection lacks Git-owned commit identity"
+grep -Fq 'process-failure budget' "$SKILL_ROOT/references/queues/mode-selection.md" || fail "mode selection lacks the queue-global process-failure budget"
+grep -Fq 'implementation incomplete' "$SKILL_ROOT/references/queues/mode-selection.md" || fail "mode selection lacks the implementation-incomplete classification"
+grep -Fq 'first unproven phase' "$SKILL_ROOT/references/queues/blind-orchestration.md" || fail "blind orchestration lacks the first-unproven-phase recovery rule"
+grep -Fq 'Mechanics belong to the runner' "$SKILL_ROOT/references/queues/blind-orchestration.md" || fail "blind orchestration lacks the deterministic-runner delegation"
+if grep -Fq 'koder.blind.phase.v1' "$SKILL_ROOT/references/queues/blind-orchestration.md"; then
+  fail "blind orchestration reintroduced a duplicate skill-level receipt schema"
+fi
 grep -Fq 'Routine artifact and queue movement should ride with the logical' "$SKILL_ROOT/references/shared/state-commit-protocol.md" || fail "state protocol still encourages commit amplification"
 grep -Fq 'A clean row review may remain compact execution proof' "$SKILL_ROOT/references/artifacts/reviews.md" || fail "review policy still requires an artifact for every clean row"
-if grep -Fq 'run the repo close workflow' "$SKILL_ROOT/references/queues/blind-briefs.md" "$SKILL_ROOT/references/queues/blind-orchestration.md"; then
+if grep -Fq 'run the repo close workflow' "$SKILL_ROOT/references/queues/blind-orchestration.md"; then
   fail "blind coordinators still invoke session close at rollover"
 fi
 awk '

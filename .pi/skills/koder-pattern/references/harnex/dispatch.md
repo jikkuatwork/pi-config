@@ -145,4 +145,4 @@ model to invent or expand those values in summary prose. Never store
 transcripts, full prompts, review finding prose, secrets, or large private
 payloads in telemetry sidecars.
 
-For blind queues, use the phase and coordinator contracts in `references/queues/blind-briefs.md`. Prefer Harnex's native `--artifact-report` / `harnex.artifact_report.v1` as the phase receipt and combine it with first-class attribution plus the terminal dispatch summary; do not require a duplicate `koder.blind.phase.v1` file. Write reports atomically and only after canonical artifacts, validation, commit/push, and Git checks. Runtime reports are an execution API, not the sole durable proof.
+For blind queues, use the brief and proof contracts in `references/queues/blind-orchestration.md`. Harnex's native `--artifact-report` / `harnex.artifact_report.v1` is the one phase receipt; do not define a duplicate skill-level receipt schema. Write reports atomically and only after canonical artifacts, validation, commit/push, and Git checks. Runtime reports are an execution API, not the sole durable proof.

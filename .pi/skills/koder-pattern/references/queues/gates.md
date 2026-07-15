@@ -13,20 +13,10 @@ queue row.
 ## Delivery and process-cost gate
 
 Before creating artifacts or dispatching workers, identify the expected product
-outcome and choose the lightest safe shape.
-
-- Owner-present work of one bounded capability defaults to direct execution.
-- A fresh context may use one supervised worker without making the queue blind.
-- Planning/docs/metadata default to direct or supervised work; do not inherit an
-  implementation-grade governor/coordinator/phase hierarchy.
-- An executable issue may be queued by path/anchor without a separate mapping or
-  child plan.
-- Before planning-only or blind authorization, disclose whether code will change,
-  expected workers/phases, artifact count, wall budget, and stop gate.
-- Default planning circuit: at most two dispatches and 30 minutes (or about 20%
-  of expected implementation effort) before explicit re-authorization.
-- Two no-op/boot/permission attempts for one phase block further retries until
-  the adapter, brief, or execution shape changes.
+outcome and choose the lightest safe shape. The disclosure contract, planning
+budget, and circuit breakers in `mode-selection.md` apply here verbatim. An
+executable issue may be queued by path/anchor without a separate mapping or
+child plan.
 
 A candidate fails this gate when expected process cost is disproportionate to
 its product or quality delta. Remove machinery rather than padding the queue.
@@ -73,16 +63,18 @@ A green checkpoint, plan completion, primary-entry drain, or low raw issue-closu
 When `orchestration_mode: blind`, launch is additionally blocked unless the
 mode-selection gate justifies unattended/context-isolated execution and:
 
-- harnex or an explicitly equivalent harness can isolate fresh phase workers;
-- the declared assurance profile states review granularity; blind-strict work has a fresh independent reviewer after every implementation and fix;
-- the queue declares a `1-4` coordinator entry cap and fix-cycle cap;
+- harnex or an explicitly equivalent harness can isolate fresh phase workers,
+  and the chosen adapter (plus one declared fallback) passed a preflight
+  dispatch smoke;
+- the queue declares `review_granularity`; `entry` work has a fresh independent reviewer after every implementation and fix;
+- the queue declares a coordinator entry cap (prefer `1-2`, hard maximum `4`), fix-cycle cap, and queue-global process-failure budget;
 - compact versioned phase/coordinator receipts can be written outside tracked source or in ignored scratch;
 - implementation ownership is serial or explicitly isolated/non-overlapping;
 - the first eligible row has a reviewed source artifact, exact validation, commit policy, wall cap, and stop rule;
 - Git is clean/synchronized as expected, or a named recovery worker owns known WIP;
 - a fresh coordinator can resume at rollover, or the queue explicitly permits a clean stop there.
 
-Do not fall back from explicit blind mode to direct implementation. For long drains, prefer a thin governor that launches bounded fresh coordinators and sees only terminal receipts/exceptions. Load `references/queues/blind-orchestration.md` for the full role and recovery contract.
+Do not fall back from explicit blind mode to direct implementation. Load `references/queues/blind-orchestration.md` for the full role, brief, and recovery contract.
 
 ## Gate failure fixes
 

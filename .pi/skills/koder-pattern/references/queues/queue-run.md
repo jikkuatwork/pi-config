@@ -35,11 +35,10 @@ implement, review Git/source as normal, and update process metadata directly.
 For explicit `orchestration_mode: blind`, only after the delivery/process-cost
 gate passes:
 
-1. Load `references/queues/blind-orchestration.md`, `references/queues/blind-briefs.md`, and the harnex route before launch.
-2. Enforce the blind launch gate from `references/queues/gates.md`; no isolated workers or independent review means no launch.
-3. For a long/multi-entry drain, keep the current root session as governor and launch a fresh bounded coordinator. The governor consumes only coordinator receipts/exceptions.
-4. The coordinator applies the accounting parts of the loop below but delegates implementation, review, fix, re-review, recovery, and final review to fresh phase workers.
-5. On any process/receipt/Git disagreement, load `references/queues/blind-recovery.md` and resume from the first unproven phase.
+1. Load `references/queues/blind-orchestration.md` and the harnex route before launch; enforce its fail-closed launch gate (no isolated workers or independent review means no launch).
+2. For owner-present runs the current session is the coordinator; add a governor layer only when unattended relaunch across rollovers is genuinely required.
+3. The coordinator applies the accounting parts of the loop below but delegates implementation, review, fix, re-review, recovery, and final review to fresh phase workers.
+4. On any process/receipt/Git disagreement, apply the recovery section of `blind-orchestration.md` and resume from the first unproven phase.
 
 Never silently execute a blind row directly to keep the queue moving. Conversely,
 never promote an ordinary queue to blind merely because Harnex is available.
@@ -70,25 +69,11 @@ never promote an ordinary queue to blind merely because Harnex is available.
 
 ## Efficiency and block rules
 
-- A queue coordinator directly performs and batches frontmatter, status, and
-  run-log transitions at resumable checkpoints; do not dispatch metadata-finalizer
-  workers or create one commit per phase. Update the user handoff only at a real
-  stop/close boundary.
-- One acknowledgment/progress-only turn may receive one continuation. A second
-  no-op, or two boot/permission failures, opens the circuit breaker and requires
-  a changed adapter/brief/mode or owner decision.
-- Use short first monitor fences and reconcile canonical artifact, Git, receipt,
-  and process state before extending to the full phase cap.
-- Report product delta separately from plans/queues/receipts; process-only
-  movement is not implementation progress.
+The circuit breakers, process-failure budget, metadata-batching rule, and
+product/process delta reporting in `mode-selection.md` apply verbatim; do not
+restate or weaken them here.
 
 Never wait unattended on one blocked entry. If an entry exceeds its max estimate, the worker that owns implementation may commit only a safe green partial when the repo allows it; otherwise it must leave an explicit blocked receipt and safe Git state. A blind coordinator must not inspect, finish, or reset unknown product WIP—dispatch a fresh recovery worker or stop.
-
-## Blind orchestrator invariant
-
-Blind means blind to implementation detail, not process state. The governor/coordinator verifies queue identity, locks, authorization, compact receipts, changed paths, commits, command exits, verdict/counts/path, blockers, and Git safety. It does not read source, full diffs, test bodies, review findings, transcripts, routine panes, or long logs.
-
-Each row follows fresh `implement -> review -> (fix -> rereview)*` phases. Fix workers read committed review artifacts directly. Coordinators roll over after the queue-declared `1-4` entry cap or earlier under complexity/context pressure; a separate fresh final review handles integrated milestone gates. Harness outcome, receipts, commits, and canonical artifacts are reconciled independently rather than treating any one as unquestionable truth.
 
 ## Closeout evidence
 

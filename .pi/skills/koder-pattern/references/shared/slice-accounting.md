@@ -85,8 +85,8 @@ ledger.
 
 ## Queue slice accounting
 
-Queues should report both issue impact and slice impact. Prefer this summary in
-the queue frontmatter or a `## Progress Accounting` section:
+Queues report both issue impact and slice impact, in frontmatter or a
+`## Progress Accounting` section:
 
 ```yaml
 progress_accounting:
@@ -96,41 +96,9 @@ progress_accounting:
   issues_moved_to_live_gate: 3
 ```
 
-Human-facing table:
-
-```markdown
-## Progress Accounting
-
-| Metric | Count |
-| --- | ---: |
-| Issues touched | 10 |
-| Slices queued | 12 |
-| Likely slices drained | 12 |
-| Likely issues closed | 1 |
-| Likely moved to live-proof-only | 3 |
-```
-
-## Queue/run closeout language
-
-Closeouts should distinguish issue count from real movement:
-
-```markdown
-Queue result:
-- Issues closed: 1
-- Issues advanced: 10
-- Slices drained: 12
-- Slices blocked: 2
-- Issues moved to live-proof-only: 3
-- Raw open issue delta: -1
-```
-
-For each broad issue touched, prefer a before/after row:
-
-```markdown
-| Issue | Before | After |
-| ---: | --- | --- |
-| `#480` | local plan queued | source fix released; long provider proof remains |
-```
+Closeouts distinguish issue count from real movement: issues closed/advanced,
+slices drained/blocked, issues moved to live-proof-only, and the raw open
+issue delta. For each broad issue touched, one before/after line suffices.
 
 ## Lazy adoption rule
 

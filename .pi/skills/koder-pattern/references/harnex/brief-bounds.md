@@ -58,6 +58,6 @@ For briefs longer than a few lines, write a task file instead of embedding a hug
 /tmp/task-fix-NNN-attempt-01.md
 ```
 
-Do not reuse a task, session ID, or receipt path for a retry. For explicit blind queues, generate briefs and receipts from `references/queues/blind-briefs.md`; keep runtime files external/ignored and canonical project truth under `koder/`.
+Do not reuse a task, session ID, or receipt path for a retry. For explicit blind queues, generate briefs and receipts from the briefs/proof sections of `references/queues/blind-orchestration.md`; keep runtime files external/ignored and canonical project truth under `koder/`.
 
 A task file should be self-contained and point to repo artifacts rather than pasting large content. It must repeat the safety-critical authorization, ownership, validation, return, and stop rules even when the repo also has a generic orchestration contract. It must not embed generic protocol prose, progress-narration instructions longer than the task, or a metadata-only phase that the coordinator can perform directly.

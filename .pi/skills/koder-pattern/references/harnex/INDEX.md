@@ -17,7 +17,7 @@ differs.
 | Decide whether harnex is appropriate | `references/queues/mode-selection.md`, then `references/harnex/dispatch.md` |
 | Write bounded worker brief controls | `references/harnex/brief-bounds.md` |
 | Monitor/stop sessions, apply wall-clock caps, queue integration | `references/harnex/monitoring.md` |
-| Explicit blind-orchestrator queue | First load `references/queues/mode-selection.md`, `references/queues/blind-orchestration.md`, and `references/queues/blind-briefs.md`; use `references/queues/blind-recovery.md` on disagreement |
+| Explicit blind-orchestrator queue | First load `references/queues/mode-selection.md`, then `references/queues/blind-orchestration.md` (briefs and recovery included) |
 
 ## Preconditions
 

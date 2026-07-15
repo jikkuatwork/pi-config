@@ -39,7 +39,7 @@ already-started visible/detached worker's work-terminal state.
 
 After the work-level fence succeeds, verify the expected receipt, canonical artifact, validation result, commit, review output, and Git state. A successful process signal alone is not completion proof. Conversely, when a PTY adapter misses the signal, durable artifact + verified commit/validation/Git may prove the phase after bounded recovery reconciliation; do not wait out the remaining wall cap mechanically.
 
-If the fence reports failure/disconnection but a receipt or commit exists, do not automatically rerun or automatically accept it. Load `references/queues/blind-recovery.md` for blind work (or apply the same reconciliation principle for ordinary dispatch): validate identity, durable artifacts, commit, command exits, and Git state independently. Record a process anomaly when durable phase proof is complete.
+If the fence reports failure/disconnection but a receipt or commit exists, do not automatically rerun or automatically accept it. Apply the recovery section of `references/queues/blind-orchestration.md` for blind work (or the same reconciliation principle for ordinary dispatch): validate identity, durable artifacts, commit, command exits, and Git state independently. Record a process anomaly when durable phase proof is complete.
 
 Stop completed sessions promptly:
 
@@ -65,9 +65,7 @@ budget.
 
 ## Blind orchestrator rule
 
-Load `references/queues/blind-orchestration.md` and `references/queues/blind-briefs.md`. The governor sees coordinator terminal receipts/exceptions; a bounded coordinator sees current-row metadata, compact phase receipts, changed paths, command exits, commit/Git state, and review verdict/counts/path.
-
-Neither layer reads product source, full diffs, tests, generated output, review finding prose, worker transcripts, routine panes, or long logs. If implementation judgment is needed, dispatch a fresh reviewer/recovery worker. If the coordinator must inspect a full diff to feel safe, stop: the entry is too risky or its proof contract is inadequate.
+Load `references/queues/blind-orchestration.md`; its context firewall applies to every supervising layer. If implementation judgment is needed, dispatch a fresh reviewer/recovery worker. If the coordinator must inspect a full diff to feel safe, stop: the entry is too risky or its proof contract is inadequate.
 
 ## Queue integration
 

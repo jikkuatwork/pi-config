@@ -41,7 +41,7 @@ The durable result is captured by the SDK queue run log, canonical reviews, comm
 - Some coordinator-level harnex outcomes reported failure/disconnection after clean commits and terminal receipts existed. The outside supervisor reconciled process status against receipts, canonical artifacts, and Git instead of either discarding valid work or trusting the receipt blindly.
 - Repeated `needs_fixes` verdicts proved the value of explicit phase state and fix-cycle accounting.
 
-These cases motivated `blind-recovery.md`, atomic receipt-before-signal ordering, attempt identities, and the “first unproven phase” rule.
+These cases motivated the recovery contract (now the recovery section of `blind-orchestration.md`), atomic receipt-before-signal ordering, attempt identities, and the “first unproven phase” rule.
 
 ## Limits observed
 

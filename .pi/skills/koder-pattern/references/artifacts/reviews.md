@@ -117,7 +117,7 @@ coordinator batches it into queue evidence.
 Review and fix remain separate fresh roles. A clean re-review can use compact
 proof plus disposition in the originating review/queue checkpoint; create a new
 canonical artifact only when findings remain or policy requires one. See
-`references/queues/blind-briefs.md`.
+the proof section of `references/queues/blind-orchestration.md`.
 
 ## Follow-ups
 

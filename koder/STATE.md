@@ -1,11 +1,22 @@
 ---
-updated_at: "14 Jul 2026 | 11:52 PM IST"
+updated_at: "15 Jul 2026 | IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 15 Jul 2026: an independent SDK-side review of Queue `#002` (SDK
+  `koder/analysis/001_q002_orchestration_efficiency/INDEX.md`) drove a
+  consolidation of koder-pattern: `blind-briefs.md` and `blind-recovery.md`
+  merged into `blind-orchestration.md`; four orchestration shapes collapsed to
+  direct/blind plus a `review_granularity` flag; `mode-selection.md` is now the
+  single home of the delivery-first rule, breakers, and proof ownership;
+  duplicate skill-level receipt schemas were dropped in favor of Harnex's
+  `harnex.artifact_report.v1`; queue-global `process_failure_budget`, adapter
+  preflight, and implementation-incomplete classification were added. Mechanical
+  state-machine rules are being delegated to Harnex (#56-#59 filed there).
+  Skill corpus: 28.2k -> 23.7k words; cross-harness smoke passes.
 - Session handoffs and routed cross-harness skills are active. `state:` history
   is reserved for sparse operator milestones rather than metadata churn.
 - Commit `4132a6c` generalized blind orchestration from Holm SDK Queue `#001`;
