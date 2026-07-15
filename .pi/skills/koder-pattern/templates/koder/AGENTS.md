@@ -43,6 +43,7 @@ This repo uses the koder pattern for durable agent handoff and project memory.
 - `orchestration_mode: blind` is explicit opt-in. Load the skill's blind route only then; keep repo-local policy to authorization, review boundary, ownership, validation, caps, and forbidden actions.
 - Coordinators own compact process accounting directly. Do not dispatch metadata-finalizer workers or require clean-review Markdown artifacts when a typed receipt plus queue checkpoint is sufficient. Two no-op/boot/permission attempts open the circuit breaker.
 - Blind mode fails closed if its declared isolation/review boundary cannot be enforced. Recover from receipts, commits, artifacts, and Git at the first unproven phase rather than replaying work.
+- Automatic dispatches follow the operator's `dispatch_models` policy (GPT-family by default; Claude is manual/interactive only). Never substitute an out-of-policy model to keep a queue moving — block and return to the owner.
 
 ## Safety
 

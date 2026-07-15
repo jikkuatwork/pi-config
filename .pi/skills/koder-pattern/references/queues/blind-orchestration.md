@@ -34,7 +34,10 @@ the runner rather than into more prose.
 Before any unattended run: preflight the chosen adapter and one declared
 fallback with a real dispatch smoke, pin task/receipt roots to paths the
 adapter can actually read/write, and declare a queue-global process-failure
-budget (see `mode-selection.md`).
+budget (see `mode-selection.md`). Both the primary and the fallback must be
+inside the queue's `dispatch_models` policy (see `model.md`); when no
+in-policy adapter is healthy, block and return to the owner instead of
+substituting another model family.
 
 ## Keep the repo overlay small
 
@@ -53,6 +56,7 @@ review_granularity: entry   # or batch for bounded lower-risk rows
 coordinator_entry_cap: 2    # hard maximum 4; prefer 1-2 for complex entries
 max_fix_cycles: 2
 process_failure_budget: 6   # queue-global; adapter changes do not reset it
+dispatch_models: [pi/gpt-5.5, codex/gpt-5.3-codex]  # no out-of-policy substitution
 implementation_ownership: serial
 final_review_required: true
 ```

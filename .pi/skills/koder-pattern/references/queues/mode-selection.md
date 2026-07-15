@@ -87,7 +87,10 @@ run everywhere, apply by hand:
   queue-global process-failure budget before an unattended run, and return to
   the owner when total boot/no-op/permission/no-receipt failures cross it;
 - run one preflight dispatch smoke for the chosen adapter (and one declared
-  fallback) before any unattended run.
+  fallback) before any unattended run;
+- honor the dispatch model policy (`model.md`): never substitute a
+  model/adapter outside the queue's declared `dispatch_models` to keep work
+  moving — block and return to the owner instead.
 
 ## Proof ownership
 

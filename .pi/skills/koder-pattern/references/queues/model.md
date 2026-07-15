@@ -79,6 +79,29 @@ guidance).
 - Do not paste the universal blind protocol into every row. Rows still carry only source ref, validation, stop rule, and local risk facts.
 - Runtime task files/receipts live outside tracked source or in ignored scratch; durable queue/run-log/review artifacts retain the minimum proof.
 
+## Dispatch model policy
+
+Queues may declare `dispatch_models`: the adapter/model families allowed for
+automatic dispatches (implement, review, fix, rereview, recovery, coordinator,
+and any unattended phase). Rules:
+
+- Never silently substitute a model/adapter outside the declared policy to
+  keep a queue moving. If no in-policy adapter passes preflight or all
+  in-policy attempts exhaust the process-failure budget, the run blocks and
+  returns to the owner.
+- Preflight (and the one declared fallback) applies to in-policy adapters
+  only; an out-of-policy adapter is a launch blocker, not a fallback.
+- Prefer different in-policy variants/efforts for implement versus review
+  (for example a coding-tuned variant implements, a stronger general variant
+  reviews) to retain reviewer independence within one family.
+
+**Operator default (this configuration):** automatic dispatches use GPT-family
+models — for example GPT-5.5 via the Pi adapter and GPT-5.3 Codex via the
+Codex adapter. Claude-family models are reserved for interactive/manual
+owner-present sessions (analysis, authority reviews, pair work) and are **not**
+an automatic-dispatch fallback. A queue that needs a Claude worker must say so
+explicitly in `dispatch_models` with the owner's sign-off.
+
 ## Completion contract fields
 
 | Field | Meaning |
