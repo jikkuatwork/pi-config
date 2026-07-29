@@ -38,6 +38,12 @@ Two no-op, boot, registration, permission, or receipt-free attempts for the same
 phase stop retries until the adapter/config/brief or execution shape changes.
 Do not spend the implementation budget debugging orchestration.
 
+For experiments and test harnesses: execute the full happy path locally once
+before any remote/cloud attempt (runtime proof — static or grep checks do not
+count), and after two failed remote attempts of the same experiment, force a
+descope-to-minimal review before a third. Throwaway/experimental tooling
+defaults to direct completion by the current session, not dispatch.
+
 ## Blind hierarchy
 
 For a long unattended multi-entry blind drain, the root session should act as a thin governor and dispatch fresh bounded coordinator sessions. Each coordinator dispatches fresh phase workers. Carry queue/entry/phase/attempt/coordinator identity through task files and metadata so harnex telemetry and receipts can be reconciled without reading transcripts.
