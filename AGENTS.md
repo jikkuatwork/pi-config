@@ -17,6 +17,17 @@ This repo is the staging area for pi configuration, extensions, and locally revi
 - Treat `koder/STATE.md` as session handoff, not a commit-by-commit ledger.
 - Do not edit global pi extension files directly; source-of-truth extensions live in `extensions/`.
 
+## Pi launch modes
+
+- `pi-zyt` is a zsh function defined in `/home/glasscube/dotfiles/pi-modes.zsh`;
+  that dotfiles repository is the source of truth for its default provider,
+  model, thinking level, tools, and `--models` scope.
+- `extensions/mode-status.ts` only renders the mode label. Do not mistake it for
+  the launcher definition. A launcher's explicit `--models` scope overrides
+  this repo's `.pi/settings.json` `enabledModels` for that session.
+- Keep provider credentials outside this repo; launcher/config changes may
+  reference existing environment variables but must not copy their values.
+
 ## Skill import policy
 
 Use the local `.pi/skills/skill-import/` skill for third-party skill discovery, review, adaptation, and vendoring; start at `.pi/skills/skill-import/references/INDEX.md`. `knowledge-base/workflows/skill-import.md` is the compatibility pointer.
