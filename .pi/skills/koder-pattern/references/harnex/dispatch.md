@@ -1,6 +1,6 @@
 ---
 title: Harnex Dispatch Shape
-updated: 2026-07-14
+updated: 2026-08-03
 ---
 
 # Harnex Dispatch Shape
@@ -64,7 +64,6 @@ harnex run codex \
   --timeout 30 \
   --description "Short description" \
   --meta '<json metadata>' \
-  --summary-out /tmp/koder-run/dispatch-telemetry.jsonl \
   --context "Read and execute /tmp/task-impl-NNN-attempt-01.md" \
   -- -c model=<model> -c model_reasoning_effort=<effort>
 ```
@@ -121,10 +120,14 @@ Required in spirit even if exact schema differs:
 - model/effort actually used;
 - reason for model/effort;
 - validation expectation;
-- telemetry output path when supported;
+- canonical dispatch telemetry comes from Harnex's repo-tracked dispatch stream;
+  pass `--summary-out` only when an explicit compatibility mirror is required;
 - artifact/validation sidecar path when the live harnex version or repo wrapper supports one.
 
 Do not put secrets, full prompts, private payloads, or sensitive account identifiers in metadata.
+Harnex terminal telemetry owns observed Git/usage fields and price-table-derived
+cost when the effective provider/model/service-tier/context band has a maintained rate; nullable cost
+must never be guessed by the worker or queue layer.
 
 ## Artifact and validation sidecars
 

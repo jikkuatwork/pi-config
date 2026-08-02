@@ -1,11 +1,15 @@
 ---
-updated_at: "31 Jul 2026 | 10:17 PM IST"
+updated_at: "03 Aug 2026 | 01:19 AM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 03 Aug 2026: koder-pattern's Harnex dispatch route now treats tracked
+  `.harnex/dispatch.jsonl` as canonical, removes default `--summary-out`
+  mirrors, and delegates observed Git/usage/list-price cost to Harnex 0.9.0.
+  This is the shared skill-side half of Holm's unified telemetry migration.
 - 31 Jul 2026: dotfiles commit `2e344f7` fixed the actual `pi-zyt` launcher in
   `/home/glasscube/dotfiles/pi-modes.zsh`: its explicit `--models` scope now
   includes the curated Sonnet 5, Opus 4.8, and Fable 5 entries, and
@@ -61,6 +65,9 @@ updated_at: "31 Jul 2026 | 10:17 PM IST"
   request was made.
 - Koder-pattern remains delivery-first; SDK Queue `#002` is still unauthorized
   unless a separate execution window is explicitly opened.
+- Generic Harnex guidance is aligned with 0.9.0's v2 stream. Runner-dependent
+  queue prose still waits for Harnex #57/#59 rather than documenting mechanics
+  that do not exist yet.
 
 ## Future
 
@@ -76,3 +83,5 @@ updated_at: "31 Jul 2026 | 10:17 PM IST"
 - On the next authorized queue, measure product, quality, process, worker-count,
   and wall-time deltas; fix Harnex completion and receipt-authority defects in
   its own repository rather than masking them with orchestration phases.
+- After Harnex #57/#59 ships a deterministic runner, replace remaining manual
+  queue-run mechanics with the native runner contract.
