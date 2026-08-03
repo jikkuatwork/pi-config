@@ -21,10 +21,11 @@ This repo is the staging area for pi configuration, extensions, and locally revi
 
 - `pi-zyt` is a zsh function defined in `/home/glasscube/dotfiles/pi-modes.zsh`;
   that dotfiles repository is the source of truth for its default provider,
-  model, thinking level, tools, and `--models` scope.
+  model, thinking level, and tools.
+- Keep the shared model-cycle scope in Pi settings. `pi-zyt` must not inject a
+  `--models` override; it inherits `enabledModels` exactly like primary `pi`.
 - `extensions/mode-status.ts` only renders the mode label. Do not mistake it for
-  the launcher definition. A launcher's explicit `--models` scope overrides
-  this repo's `.pi/settings.json` `enabledModels` for that session.
+  the launcher definition.
 - Keep provider credentials outside this repo; launcher/config changes may
   reference existing environment variables but must not copy their values.
 
