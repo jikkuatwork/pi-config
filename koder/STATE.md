@@ -1,5 +1,5 @@
 ---
-updated_at: "03 Aug 2026 | 09:07 PM IST"
+updated_at: "03 Aug 2026 | 09:08 PM IST"
 ---
 
 # Koder State
@@ -13,8 +13,10 @@ updated_at: "03 Aug 2026 | 09:07 PM IST"
   commits `45ce696`/`40722a6` bridge the existing OpenRouter environment key to
   a dedicated alias without storing it.
 - 03 Aug 2026: commit `e37b5a5` aligned koder-pattern dispatch guidance with
-  Harnex 0.9.0 v2 telemetry: tracked `.harnex/dispatch.jsonl` is canonical and
-  observed Git/usage/list-price cost belongs to Harnex.
+  the then-current Harnex 0.9.0 v2 telemetry: tracked
+  `.harnex/dispatch.jsonl` is canonical and observed Git/usage/list-price cost
+  belongs to Harnex. Concurrent commit `39adc0a` then recorded Harnex 0.10.0's
+  removal of `--summary-out`; a second telemetry destination now hard-errors.
 - 31 Jul 2026: commit `2e6995e` adapted
   `scottstts/Threejs-Awesome-Graphics-Agent-Skills` into the docs-only
   `.pi/skills/threejs-graphics/` umbrella with 23 topic modules and 27 deep
