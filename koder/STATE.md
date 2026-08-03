@@ -1,11 +1,16 @@
 ---
-updated_at: "03 Aug 2026 | 09:08 PM IST"
+updated_at: "03 Aug 2026 | 10:04 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 03 Aug 2026: reviewed `davidondrej/skills` (MIT, ~3.1k stars) and vendored two
+docs-only skills under `.pi/skills/` (`write-skill` = effective-agent-skills authoring
+reference; `git-worktree` = parallel-agent worktree mechanism, as-is). Skipped
+`pi-custom-model` as redundant (pattern already implemented), and tool-bound
+DeepAPI/cmux/herdr/etc. as inapplicable.
 - 03 Aug 2026: commit `3cbb987` made `.pi/settings.json` the shared
   model-cycle authority for primary `pi` and `pi-zyt`: three Foundry GPT-5.6,
   three Anthropic, three Sakana, and one curated OpenRouter DeepSeek model.
@@ -49,6 +54,11 @@ updated_at: "03 Aug 2026 | 09:08 PM IST"
 
 - Run `/quit`, then `source ~/dotfiles/pi-modes.zsh` and `pi-zyt -c`; verify the
   ten-entry scoped model list in `/model` and through `Ctrl+P`.
+- In a fresh Pi process, smoke-check routing for the imported skills:
+  `write-skill` vs `create-skill` (differentiator held), and `git-worktree` vs
+  `koder-pattern` (mechanism vs policy). Decide whether `git-worktree` should be
+  folded into `koder-pattern` as a `references/modules/` guide instead of
+  standing alone.
 - Make a paid DeepSeek or Anthropic inference check only if explicitly desired;
   configuration, catalog, scope, and authentication checks already pass.
 - Smoke-check positive, near-miss, and cross-module `threejs-graphics` routing.
