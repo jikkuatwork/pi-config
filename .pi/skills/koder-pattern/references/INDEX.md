@@ -1,6 +1,6 @@
 ---
 title: Koder Pattern Router
-updated: 2026-07-14
+updated: 2026-08-03
 ---
 
 # Koder Pattern Router
@@ -33,14 +33,14 @@ Thin router for setting up durable `koder/` repo memory, managing `koder/` artif
 | File analysis/audit/mapping | `references/artifacts/analysis.md` |
 | File a lightweight note | `references/artifacts/notes.md` |
 | File/maintain task state | `references/artifacts/tasks.md` |
-| Scratch, state handoff, evidence stores | `references/artifacts/scratch-state.md` |
+| Scratch, state handoff, evidence stores, and retention gate | `references/artifacts/scratch-state.md` |
 | Choose direct or blind execution and review strictness | `references/queues/mode-selection.md` |
 | Extract queueable slices / build a queue conveyor | `references/queues/INDEX.md`, then `references/queues/mode-selection.md`, `references/queues/conveyor.md` |
 | File/add/refill a queue | `references/queues/INDEX.md`, then `references/queues/mode-selection.md`, `references/queues/model.md`, `references/queues/gates.md`, `references/queues/queue-add.md` |
 | Run a queue | `references/queues/INDEX.md`, then `references/queues/mode-selection.md`, `references/queues/model.md`, `references/queues/queue-run.md` |
 | Design/adopt/run/recover a blind-orchestrator queue | `references/queues/mode-selection.md`, then `references/queues/blind-orchestration.md` (includes briefs and recovery), plus the normal queue and harnex routes |
 | Harnex/worker dispatch | `references/harnex/INDEX.md`, then only required harnex leaves |
-| Source pattern/origin | `references/meta/holm-pattern-review.md`; for blind queues also `references/meta/sdk-blind-orchestration-review.md` |
+| Source pattern/origin and two-way contract | `references/meta/pattern-contract.md`; for blind queues also `references/meta/sdk-blind-orchestration-review.md` |
 | Trigger/quality tests for this skill | `references/meta/eval-prompts.md` |
 
 ## Defaults

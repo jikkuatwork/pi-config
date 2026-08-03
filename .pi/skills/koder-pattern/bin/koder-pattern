@@ -74,6 +74,7 @@ run_mkdir() {
 create_from_template() {
   local dest="$1"
   local template="$2"
+  local executable="${3:-0}"
 
   [ -f "$template" ] || fail "missing template: $template"
 
@@ -87,6 +88,9 @@ create_from_template() {
     say "create $dest from $template"
   else
     cp "$template" "$dest"
+    if [ "$executable" -eq 1 ]; then
+      chmod +x "$dest"
+    fi
     say "created $dest"
   fi
   record_path "$dest"
@@ -340,6 +344,7 @@ init_cmd() {
   create_from_template "$root/koder/skills/open/references/INDEX.md" "$TEMPLATE_DIR/koder/skills/open/references/INDEX.md"
   create_from_template "$root/koder/skills/open/references/FORMAT.md" "$TEMPLATE_DIR/koder/skills/open/references/FORMAT.md"
   create_from_template "$root/koder/skills/close/SKILL.md" "$TEMPLATE_DIR/koder/skills/close/SKILL.md.template"
+  create_from_template "$root/koder/skills/close/bin/scratch-invariant.sh" "$TEMPLATE_DIR/koder/skills/close/bin/scratch-invariant.sh" 1
   create_from_template "$root/koder/skills/close/references/INDEX.md" "$TEMPLATE_DIR/koder/skills/close/references/INDEX.md"
   create_from_template "$root/koder/skills/close/references/FORMAT.md" "$TEMPLATE_DIR/koder/skills/close/references/FORMAT.md"
 
@@ -370,6 +375,17 @@ check_path() {
     return 0
   fi
   say "missing $label"
+  return 1
+}
+
+check_executable() {
+  local label="$1"
+  local path="$2"
+  if [ -f "$path" ] && [ -x "$path" ]; then
+    say "ok      $label (executable)"
+    return 0
+  fi
+  say "missing $label (executable file required)"
   return 1
 }
 
@@ -433,6 +449,7 @@ doctor_cmd() {
   check_path "koder/skills/open/references/INDEX.md" "$root/koder/skills/open/references/INDEX.md" || failures=$((failures + 1))
   check_path "koder/skills/open/references/FORMAT.md" "$root/koder/skills/open/references/FORMAT.md" || failures=$((failures + 1))
   check_skill_router "koder/skills/close/SKILL.md" "$root/koder/skills/close/SKILL.md" || failures=$((failures + 1))
+  check_executable "koder/skills/close/bin/scratch-invariant.sh" "$root/koder/skills/close/bin/scratch-invariant.sh" || failures=$((failures + 1))
   check_path "koder/skills/close/references/INDEX.md" "$root/koder/skills/close/references/INDEX.md" || failures=$((failures + 1))
   check_path "koder/skills/close/references/FORMAT.md" "$root/koder/skills/close/references/FORMAT.md" || failures=$((failures + 1))
   check_symlink "AGENTS.md" "$root/AGENTS.md" "koder/AGENTS.md" || failures=$((failures + 1))

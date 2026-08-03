@@ -1,6 +1,6 @@
 ---
 title: Koder Scratch, State, and Evidence Stores
-updated: 2026-07-14
+updated: 2026-08-03
 ---
 
 # Koder Scratch, State, and Evidence Stores
@@ -27,7 +27,24 @@ Rules:
 - Link scratch artifacts only when they are concise evidence and likely to remain useful.
 - For blind queues, prefer an external runtime root or explicitly ignored scratch for task files, receipts, and long logs. Use versioned identities and atomic writes.
 - Promote durable phase/commit/validation/review/blocker facts into the canonical queue/review/run log before closeout. Never make a durable claim depend only on an ephemeral `/tmp` receipt.
-- Clean or archive scratch according to repo policy; do not churn large generated files casually.
+
+## Scratch retention gate
+
+At close, run the executable template gate from the repository root:
+
+```bash
+koder/skills/close/bin/scratch-invariant.sh
+```
+
+The default contract is fail-closed:
+
+- Every `*.md`, `*.patch`, and `*.txt` file below `koder/scratch/` must be promoted into tracked `koder/`, deleted, or covered by an active retention entry.
+- Retention lives in `koder/SCRATCH_RETAIN.jsonl`, one JSON object per line: `{"path": "...", "reason": "...", "ttl": "YYYY-MM-DD", "added": "YYYY-MM-DD"}`. `path`, `reason`, and `ttl` are mandatory non-empty strings. Invalid rows block close rather than being skipped.
+- A `path` ending in `/` is a directory prefix. Every other path uses Python `fnmatch` semantics; exact literals match themselves and globs can cross `/`.
+- If several entries match, active beats expired, then specificity wins (exact > directory prefix > glob; longer within a class), then latest TTL. Ledger order never decides coverage. Expired-only coverage is a violation attributed to the most-specific expired match.
+- The script writes a JSON report containing `durable_total`, `covered`, `violations`, entry totals, and `status`; it exits 1 and writes a remediation hint to stderr for uncovered paths, expired-only coverage, or malformed ledger rows.
+
+`KODER_SCRATCH_DIR` and `KODER_SCRATCH_RETAIN_PATH` override the default paths. `KODER_SCRATCH_EXCLUDE` is a comma-separated list of excluded basenames and defaults to empty; runtime-pad exemptions must be explicit repository deviations. Commit the ledger with the close. A repository wrapper may expose an emergency bypass, but it must be explicit and loud; a skipped or non-clean gate does not satisfy the standard clean-close invariant.
 
 ## Session state
 

@@ -1,13 +1,13 @@
 ---
 title: Koder Pattern Setup
-updated: 2026-07-14
+updated: 2026-08-03
 ---
 
 # Koder Pattern Setup
 
 Use when the user asks to set up, install, initialize, or bootstrap the koder pattern in a repository/folder.
 
-Goal: leave the target with the thinnest durable operator scaffold: `koder/AGENTS.md`, `koder/STATE.md`, `koder/issues/`, and complete `koder/skills/{open,close}/` front doors with routed references and Holm-style pretty-print formats. The baseline instructions conditionally recognize explicit blind queues, and `open` surfaces an active execution window/mode/stop gate when the repo later defines one; init does not create queue or execution docs. Pi, Codex, and Claude should all receive symlink adapters to that one canonical copy by default. Setup is a state transition: initialize git if needed and commit created scaffold paths with `state: init - koder pattern scaffold`.
+Goal: leave the target with the thinnest durable operator scaffold: `koder/AGENTS.md`, `koder/STATE.md`, `koder/issues/`, and complete `koder/skills/{open,close}/` front doors, including the executable close-time scratch retention gate, routed references, and Holm-style pretty-print formats. The baseline instructions conditionally recognize explicit blind queues, and `open` surfaces an active execution window/mode/stop gate when the repo later defines one; init does not create queue or execution docs. Pi, Codex, and Claude should all receive symlink adapters to that one canonical copy by default. Setup is a state transition: initialize git if needed and commit created scaffold paths with `state: init - koder pattern scaffold`.
 
 Read `references/shared/state-commit-protocol.md` before overriding commit behavior.
 
@@ -66,6 +66,7 @@ Script behavior:
 - commits only created scaffold paths with `state: init - koder pattern scaffold` unless `--no-commit` or `--dry-run` is used;
 - preserves unrelated dirty/staged work by using a selected-path commit;
 - creates `AGENTS.md`, `CLAUDE.md`, and Pi, Codex, and Claude skill adapters by default;
+- installs `koder/skills/close/bin/scratch-invariant.sh` with its executable bit set;
 - retains explicit `--no-pi`, `--no-codex`, and `--no-claude` escape hatches for constrained targets, but `doctor` reports those targets as incomplete against the cross-harness default.
 
 Default scaffold:
@@ -84,6 +85,7 @@ koder/
       references/{INDEX,FORMAT}.md
     close/
       SKILL.md
+      bin/scratch-invariant.sh
       references/{INDEX,FORMAT}.md
 .pi/skills/open -> ../../koder/skills/open
 .pi/skills/close -> ../../koder/skills/close
@@ -119,7 +121,7 @@ If the script cannot run, manually create the same thin scaffold and make a stat
 
 1. Create directories:
    ```bash
-   mkdir -p koder/issues koder/skills/open/references koder/skills/close/references
+   mkdir -p koder/issues koder/skills/open/references koder/skills/close/{bin,references}
    touch koder/issues/.gitkeep
    ```
 2. Copy templates from the skill root:
@@ -127,6 +129,7 @@ If the script cannot run, manually create the same thin scaffold and make a stat
    - `templates/koder/skills/open/SKILL.md.template` -> `koder/skills/open/SKILL.md`
    - `templates/koder/skills/open/references/{INDEX,FORMAT}.md` -> `koder/skills/open/references/`
    - `templates/koder/skills/close/SKILL.md.template` -> `koder/skills/close/SKILL.md`
+   - `templates/koder/skills/close/bin/scratch-invariant.sh` -> `koder/skills/close/bin/scratch-invariant.sh` (then `chmod +x`)
    - `templates/koder/skills/close/references/{INDEX,FORMAT}.md` -> `koder/skills/close/references/`
 3. Create `koder/STATE.md` with India-time frontmatter and concise handoff sections:
    ```markdown
@@ -198,7 +201,7 @@ If `AGENTS.md`, `CLAUDE.md`, or skill paths already exist, do not replace them. 
 - `koder/STATE.md` has `updated_at`, Past/Present/Future, and is under 100 lines.
 - `koder/issues/` exists; other artifact dirs are absent unless requested or pre-existing.
 - `koder/skills/open/SKILL.md` and `koder/skills/close/SKILL.md` have valid Agent Skills frontmatter plus a tiny body link to `references/INDEX.md`; the body link keeps Claude compatible while preserving progressive disclosure in all three harnesses.
-- Both skills have `references/INDEX.md` workflow instructions and `references/FORMAT.md` pretty-print output contracts; `open` conditionally reports active execution window, orchestration mode, and stop gate without starting work.
+- Both skills have `references/INDEX.md` workflow instructions and `references/FORMAT.md` pretty-print output contracts; `open` conditionally reports active execution window, orchestration mode, and stop gate without starting work. The close skill also has executable `bin/scratch-invariant.sh` and runs it before commit.
 - Root `AGENTS.md` and `CLAUDE.md` are symlinks to `koder/AGENTS.md`, or existing root files were preserved and merge needs were reported.
 - `.pi/skills/{open,close}`, `.agents/skills/{open,close}`, and `.claude/skills/{open,close}` are relative symlinks to the same `koder/skills/*` directories.
 - Canonical path resolution (`pwd -P` from each directory, or an equivalent) maps every harness adapter to its matching `koder/skills/*` directory; there are only two physical generated `SKILL.md` files.
