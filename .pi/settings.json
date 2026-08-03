@@ -1,4 +1,7 @@
 {
+  "lastChangelogVersion": "0.83.0",
+  "defaultProvider": "openrouter-deepseek",
+  "defaultModel": "~deepseek/deepseek-v4-flash-latest",
   "enabledModels": [
     "foundry-zyt/gpt-5.6-*",
     "anthropic/claude-sonnet-5",
@@ -8,5 +11,24 @@
     "sakana/fugu-ultra",
     "sakana/fugu-ultra-20260615",
     "openrouter-deepseek/~deepseek/deepseek-v4-flash-latest"
-  ]
+  ],
+  "extensions": [],
+  "retry": {
+    "enabled": true,
+    "maxRetries": 6,
+    "baseDelayMs": 1500,
+    "provider": {
+      "timeoutMs": 180000,
+      "maxRetries": 2,
+      "maxRetryDelayMs": 15000
+    }
+  },
+  "defaultThinkingLevel": "max",
+  "hideThinkingBlock": false,
+  "theme": "dark",
+  "quietStartup": true,
+  "editorPaddingX": 1,
+  "terminal": {
+    "showTerminalProgress": true
+  }
 }

@@ -1,11 +1,17 @@
 ---
-updated_at: "03 Aug 2026 | 10:45 PM IST"
+updated_at: "03 Aug 2026 | 11:05 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 03 Aug 2026: moved the shared model cycle to one global source:
+  `~/.pi/agent/settings.json` is now a symlink to this repo's
+  `.pi/settings.json`, which absorbed the full prior global settings with the
+  stale azure list replaced by the ten-model shared list. `pi --version` boots
+  clean and all eight patterns/targets resolve from a neutral cwd; pre-link
+  global backed up at `~/.pi/agent/settings.json.bak-pre-symlink`.
 - 03 Aug 2026: commit `f845dae` back-ported Holm's close-time scratch invariant
   into koder-pattern: future `init` scaffolds receive an executable fail-closed
   gate, JSONL retention ledger contract, active/specific/latest-TTL precedence,
@@ -48,7 +54,8 @@ DeepAPI/cmux/herdr/etc. as inapplicable.
 - The scoped resolver returns exactly ten models with zero diagnostics. The
   isolated `openrouter-deepseek` provider exposes only
   `~deepseek/deepseek-v4-flash-latest`, avoiding the full OpenRouter catalog and
-  proxy duplicates.
+  proxy duplicates. The shared cycle is now global via the home symlink to
+  `.pi/settings.json`; pi writes landing there appear as git diffs.
 - User-local `~/.pi/agent/models.json` references
   `PI_OPENROUTER_API_KEY`; the standard key is bridged then scrubbed by the
   committed `~/commands/pi` wrapper. No credential value entered any repo.
@@ -65,6 +72,8 @@ DeepAPI/cmux/herdr/etc. as inapplicable.
 
 - Run `/quit`, then `source ~/dotfiles/pi-modes.zsh` and `pi-zyt -c`; verify the
   ten-entry scoped model list in `/model` and through `Ctrl+P`.
+- On a new machine, recreate the global symlink after cloning:
+  `ln -s <repo>/.pi/settings.json ~/.pi/agent/settings.json` (see README).
 - In a fresh Pi process, smoke-check routing for the imported skills:
   `write-skill` vs `create-skill` (differentiator held), and `git-worktree` vs
   `koder-pattern` (mechanism vs policy). Decide whether `git-worktree` should be

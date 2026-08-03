@@ -83,11 +83,24 @@ No guessing.
 
 ```text
 <repo>
-├── extensions/      # extension source
-├── .pi/skills/      # reviewed skills
-├── knowledge-base/  # workflows
-└── koder/STATE.md   # session hand-off
+├── extensions/        # extension source
+├── .pi/settings.json  # global pi settings (symlinked from ~/.pi/agent/)
+├── .pi/skills/        # reviewed skills
+├── knowledge-base/    # workflows
+└── koder/STATE.md     # session hand-off
 ```
+
+## Global Settings
+
+`.pi/settings.json` is the single source for pi's global settings file.
+On this machine `~/.pi/agent/settings.json` is a symlink to it:
+
+    ln -s <repo>/.pi/settings.json ~/.pi/agent/settings.json
+
+So every repo and `pi-zyt` read the same shared model cycle and settings.
+Writes pi makes to global settings (e.g. changelog bumps) land here as
+git-visible diffs. On a fresh clone, recreate the symlink; the pre-link
+file is backed up at `~/.pi/agent/settings.json.bak-pre-symlink`.
 
 ## Skill Import Policy
 
