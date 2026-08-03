@@ -120,8 +120,11 @@ Required in spirit even if exact schema differs:
 - model/effort actually used;
 - reason for model/effort;
 - validation expectation;
-- canonical dispatch telemetry comes from Harnex's repo-tracked dispatch stream;
-  pass `--summary-out` only when an explicit compatibility mirror is required;
+- canonical dispatch telemetry comes from Harnex's repo-tracked dispatch stream
+  (`.harnex/dispatch.jsonl`), which is the only destination — do not route
+  telemetry to a second file. The `--summary-out` mirror flag was removed in
+  harnex `0.10.0` and now hard-errors; mirroring it into gitignored scratch was
+  the source of two hand-reconciled stranded-telemetry incidents;
 - artifact/validation sidecar path when the live harnex version or repo wrapper supports one.
 
 Do not put secrets, full prompts, private payloads, or sensitive account identifiers in metadata.
