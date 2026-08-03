@@ -1,11 +1,16 @@
 ---
-updated_at: "03 Aug 2026 | 10:04 PM IST"
+updated_at: "03 Aug 2026 | 10:45 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 03 Aug 2026: commit `f845dae` back-ported Holm's close-time scratch invariant
+  into koder-pattern: future `init` scaffolds receive an executable fail-closed
+  gate, JSONL retention ledger contract, active/specific/latest-TTL precedence,
+  and two-way contract v1. New smoke coverage and a real temporary-repo `init`
+  proof passed.
 - 03 Aug 2026: reviewed `davidondrej/skills` (MIT, ~3.1k stars) and vendored two
 docs-only skills under `.pi/skills/` (`write-skill` = effective-agent-skills authoring
 reference; `git-worktree` = parallel-agent worktree mechanism, as-is). Skipped
@@ -34,6 +39,12 @@ DeepAPI/cmux/herdr/etc. as inapplicable.
 
 ## Present
 
+- Koder-pattern contract v1 is canonical at
+  `.pi/skills/koder-pattern/references/meta/pattern-contract.md`; Holm is its
+  reference consumer with explicit deviations.
+- The `init` scaffold installs and `doctor` validates
+  `koder/skills/close/bin/scratch-invariant.sh`; dedicated and cross-harness
+  smoke tests are green.
 - The scoped resolver returns exactly ten models with zero diagnostics. The
   isolated `openrouter-deepseek` provider exposes only
   `~deepseek/deepseek-v4-flash-latest`, avoiding the full OpenRouter catalog and
