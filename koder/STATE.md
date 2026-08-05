@@ -1,11 +1,16 @@
 ---
-updated_at: "03 Aug 2026 | 11:00 PM IST"
+updated_at: "05 Aug 2026 | 08:45 AM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 05 Aug 2026: pinned OpenRouter DeepSeek: rolling
+  `~deepseek/deepseek-v4-flash-latest` → `deepseek/deepseek-v4-flash-0731:exacto`
+  (0731 checkpoint + `:exacto` quality-first variant; pi 0.83.0 resolves it
+  verbatim). Updated `models.json` + `.pi/settings.json`; verified via
+  `pi --list-models` and a ~1-micro-dollar glow test. Commit `1c7a248`.
 - 03 Aug 2026: moved the shared model cycle to one global source:
   `~/.pi/agent/settings.json` is now a symlink to this repo's
   `.pi/settings.json`, which absorbed the full prior global settings with the
@@ -53,14 +58,20 @@ DeepAPI/cmux/herdr/etc. as inapplicable.
   smoke tests are green.
 - The scoped resolver returns exactly ten models with zero diagnostics. The
   isolated `openrouter-deepseek` provider exposes only
-  `~deepseek/deepseek-v4-flash-latest`, avoiding the full OpenRouter catalog and
-  proxy duplicates. The shared cycle is now global via the home symlink to
+  `deepseek/deepseek-v4-flash-0731:exacto`, avoiding the full OpenRouter catalog
+  and proxy duplicates. The shared cycle is global via the home symlink to
   `.pi/settings.json`; pi writes landing there appear as git diffs.
+- The `:exacto` suffix is an official OpenRouter virtual variant for
+  quality-first provider sorting and pi 0.83.0 resolves it verbatim (exact
+  model-ID match first; no client-side rejection). Confirmed live with a
+  ~1-micro-dollar routed glow test; no launcher/version change was needed.
 - User-local `~/.pi/agent/models.json` references
   `PI_OPENROUTER_API_KEY`; the standard key is bridged then scrubbed by the
   committed `~/commands/pi` wrapper. No credential value entered any repo.
-- OpenRouter's live catalog contained the requested literal `~` alias and its
-  authentication endpoint returned HTTP 200. No paid inference was performed.
+- External filing after `1c7a248`: a `/model` selector write reset
+  `.pi/settings.json` `defaultProvider`/`defaultModel` to
+  `anthropic`/`claude-fable-5`; the pinned DeepSeek `:exacto` entry remains in
+  `enabledModels`. Committed as the external-filing config commit.
 - This running Pi process predates the final settings/launcher changes; reload
   the zsh function and restart before judging `/model` or `Ctrl+P`.
 - `threejs-graphics` is discoverable in a fresh Pi process; its positive,
@@ -79,8 +90,9 @@ DeepAPI/cmux/herdr/etc. as inapplicable.
   `koder-pattern` (mechanism vs policy). Decide whether `git-worktree` should be
   folded into `koder-pattern` as a `references/modules/` guide instead of
   standing alone.
-- Make a paid DeepSeek or Anthropic inference check only if explicitly desired;
-  configuration, catalog, scope, and authentication checks already pass.
+- Decide whether to restore the pinned DeepSeek `:exacto` as default; a `/model`
+  write currently leaves default at `anthropic`/`claude-fable-5`. Config, catalog,
+  scope, and routing are verified; deeper paid inference only if desired.
 - Smoke-check positive, near-miss, and cross-module `threejs-graphics` routing.
 - On the next authorized queue, measure product, quality, process, worker-count,
   and wall-time deltas; move runner defects to Harnex rather than masking them.
