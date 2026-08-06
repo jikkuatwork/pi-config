@@ -1,11 +1,15 @@
 ---
-updated_at: "06 Aug 2026 | 08:32 AM IST"
+updated_at: "06 Aug 2026 | 10:36 AM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 06 Aug 2026: commit `787811e` added Baseten-hosted Kimi K3, GLM 5.2
+  Fast, and DeepSeek V4 Flash 0731 to the shared 13-model Pi scope. The
+  user-local global provider resolves `$BASETEN_API_KEY`; discovery, direct
+  Chat Completions, and max-thinking Pi streaming smokes passed for all three.
 - 06 Aug 2026: commit `7ffa1fc` replaced `ui-ux-pro-max` with one extensible,
   docs-only `.pi/skills/ux/` umbrella. It retains the BFBB/Holm core and adapts
   `jakubkrehel/skills@a673333` plus `emilkowalski/skills@de33dbe` into 12 routed
@@ -30,33 +34,28 @@ updated_at: "06 Aug 2026 | 08:32 AM IST"
 
 ## Present
 
-- `ux` is now the canonical interface-design skill: one frontmatter-only head,
-  BFBB-safe root guidance, and routed specialist modules for review, foundations,
-  polish, motion, prototyping, Apple-inspired design, and library selection.
-- Mechanical validation is green: the full pi loader finds `ux` exactly once
-  among 22 skills with zero diagnostics and no `ui-ux-pro-max`; there are no
-  nested skill heads, executables, symlinks, broken local links, or credential
-  values. Three source license files match exactly.
-- Koder-pattern contract v1 remains canonical at
-  `.pi/skills/koder-pattern/references/meta/pattern-contract.md`; init/doctor
-  scratch-invariant coverage is green. SDK Queue `#002` remains unauthorized;
-  runner-dependent work waits for Harnex `#57`/`#59`.
-- The ten-model resolver remains clean. A `/model` selector write left the
-  default at `anthropic`/`claude-fable-5`; pinned DeepSeek `:exacto` remains
-  enabled. The running Pi process predates the latest settings/skill changes.
-- `threejs-graphics` is discoverable; positive, near-miss, and cross-module
-  routing smoke checks remain outstanding.
+- Global user-local provider `baseten` points at
+  `https://inference.baseten.co/v1`, uses `openai-completions`, and keeps its
+  credential as the `$BASETEN_API_KEY` environment reference; no key was copied.
+- Plain `pi` and `pi-zyt` discover all three Baseten models. Minimal direct API
+  and Pi streaming calls returned exactly `OK`; pricing metadata remains zero
+  because Baseten's model listing did not publish rates.
+- `.pi/settings.json` remains the shared cycle authority through the global
+  settings symlink. The scope now resolves 13 models; the default remains
+  `anthropic`/`claude-fable-5`, with OpenRouter DeepSeek `:exacto` still enabled.
+- The current Pi process does not inherit `BASETEN_API_KEY`; a fresh process is
+  required before selecting Baseten interactively.
+- `ux` remains canonical and mechanically clean. Koder-pattern contract v1 is
+  canonical; SDK Queue `#002` remains unauthorized pending Harnex `#57`/`#59`.
+- `threejs-graphics` and imported-skill routing smoke checks remain outstanding.
 
 ## Future
 
-- Restart Pi, invoke `/skill:ux`, and smoke-check routing for holistic review,
-  accessibility, motion restraint, explicit prototyping, and library-selection
-  permission boundaries. Pi exposes the skill as `/skill:ux`; `/ux` is trigger
-  wording, not a native skill-command alias.
-- Run `/quit`, `source ~/dotfiles/pi-modes.zsh`, and `pi-zyt -c`; verify the ten
-  scoped models through `/model` and `Ctrl+P`. Decide whether DeepSeek `:exacto`
-  should become the default again.
-- Smoke-check imported-skill routing boundaries (`write-skill` vs
-  `create-skill`, `git-worktree` vs `koder-pattern`) and Three.js routing.
+- Run `/quit`, `source ~/dotfiles/pi-modes.zsh`, and `pi-zyt -c`; verify the 13
+  scoped models through `/model` and `Ctrl+P`, then choose any default changes.
+- Replace Baseten's zero cost metadata if authoritative rates become available;
+  separately validate Kimi image input and coding tool-call loops if needed.
+- Invoke `/skill:ux` and smoke-check review, accessibility, motion, prototyping,
+  and library-selection boundaries; also check imported-skill and Three.js routing.
 - On the next authorized queue, measure product, quality, process, worker-count,
   and wall-time deltas; file runner defects in Harnex rather than masking them.
