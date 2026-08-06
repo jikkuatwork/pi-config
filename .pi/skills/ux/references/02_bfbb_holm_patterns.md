@@ -5,7 +5,7 @@ Use this when the UI will live in a Holm app, Zippy-derived app, or BFBB/raw bro
 ## Default posture
 
 - Primary app path is raw/BFBB: `holm app deploy . --spa --no-build` must not require `npm install`, Vite, TypeScript compilation, or a public runtime CDN.
-- If app implementation/deploy/runtime details matter, load the local `holm-app` references. For polished UI, especially read its `ui-excellence.md` and `zippy-boilerplate.md`.
+- If the user explicitly invokes the local `holm-app` skill, also follow its runtime/deploy/Zippy references and permission gates. Do not treat this UX module as deploy authorization.
 - Build the actual product workflow first. Rename and prune Zippy/demo UI unless the user explicitly asked for a showcase.
 - Prefer existing Zippy shell, tokens, auth/realtime/settings helpers, icons, and API helpers instead of inventing parallel systems.
 

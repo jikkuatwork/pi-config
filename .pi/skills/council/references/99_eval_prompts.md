@@ -34,7 +34,7 @@ Use these prompts to sanity-check trigger boundaries and output contract.
      for multi-persona deliberation.
 
 4. `What is a good UX pattern for this form?`
-   - Expected: likely `ui-ux-pro-max`, not council, unless user asks for Rams or
+   - Expected: likely `ux`, not council, unless user asks for Rams or
      a design council.
 
 ## Edge cases
