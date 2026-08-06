@@ -1,98 +1,62 @@
 ---
-updated_at: "05 Aug 2026 | 08:45 AM IST"
+updated_at: "06 Aug 2026 | 08:32 AM IST"
 ---
 
 # Koder State
 
 ## Past
 
-- 05 Aug 2026: pinned OpenRouter DeepSeek: rolling
-  `~deepseek/deepseek-v4-flash-latest` → `deepseek/deepseek-v4-flash-0731:exacto`
-  (0731 checkpoint + `:exacto` quality-first variant; pi 0.83.0 resolves it
-  verbatim). Updated `models.json` + `.pi/settings.json`; verified via
-  `pi --list-models` and a ~1-micro-dollar glow test. Commit `1c7a248`.
-- 03 Aug 2026: moved the shared model cycle to one global source:
-  `~/.pi/agent/settings.json` is now a symlink to this repo's
-  `.pi/settings.json`, which absorbed the full prior global settings with the
-  stale azure list replaced by the ten-model shared list. `pi --version` boots
-  clean and all eight patterns/targets resolve from a neutral cwd; pre-link
-  global backed up at `~/.pi/agent/settings.json.bak-pre-symlink`.
-- 03 Aug 2026: commit `f845dae` back-ported Holm's close-time scratch invariant
-  into koder-pattern: future `init` scaffolds receive an executable fail-closed
-  gate, JSONL retention ledger contract, active/specific/latest-TTL precedence,
-  and two-way contract v1. New smoke coverage and a real temporary-repo `init`
-  proof passed.
-- 03 Aug 2026: reviewed `davidondrej/skills` (MIT, ~3.1k stars) and vendored two
-docs-only skills under `.pi/skills/` (`write-skill` = effective-agent-skills authoring
-reference; `git-worktree` = parallel-agent worktree mechanism, as-is). Skipped
-`pi-custom-model` as redundant (pattern already implemented), and tool-bound
-DeepAPI/cmux/herdr/etc. as inapplicable.
-- 03 Aug 2026: commit `3cbb987` made `.pi/settings.json` the shared
-  model-cycle authority for primary `pi` and `pi-zyt`: three Foundry GPT-5.6,
-  three Anthropic, three Sakana, and one curated OpenRouter DeepSeek model.
-  Dotfiles commit `7db28d0` removed the launcher's `--models` override; commands
-  commits `45ce696`/`40722a6` bridge the existing OpenRouter environment key to
-  a dedicated alias without storing it.
-- 03 Aug 2026: commit `e37b5a5` aligned koder-pattern dispatch guidance with
-  the then-current Harnex 0.9.0 v2 telemetry: tracked
-  `.harnex/dispatch.jsonl` is canonical and observed Git/usage/list-price cost
-  belongs to Harnex. Concurrent commit `39adc0a` then recorded Harnex 0.10.0's
-  removal of `--summary-out`; a second telemetry destination now hard-errors.
-- 31 Jul 2026: commit `2e6995e` adapted
-  `scottstts/Threejs-Awesome-Graphics-Agent-Skills` into the docs-only
-  `.pi/skills/threejs-graphics/` umbrella with 23 topic modules and 27 deep
-  references; installers, scripts, runtime examples, and binaries were omitted.
-- 15 Jul 2026: SDK Queue `#002` review consolidated koder-pattern around
-  delivery-first direct/blind orchestration, one mode-selection authority,
-  queue-global failure budgets, adapter preflight, and Harnex-owned receipts.
-- Session handoffs and routed cross-harness skills are active. `state:` history
-  remains reserved for sparse operator milestones.
+- 06 Aug 2026: commit `7ffa1fc` replaced `ui-ux-pro-max` with one extensible,
+  docs-only `.pi/skills/ux/` umbrella. It retains the BFBB/Holm core and adapts
+  `jakubkrehel/skills@a673333` plus `emilkowalski/skills@de33dbe` into 12 routed
+  capability modules. Install/plugin surfaces were omitted, risky mutations are
+  gated, source conflicts were reconciled, and all three MIT notices remain.
+- 05 Aug 2026: commit `1c7a248` pinned the isolated OpenRouter DeepSeek route to
+  `deepseek/deepseek-v4-flash-0731:exacto`; pi 0.83.0 resolved it verbatim and a
+  minimal live glow test passed. Close commit: `894c1eb`.
+- 03 Aug 2026: `.pi/settings.json` became the ten-model shared cycle authority;
+  `~/.pi/agent/settings.json` now symlinks to it. Primary `pi` and `pi-zyt` share
+  the same scope; dotfiles commit `7db28d0` removed the launcher override.
+- 03 Aug 2026: koder-pattern contract v1 gained a fail-closed close-time scratch
+  invariant, retention ledger, precedence rules, init/doctor validation, and
+  passing scaffold/cross-harness smoke coverage (`f845dae`).
+- 03 Aug 2026: vendored docs-only `write-skill` and `git-worktree`; skipped
+  redundant or tool-bound skills from `davidondrej/skills`.
+- 31 Jul 2026: imported the docs-only `threejs-graphics` umbrella with 23 topic
+  modules and 27 deep references (`2e6995e`); runtime/install/assets were omitted.
+- 15 Jul 2026: SDK Queue `#002` review consolidated delivery-first orchestration,
+  one mode authority, queue-global budgets, adapter preflight, and Harnex-owned
+  receipts. Session handoffs and sparse `state:` history remain active.
 
 ## Present
 
-- Koder-pattern contract v1 is canonical at
-  `.pi/skills/koder-pattern/references/meta/pattern-contract.md`; Holm is its
-  reference consumer with explicit deviations.
-- The `init` scaffold installs and `doctor` validates
-  `koder/skills/close/bin/scratch-invariant.sh`; dedicated and cross-harness
-  smoke tests are green.
-- The scoped resolver returns exactly ten models with zero diagnostics. The
-  isolated `openrouter-deepseek` provider exposes only
-  `deepseek/deepseek-v4-flash-0731:exacto`, avoiding the full OpenRouter catalog
-  and proxy duplicates. The shared cycle is global via the home symlink to
-  `.pi/settings.json`; pi writes landing there appear as git diffs.
-- The `:exacto` suffix is an official OpenRouter virtual variant for
-  quality-first provider sorting and pi 0.83.0 resolves it verbatim (exact
-  model-ID match first; no client-side rejection). Confirmed live with a
-  ~1-micro-dollar routed glow test; no launcher/version change was needed.
-- User-local `~/.pi/agent/models.json` references
-  `PI_OPENROUTER_API_KEY`; the standard key is bridged then scrubbed by the
-  committed `~/commands/pi` wrapper. No credential value entered any repo.
-- External filing after `1c7a248`: a `/model` selector write reset
-  `.pi/settings.json` `defaultProvider`/`defaultModel` to
-  `anthropic`/`claude-fable-5`; the pinned DeepSeek `:exacto` entry remains in
-  `enabledModels`. Committed as the external-filing config commit.
-- This running Pi process predates the final settings/launcher changes; reload
-  the zsh function and restart before judging `/model` or `Ctrl+P`.
-- `threejs-graphics` is discoverable in a fresh Pi process; its positive,
-  near-miss, and cross-module routing smoke checks remain outstanding.
-- Koder-pattern remains delivery-first. SDK Queue `#002` is unauthorized, and
-  runner-dependent guidance still waits for Harnex `#57`/`#59`.
+- `ux` is now the canonical interface-design skill: one frontmatter-only head,
+  BFBB-safe root guidance, and routed specialist modules for review, foundations,
+  polish, motion, prototyping, Apple-inspired design, and library selection.
+- Mechanical validation is green: the full pi loader finds `ux` exactly once
+  among 22 skills with zero diagnostics and no `ui-ux-pro-max`; there are no
+  nested skill heads, executables, symlinks, broken local links, or credential
+  values. Three source license files match exactly.
+- Koder-pattern contract v1 remains canonical at
+  `.pi/skills/koder-pattern/references/meta/pattern-contract.md`; init/doctor
+  scratch-invariant coverage is green. SDK Queue `#002` remains unauthorized;
+  runner-dependent work waits for Harnex `#57`/`#59`.
+- The ten-model resolver remains clean. A `/model` selector write left the
+  default at `anthropic`/`claude-fable-5`; pinned DeepSeek `:exacto` remains
+  enabled. The running Pi process predates the latest settings/skill changes.
+- `threejs-graphics` is discoverable; positive, near-miss, and cross-module
+  routing smoke checks remain outstanding.
 
 ## Future
 
-- Run `/quit`, then `source ~/dotfiles/pi-modes.zsh` and `pi-zyt -c`; verify the
-  ten-entry scoped model list in `/model` and through `Ctrl+P`.
-- On a new machine, recreate the global symlink after cloning:
-  `ln -s <repo>/.pi/settings.json ~/.pi/agent/settings.json` (see README).
-- In a fresh Pi process, smoke-check routing for the imported skills:
-  `write-skill` vs `create-skill` (differentiator held), and `git-worktree` vs
-  `koder-pattern` (mechanism vs policy). Decide whether `git-worktree` should be
-  folded into `koder-pattern` as a `references/modules/` guide instead of
-  standing alone.
-- Decide whether to restore the pinned DeepSeek `:exacto` as default; a `/model`
-  write currently leaves default at `anthropic`/`claude-fable-5`. Config, catalog,
-  scope, and routing are verified; deeper paid inference only if desired.
-- Smoke-check positive, near-miss, and cross-module `threejs-graphics` routing.
+- Restart Pi, invoke `/skill:ux`, and smoke-check routing for holistic review,
+  accessibility, motion restraint, explicit prototyping, and library-selection
+  permission boundaries. Pi exposes the skill as `/skill:ux`; `/ux` is trigger
+  wording, not a native skill-command alias.
+- Run `/quit`, `source ~/dotfiles/pi-modes.zsh`, and `pi-zyt -c`; verify the ten
+  scoped models through `/model` and `Ctrl+P`. Decide whether DeepSeek `:exacto`
+  should become the default again.
+- Smoke-check imported-skill routing boundaries (`write-skill` vs
+  `create-skill`, `git-worktree` vs `koder-pattern`) and Three.js routing.
 - On the next authorized queue, measure product, quality, process, worker-count,
-  and wall-time deltas; move runner defects to Harnex rather than masking them.
+  and wall-time deltas; file runner defects in Harnex rather than masking them.
