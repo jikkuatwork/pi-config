@@ -1,11 +1,16 @@
 ---
-updated_at: "06 Aug 2026 | 10:36 AM IST"
+updated_at: "06 Aug 2026 | 11:08 AM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 06 Aug 2026: commit `6e16c3c` added a Pi-only persistent message bar with
+  six agent-selected variants, a strict sub-160-character display, session
+  restore, manual control, and global Pi guidance. Dotfiles commit `c9a01f2`
+  added `message_bar` to the `pi-zyt` tool allowlist; TUI, restore, RPC load,
+  and explicit allowlist activation smokes passed.
 - 06 Aug 2026: commit `787811e` added Baseten-hosted Kimi K3, GLM 5.2
   Fast, and DeepSeek V4 Flash 0731 to the shared 13-model Pi scope. The
   user-local global provider resolves `$BASETEN_API_KEY`; discovery, direct
@@ -43,8 +48,12 @@ updated_at: "06 Aug 2026 | 10:36 AM IST"
 - `.pi/settings.json` remains the shared cycle authority through the global
   settings symlink. The scope now resolves 13 models; the default remains
   `anthropic`/`claude-fable-5`, with OpenRouter DeepSeek `:exacto` still enabled.
-- The current Pi process does not inherit `BASETEN_API_KEY`; a fresh process is
-  required before selecting Baseten interactively.
+- The message-bar extension and Pi-global instructions are enabled through
+  source-of-truth symlinks under `~/.pi/agent/`. The current `pi-zyt` process
+  predates its new tool allowlist, so a full restart is still required before
+  the agent can call `message_bar`; the manual `/message-bar` UI path works.
+- The current Pi process does not inherit `BASETEN_API_KEY`; the same fresh
+  process is required before selecting Baseten interactively.
 - `ux` remains canonical and mechanically clean. Koder-pattern contract v1 is
   canonical; SDK Queue `#002` remains unauthorized pending Harnex `#57`/`#59`.
 - `threejs-graphics` and imported-skill routing smoke checks remain outstanding.
@@ -52,7 +61,8 @@ updated_at: "06 Aug 2026 | 10:36 AM IST"
 ## Future
 
 - Run `/quit`, `source ~/dotfiles/pi-modes.zsh`, and `pi-zyt -c`; verify the 13
-  scoped models through `/model` and `Ctrl+P`, then choose any default changes.
+  scoped models through `/model` and `Ctrl+P`, then ask the agent to set and
+  clear a `message_bar` test before choosing any default model changes.
 - Replace Baseten's zero cost metadata if authoritative rates become available;
   separately validate Kimi image input and coding tool-call loops if needed.
 - Invoke `/skill:ux` and smoke-check review, accessibility, motion, prototyping,
