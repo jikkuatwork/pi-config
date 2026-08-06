@@ -38,6 +38,11 @@ Source: [`extensions/`](extensions/)
   - turns opaque transient failures into retryable errors
   - shows retry status in the UI
 
+- `message-bar.ts`
+  - persistent one-line workflow notices below the editor
+  - agent-selectable progress, working, waiting, blocked, complete, and note variants
+  - session restore with a strict sub-160-character display limit
+
 - `vim-model-switch.example.json`
   - example quick-switch config
 
@@ -84,6 +89,7 @@ No guessing.
 ```text
 <repo>
 ├── extensions/        # extension source
+├── .pi/AGENTS.md      # global Pi instructions (symlinked from ~/.pi/agent/)
 ├── .pi/settings.json  # global pi settings (symlinked from ~/.pi/agent/)
 ├── .pi/skills/        # reviewed skills
 ├── knowledge-base/    # workflows
@@ -101,6 +107,9 @@ So every repo and `pi-zyt` read the same shared model cycle and settings.
 Writes pi makes to global settings (e.g. changelog bumps) land here as
 git-visible diffs. On a fresh clone, recreate the symlink; the pre-link
 file is backed up at `~/.pi/agent/settings.json.bak-pre-symlink`.
+
+`.pi/AGENTS.md` is likewise the source for Pi-only global instructions and is
+symlinked from `~/.pi/agent/AGENTS.md`, keeping other agent harnesses unaffected.
 
 ## Skill Import Policy
 

@@ -12,12 +12,14 @@ This directory is the source-of-truth for global pi extensions on this machine.
 - Disable it by removing only the symlink:
   - `rm ~/.pi/agent/extensions/<name>.ts`
 - Reload in pi with `/reload` (or restart pi).
+- `pi-zyt` passes an explicit `--tools` allowlist from `~/dotfiles/pi-modes.zsh`; agent-callable extension tools must also be listed there, and an allowlist change requires a full restart.
 
 ## Included extensions
 
 - `vim.ts` - custom Vim-style modal editing keybindings/behavior, including normal-mode GPT-5.6 model/effort quick-switch (`tab`, `↑/↓`, `enter`, `esc`). Supports optional config via `~/.pi/agent/vim-model-switch.json` (and project override `.pi/vim-model-switch.json`).
 - `azure-retry-normalizer.ts` - rewrites Azure transient failure shapes into retryable errors (opaque `Unknown error (no error details in response)` and generic refusal placeholder responses), and logs retry start/end in UI status/notifications.
 - `footer-highlights.ts` - replaces the footer with colorized stats so cost and context usage are easier to scan.
+- `message-bar.ts` - gives the agent a compact, persistent, Pi-only message bar below the editor for meaningful progress, waits, blockers, completions, and notes.
 - `hide-clone-autocomplete.ts` - removes the built-in `/clone` command from slash autocomplete so `/skill:close` is easier to complete.
 
 ## Optional experiments
