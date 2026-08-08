@@ -67,10 +67,11 @@ mode-selection gate justifies unattended/context-isolated execution and:
   and the chosen adapter (plus one declared fallback) passed a preflight
   dispatch smoke;
 - the queue declares `review_granularity`; `entry` work has a fresh independent reviewer after every implementation and fix;
-- the queue declares a coordinator entry cap (prefer `1-2`, hard maximum `4`), fix-cycle cap, and queue-global process-failure budget;
+- the queue declares a coordinator entry cap sized to topology (per dispatched seat prefer `1-2`, hard maximum `4`; an interactive governor-run one-sitting queue sets the row count, with the context-health check governing rollover — see `model.md`), plus a fix-cycle cap and queue-global process-failure budget;
 - compact versioned phase/coordinator receipts can be written outside tracked source or in ignored scratch;
 - implementation ownership is serial or explicitly isolated/non-overlapping;
 - the first eligible row has a reviewed source artifact, exact validation, commit policy, wall cap, and stop rule;
+- TDD product rows passed any repo-owned deterministic RED-contract preflight (symbol/seam existence, migration-edge and fixture-ownership claims) or were rerouted to source repair before launch; prefer such a script over prose certification of executable facts (precedent: Holm `scripts/queue/preflight-red-contract.sh`, Issue `#618` D1 — prose certification let three mechanically knowable defects consume a full discovery allowance in one run);
 - Git is clean/synchronized as expected, or a named recovery worker owns known WIP;
 - rollover ownership is explicit: the governor launches successor seats automatically at the cap; a mid-window stop without a fired gate is a defect, and any permitted clean stop is declared in the queue contract, not improvised.
 
