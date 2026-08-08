@@ -1,6 +1,6 @@
 ---
 title: Blind Queue Orchestration
-updated: 2026-07-15
+updated: 2026-08-08
 ---
 
 # Blind Queue Orchestration
@@ -53,7 +53,7 @@ A minimal queue overlay:
 ```yaml
 orchestration_mode: blind
 review_granularity: entry   # or batch for bounded lower-risk rows
-coordinator_entry_cap: 2    # hard maximum 4; prefer 1-2 for complex entries
+coordinator_entry_cap: 2    # per dispatched seat (max 4); interactive governor-run one-sitting queues may set the row count and let the context-health check govern rollover
 max_fix_cycles: 2
 process_failure_budget: 6   # queue-global; adapter changes do not reset it
 dispatch_models: [pi/gpt-5.5, codex/gpt-5.3-codex]  # no out-of-policy substitution
@@ -84,12 +84,17 @@ successor.
 reviewer never fixes; a fixer never rewrites the review. Phase workers never
 mutate the queue, run log, `STATE.md`, or execution window.
 
-A separate **governor** layer above the coordinator exists only when
-unattended relaunch across coordinator rollovers is genuinely required — a
-durable supervisor that validates coordinator receipts and launches
-successors. For owner-present runs the interactive session is the coordinator;
-do not add a governor by default. Whatever supervises must obey the same
-firewall: no phase-worker transcripts, diffs, or finding prose.
+The **governor** role owns the authorized window end to end: it validates
+coordinator receipts, launches successor seats at rollover, and performs the
+single real handoff at the owner stop gate. The role always exists; only a
+*separate durable* governor process is optional, needed for fully unattended
+relaunch. In owner-present/interactive runs the interactive session **is** the
+governor — when it also coordinates directly it holds both roles: the
+coordinator cap bounds its seat behavior, while the governor duty to continue
+the window survives the cap. Never collapse the governor into "return control
+to the owner": a capped seat is routine rollover, not an owner gate. Whatever
+supervises must obey the same firewall: no phase-worker transcripts, diffs, or
+finding prose.
 
 ## Context firewall
 
@@ -214,10 +219,26 @@ must not duplicate an already-proven implementation commit.
 Roll the coordinator at `coordinator_entry_cap`, at an issue/milestone
 boundary, after complex fix loops, or at a context high-water mark — stop
 children, batch queue/run-log evidence at one resumable checkpoint, verify Git
-safety, write the terminal receipt. Internal rollover never invokes the
-user-facing close skill or rewrites `koder/STATE.md`; the root session
-performs one real handoff at the owner stop gate. When the done state covers a
-milestone, a separate fresh final-review context reviews the integrated range
-— the implementation coordinator must not absorb final review merely because
-rows drained. If nothing can relaunch cleanly, a clean stop at the boundary is
-correct; context accumulation is not.
+safety, write the terminal receipt. **Successor launch is the governor's job
+and is automatic inside the authorized window**: a capped seat ending is
+routine, and continuation must not be handed back to the owner unless a real
+gate fired (failure-budget exhaustion, window expiry, forbidden action,
+unresolvable blocker). When the interactive session coordinates directly,
+treat the cap boundary as a context-health check: continue if healthy (record
+the check), otherwise dispatch a fresh seat for the remaining rows.
+
+"Stopped children" is a mechanical claim: completed workers park at prompts,
+so sweep proven-done sessions, then verify with the harness status surface and
+record the evidence — never assert "no live sessions" from memory.
+Clean-tree checks at rollover and in worker fences must treat harness-owned
+telemetry (for example a tracked dispatch log the harness appends to) as
+expected growth, not foreign dirt.
+
+Internal rollover never invokes the user-facing close skill or rewrites
+`koder/STATE.md`; the governor performs one real handoff at the owner stop
+gate. When the done state covers a milestone, a separate fresh final-review
+context reviews the integrated range — the implementation coordinator must not
+absorb final review merely because rows drained. If nothing can relaunch
+cleanly, a clean stop at the boundary is a *reported blocker*, not a silent
+completion; context accumulation is never a reason to strand an authorized
+window.

@@ -1,6 +1,6 @@
 ---
 title: Koder Queue Model
-updated: 2026-07-14
+updated: 2026-08-08
 ---
 
 # Koder Queue Model
@@ -70,7 +70,7 @@ guidance).
 - Apply `mode-selection.md` first; queue existence does not imply blind mode.
 - Set `orchestration_mode: blind` at queue level; do not encode it only in chat.
 - Set `review_granularity`: `entry` for auth/security/protocol/release/destructive/credential risk; bounded lower-risk blind work may declare `batch` boundaries.
-- Set `coordinator_entry_cap`; prefer `1-2` for complex or fix-heavy rows, hard maximum `4`.
+- Set `coordinator_entry_cap` per dispatched seat: prefer `1-2` for complex or fix-heavy rows, hard maximum `4`. When the interactive session governs and coordinates a one-sitting queue itself, set the cap to the row count — the rollover trigger is the context-health check, and successor launch is the governor's automatic duty (`blind-orchestration.md`, Roles / Rollover).
 - Set `process_failure_budget` (queue-global; adapter/config changes do not reset it).
 - Set `max_fix_cycles` and stop for owner/architecture judgment when exhausted.
 - Set `independent_review: required` at the declared boundary and make `implementation_ownership` serial or explicitly isolated/non-overlapping.

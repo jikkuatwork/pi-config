@@ -1,6 +1,6 @@
 ---
 title: Koder Queue Gates
-updated: 2026-07-14
+updated: 2026-08-08
 ---
 
 # Koder Queue Gates
@@ -72,7 +72,7 @@ mode-selection gate justifies unattended/context-isolated execution and:
 - implementation ownership is serial or explicitly isolated/non-overlapping;
 - the first eligible row has a reviewed source artifact, exact validation, commit policy, wall cap, and stop rule;
 - Git is clean/synchronized as expected, or a named recovery worker owns known WIP;
-- a fresh coordinator can resume at rollover, or the queue explicitly permits a clean stop there.
+- rollover ownership is explicit: the governor launches successor seats automatically at the cap; a mid-window stop without a fired gate is a defect, and any permitted clean stop is declared in the queue contract, not improvised.
 
 Do not fall back from explicit blind mode to direct implementation. Load `references/queues/blind-orchestration.md` for the full role, brief, and recovery contract.
 
