@@ -1,7 +1,7 @@
 {
   "lastChangelogVersion": "0.84.1",
-  "defaultProvider": "openrouter-deepseek",
-  "defaultModel": "deepseek/deepseek-v4-flash-0731:exacto",
+  "defaultProvider": "baseten",
+  "defaultModel": "deepseek-ai/DeepSeek-V4-Flash-0731",
   "enabledModels": [
     "foundry-zyt/gpt-5.6-*",
     "anthropic/claude-sonnet-5",
