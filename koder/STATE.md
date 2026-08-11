@@ -1,11 +1,17 @@
 ---
-updated_at: "06 Aug 2026 | 11:08 AM IST"
+updated_at: "11 Aug 2026 | 01:09 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 11 Aug 2026: populated Baseten cost metadata for Kimi K3, GLM 5.2 Fast,
+  and DeepSeek V4 Flash 0731 in `~/.pi/agent/models.json` from the live
+  `/v1/models` API. This corrects the earlier "Baseten published no rates"
+  finding — the endpoint does return per-token `pricing` (input/output/
+  cache-read). Commit `e434fcf` set the shared cycle default to
+  `baseten/deepseek-ai/DeepSeek-V4-Flash-0731`.
 - 06 Aug 2026: commit `6e16c3c` added a Pi-only persistent message bar with
   six agent-selected variants, a strict sub-160-character display, session
   restore, manual control, and global Pi guidance. Dotfiles commit `c9a01f2`
@@ -39,15 +45,17 @@ updated_at: "06 Aug 2026 | 11:08 AM IST"
 
 ## Present
 
+- Baseten models now carry real cost metadata in `~/.pi/agent/models.json`
+  (Kimi K3 $3/$15/$0.30, GLM 5.2 Fast $2.10/$6.60/$0.21, DeepSeek V4 Flash
+  $0.13/$0.26/$0.028 per M tokens); pi shows these in the footer and `/usage`
+  after the next `/model` reload.
+- The shared cycle default is now `baseten`/`deepseek-ai/DeepSeek-V4-Flash-0731`
+  (committed `e434fcf`); OpenRouter DeepSeek `:exacto` remains enabled.
 - Global user-local provider `baseten` points at
   `https://inference.baseten.co/v1`, uses `openai-completions`, and keeps its
   credential as the `$BASETEN_API_KEY` environment reference; no key was copied.
-- Plain `pi` and `pi-zyt` discover all three Baseten models. Minimal direct API
-  and Pi streaming calls returned exactly `OK`; pricing metadata remains zero
-  because Baseten's model listing did not publish rates.
 - `.pi/settings.json` remains the shared cycle authority through the global
-  settings symlink. The scope now resolves 13 models; the default remains
-  `anthropic`/`claude-fable-5`, with OpenRouter DeepSeek `:exacto` still enabled.
+  settings symlink; the scope resolves 13 models.
 - The message-bar extension and Pi-global instructions are enabled through
   source-of-truth symlinks under `~/.pi/agent/`. The current `pi-zyt` process
   predates its new tool allowlist, so a full restart is still required before
@@ -61,10 +69,11 @@ updated_at: "06 Aug 2026 | 11:08 AM IST"
 ## Future
 
 - Run `/quit`, `source ~/dotfiles/pi-modes.zsh`, and `pi-zyt -c`; verify the 13
-  scoped models through `/model` and `Ctrl+P`, then ask the agent to set and
-  clear a `message_bar` test before choosing any default model changes.
-- Replace Baseten's zero cost metadata if authoritative rates become available;
-  separately validate Kimi image input and coding tool-call loops if needed.
+  scoped models through `/model` and `Ctrl+P`, confirm Baseten costs render in
+  the footer/`/usage`, then ask the agent to set and clear a `message_bar` test
+  before choosing any default model changes.
+- Separately validate Kimi image input and coding tool-call loops if needed;
+  re-check Baseten cost metadata if rates change.
 - Invoke `/skill:ux` and smoke-check review, accessibility, motion, prototyping,
   and library-selection boundaries; also check imported-skill and Three.js routing.
 - On the next authorized queue, measure product, quality, process, worker-count,
