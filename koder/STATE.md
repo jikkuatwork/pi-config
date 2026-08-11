@@ -1,11 +1,20 @@
 ---
-updated_at: "11 Aug 2026 | 01:09 PM IST"
+updated_at: "11 Aug 2026 | 07:01 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 11 Aug 2026: built a portable fresh-machine setup for pi: `install.sh`
+  (auto-detects pi, symlinks settings/AGENTS/extensions/skills into
+  `~/.pi/agent/`, generates `models.json`, checks env keys), `.pi/providers.json`
+  (foundry + foundry-zyt defs wired to `$FOUNDRY_API_KEY`), and
+  `scripts/build-models.js` (injects an `openai` override from
+  `$OPENAI_API_KEY`/`$OPENAI_BASEURL` only when both are set). README gained a
+  "Setup On A Fresh Machine" section. bash 3.2-safe for macOS/Linux; sandbox
+  runs, idempotency, missing-env, and pi auto-detect paths all passed. Commit
+  `528b3ab`.
 - 11 Aug 2026: populated Baseten cost metadata for Kimi K3, GLM 5.2 Fast,
   and DeepSeek V4 Flash 0731 in `~/.pi/agent/models.json` from the live
   `/v1/models` API. This corrects the earlier "Baseten published no rates"
@@ -45,6 +54,11 @@ updated_at: "11 Aug 2026 | 01:09 PM IST"
 
 ## Present
 
+- Fresh-machine setup is now one command: clone the repo and run
+  `./install.sh`; it skips the npm install when pi is already present and only
+  adds the `openai` override when `OPENAI_API_KEY` + `OPENAI_BASEURL` are both
+  set. `~/.pi/agent/models.json` here is unchanged (install.sh keeps existing
+  files unless `--force`).
 - Baseten models now carry real cost metadata in `~/.pi/agent/models.json`
   (Kimi K3 $3/$15/$0.30, GLM 5.2 Fast $2.10/$6.60/$0.21, DeepSeek V4 Flash
   $0.13/$0.26/$0.028 per M tokens); pi shows these in the footer and `/usage`
