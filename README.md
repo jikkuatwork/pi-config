@@ -91,10 +91,40 @@ No guessing.
 ├── extensions/        # extension source
 ├── .pi/AGENTS.md      # global Pi instructions (symlinked from ~/.pi/agent/)
 ├── .pi/settings.json  # global pi settings (symlinked from ~/.pi/agent/)
+├── .pi/providers.json # custom provider defs (foundry, foundry-zyt)
 ├── .pi/skills/        # reviewed skills
+├── install.sh         # one-shot setup on a fresh machine
+├── scripts/           # helpers (build-models.js)
 ├── knowledge-base/    # workflows
 └── koder/STATE.md     # session hand-off
 ```
+
+## Setup On A Fresh Machine
+
+Cloning this repo alone is **not** enough — pi itself, the `~/.pi/agent/`
+symlinks, and the provider wiring (`models.json`) are machine-local. The
+`install.sh` does all of it:
+
+```bash
+git clone git@github.com:jikkuatwork/pi-config.git && cd pi-config
+./install.sh
+```
+
+It installs pi globally via npm, symlinks `settings.json`, `AGENTS.md`,
+extensions, and skills into `~/.pi/agent/`, and generates `models.json` from
+`.pi/providers.json` — wiring providers to your environment:
+
+- `FOUNDRY_API_KEY` → `foundry` / `foundry-zyt` (foundry.zyt.app)
+- `OPENAI_API_KEY` + `OPENAI_BASEURL` → `openai` override (only added when
+  both are set, so a missing base URL can't break the provider list)
+
+Flags: `--no-install` (skip the npm install), `--force` (regenerate an
+existing `models.json`), `--help`. Safe to re-run; existing files are backed
+up as `*.bak-pre-symlink` / `*.bak-<timestamp>`.
+
+Note: the shared default model is `baseten/deepseek-ai/DeepSeek-V4-Flash-0731`;
+on a machine without `BASETEN_API_KEY`, pick a model with `/model` (e.g.
+`foundry-zyt/gpt-5.6-*`).
 
 ## Global Settings
 
