@@ -532,6 +532,280 @@
           }
         }
       ]
+    },
+    "sakana": {
+      "name": "Sakana AI (Chat Completions)",
+      "baseUrl": "https://api.sakana.ai/v1",
+      "api": "openai-completions",
+      "apiKey": "$SAKANA_API_KEY",
+      "compat": {
+        "maxTokensField": "max_tokens"
+      },
+      "models": [
+        {
+          "id": "fugu",
+          "name": "Fugu",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 128000,
+          "maxTokens": 16384,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": null,
+            "medium": null,
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": "max"
+          }
+        },
+        {
+          "id": "fugu-ultra",
+          "name": "Fugu Ultra",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 128000,
+          "maxTokens": 16384,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": null,
+            "medium": null,
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": "max"
+          }
+        },
+        {
+          "id": "fugu-ultra-20260615",
+          "name": "Fugu Ultra (2026-06-15)",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 128000,
+          "maxTokens": 16384,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": null,
+            "medium": null,
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": "max"
+          }
+        }
+      ]
+    },
+    "openrouter-deepseek": {
+      "name": "OpenRouter (DeepSeek V4 only)",
+      "baseUrl": "https://openrouter.ai/api/v1",
+      "api": "openai-completions",
+      "apiKey": "$OPENROUTER_API_KEY",
+      "models": [
+        {
+          "id": "deepseek/deepseek-v4-flash-0731:exacto",
+          "name": "DeepSeek V4 Flash 0731 (Exacto)",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 1048576,
+          "maxTokens": 65536,
+          "cost": {
+            "input": 0.09,
+            "output": 0.18,
+            "cacheRead": 0.018,
+            "cacheWrite": 0
+          },
+          "thinkingLevelMap": {
+            "minimal": null,
+            "low": "low",
+            "medium": null,
+            "high": "high",
+            "xhigh": null,
+            "max": "max"
+          },
+          "compat": {
+            "supportsDeveloperRole": false,
+            "thinkingFormat": "openrouter",
+            "requiresReasoningContentOnAssistantMessages": true
+          }
+        }
+      ]
+    },
+    "openrouter-free": {
+      "name": "OpenRouter Free (Chat Completions)",
+      "baseUrl": "https://openrouter.ai/api/v1",
+      "api": "openai-completions",
+      "apiKey": "$OPENROUTER_API_KEY",
+      "headers": {
+        "HTTP-Referer": "https://github.com/earendil-works/pi-coding-agent",
+        "X-Title": "pi-openrouter-free"
+      },
+      "compat": {
+        "supportsDeveloperRole": false,
+        "maxTokensField": "max_tokens",
+        "thinkingFormat": "openrouter",
+        "openRouterRouting": {
+          "max_price": {
+            "prompt": 0,
+            "completion": 0
+          }
+        }
+      },
+      "models": [
+        {
+          "id": "tencent/hy3:free",
+          "name": "Tencent Hy3 Free (OpenRouter)",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 262144,
+          "maxTokens": 262144,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "thinkingLevelMap": {
+            "xhigh": null
+          }
+        }
+      ]
+    },
+    "baseten": {
+      "name": "Baseten (Chat Completions)",
+      "baseUrl": "https://inference.baseten.co/v1",
+      "api": "openai-completions",
+      "apiKey": "$BASETEN_API_KEY",
+      "compat": {
+        "supportsStore": false,
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": false,
+        "supportsUsageInStreaming": true,
+        "maxTokensField": "max_tokens",
+        "supportsStrictMode": false,
+        "supportsLongCacheRetention": false
+      },
+      "models": [
+        {
+          "id": "moonshotai/Kimi-K3",
+          "name": "Kimi K3",
+          "reasoning": true,
+          "input": [
+            "text",
+            "image"
+          ],
+          "contextWindow": 1048576,
+          "maxTokens": 131072,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cacheRead": 0.3,
+            "cacheWrite": 0
+          },
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": null,
+            "high": "high",
+            "xhigh": null,
+            "max": "max"
+          },
+          "compat": {
+            "supportsReasoningEffort": true,
+            "requiresReasoningContentOnAssistantMessages": true,
+            "thinkingFormat": "openai",
+            "deferredToolsMode": "kimi"
+          }
+        },
+        {
+          "id": "zai-org/GLM-5.2-Fast",
+          "name": "GLM 5.2 Fast",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 1000000,
+          "maxTokens": 128000,
+          "cost": {
+            "input": 2.1,
+            "output": 6.6,
+            "cacheRead": 0.21,
+            "cacheWrite": 0
+          },
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": null,
+            "medium": null,
+            "high": "high",
+            "xhigh": null,
+            "max": "max"
+          },
+          "compat": {
+            "supportsReasoningEffort": true,
+            "thinkingFormat": "zai",
+            "zaiToolStream": true
+          }
+        },
+        {
+          "id": "deepseek-ai/DeepSeek-V4-Flash-0731",
+          "name": "DeepSeek V4 Flash 0731",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 1048576,
+          "maxTokens": 65536,
+          "cost": {
+            "input": 0.13,
+            "output": 0.26,
+            "cacheRead": 0.028,
+            "cacheWrite": 0
+          },
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": null,
+            "high": "high",
+            "xhigh": null,
+            "max": "max"
+          },
+          "compat": {
+            "supportsReasoningEffort": true,
+            "requiresReasoningContentOnAssistantMessages": true,
+            "thinkingFormat": "deepseek"
+          }
+        }
+      ]
     }
   }
 }

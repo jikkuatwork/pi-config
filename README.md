@@ -79,67 +79,62 @@ Possible promotion targets:
 
 ## Source Of Truth
 
-Files live here.
-Other places link here.
-
-No drift.
-No hidden copies.
-No guessing.
+Versioned configuration lives here. Writable Pi state is generated under
+`~/.pi/agent/`; credentials stay in the environment.
 
 ```text
 <repo>
-├── extensions/        # extension source
-├── .pi/AGENTS.md      # global Pi instructions (symlinked from ~/.pi/agent/)
-├── .pi/settings.json  # global pi settings (symlinked from ~/.pi/agent/)
-├── .pi/providers.json # custom provider defs (foundry, foundry-zyt)
-├── .pi/skills/        # reviewed skills
-├── install.sh         # one-shot setup on a fresh machine
-├── scripts/           # helpers (build-models.js)
-├── knowledge-base/    # workflows
-└── koder/STATE.md     # session hand-off
+├── extensions/            # global extension source
+├── .pi/AGENTS.md          # global Pi instructions
+├── .pi/settings.base.json # stable global settings
+├── .pi/models.json        # custom providers and models
+├── .pi/skills/            # reviewed skills
+├── install.sh             # install/sync entrypoint
+├── scripts/               # settings generator
+├── knowledge-base/        # workflows
+└── koder/STATE.md         # session hand-off
 ```
 
 ## Setup On A Fresh Machine
-
-Cloning this repo alone is **not** enough — pi itself, the `~/.pi/agent/`
-symlinks, and the provider wiring (`models.json`) are machine-local. The
-`install.sh` does all of it:
 
 ```bash
 git clone git@github.com:jikkuatwork/pi-config.git && cd pi-config
 ./install.sh
 ```
 
-It installs pi globally via npm, symlinks `settings.json`, `AGENTS.md`,
-extensions, and skills into `~/.pi/agent/`, and generates `models.json` from
-`.pi/providers.json` — wiring providers to your environment:
+`install.sh` installs Pi when needed, generates writable `settings.json` and
+`models.json` under `~/.pi/agent/`, and links global instructions, extensions,
+and reviewed global skills. Repo-specific `open`/`close` skills stay local to
+avoid collisions. Custom providers read credentials from environment variables such
+as `FOUNDRY_API_KEY`, `OPENROUTER_API_KEY`, `SAKANA_API_KEY`, and
+`BASETEN_API_KEY`; no credential values belong in this repo.
 
-- `FOUNDRY_API_KEY` → `foundry` / `foundry-zyt` (foundry.zyt.app)
-- `OPENAI_API_KEY` + `OPENAI_BASEURL` → `openai` override (only added when
-  both are set, so a missing base URL can't break the provider list)
+Use `./install.sh --sync` after editing versioned config. `--no-install` is an
+alias for config-only sync. Existing local generated files receive one-time
+`*.bak-pre-versioned` backups.
 
-Flags: `--no-install` (skip the npm install), `--force` (regenerate an
-existing `models.json`), `--help`. Safe to re-run; existing files are backed
-up as `*.bak-pre-symlink` / `*.bak-<timestamp>`.
+Run plain Pi and choose configured models with `/model`, Ctrl+L, or Ctrl+P:
 
-Note: the shared default model is `baseten/deepseek-ai/DeepSeek-V4-Flash-0731`;
-on a machine without `BASETEN_API_KEY`, pick a model with `/model` (e.g.
-`foundry-zyt/gpt-5.6-*`).
+```bash
+pi
+```
 
-## Global Settings
+## Generated Runtime Settings
 
-`.pi/settings.json` is the single source for pi's global settings file.
-On this machine `~/.pi/agent/settings.json` is a symlink to it:
+`.pi/settings.base.json` contains stable, portable settings, including the
+`foundry-zyt/gpt-5.6-sol:max` default. The generated
+`~/.pi/agent/settings.json` is a normal local file, not a symlink. Pi may change
+its local default after model selection; sync restores the versioned default
+while preserving machine-local changelog/analytics metadata. Normal Pi usage
+never dirties this repository.
 
-    ln -s <repo>/.pi/settings.json ~/.pi/agent/settings.json
+`.pi/models.json` is the complete versioned custom provider/model catalog.
+Sync copies it to `~/.pi/agent/models.json`; providers resolve credentials from
+the environment. Built-in Pi providers continue to use their standard
+environment variables or `/login` authentication.
 
-So every repo and `pi-zyt` read the same shared model cycle and settings.
-Writes pi makes to global settings (e.g. changelog bumps) land here as
-git-visible diffs. On a fresh clone, recreate the symlink; the pre-link
-file is backed up at `~/.pi/agent/settings.json.bak-pre-symlink`.
-
-`.pi/AGENTS.md` is likewise the source for Pi-only global instructions and is
-symlinked from `~/.pi/agent/AGENTS.md`, keeping other agent harnesses unaffected.
+`.pi/AGENTS.md` remains symlinked into `~/.pi/agent/` because Pi does not mutate
+that file.
 
 ## Skill Import Policy
 

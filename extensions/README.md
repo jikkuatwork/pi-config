@@ -12,7 +12,8 @@ This directory is the source-of-truth for global pi extensions on this machine.
 - Disable it by removing only the symlink:
   - `rm ~/.pi/agent/extensions/<name>.ts`
 - Reload in pi with `/reload` (or restart pi).
-- `pi-zyt` passes an explicit `--tools` allowlist from `~/dotfiles/pi-modes.zsh`; agent-callable extension tools must also be listed there, and an allowlist change requires a full restart.
+- Plain Pi discovers extension tools automatically; no launcher-specific tool
+  allowlist is maintained.
 
 ## Included extensions
 

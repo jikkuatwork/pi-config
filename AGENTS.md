@@ -17,17 +17,18 @@ This repo is the staging area for pi configuration, extensions, and locally revi
 - Treat `koder/STATE.md` as session handoff, not a commit-by-commit ledger.
 - Do not edit global pi extension files directly; source-of-truth extensions live in `extensions/`.
 
-## Pi launch modes
+## Pi configuration
 
-- `pi-zyt` is a zsh function defined in `/home/glasscube/dotfiles/pi-modes.zsh`;
-  that dotfiles repository is the source of truth for its default provider,
-  model, thinking level, and tools.
-- Keep the shared model-cycle scope in Pi settings. `pi-zyt` must not inject a
-  `--models` override; it inherits `enabledModels` exactly like primary `pi`.
-- `extensions/mode-status.ts` only renders the mode label. Do not mistake it for
-  the launcher definition.
-- Keep provider credentials outside this repo; launcher/config changes may
-  reference existing environment variables but must not copy their values.
+- Use plain `pi`; do not add provider-specific launcher functions.
+- `.pi/models.json` is the versioned custom provider/model catalog.
+- `.pi/settings.base.json` is stable versioned configuration with
+  `foundry-zyt/gpt-5.6-sol:max` as the canonical default;
+  `~/.pi/agent/settings.json` is generated writable runtime state, never a
+  symlink into this repo.
+- Keep repo-specific `open`/`close` skills project-local, not globally linked.
+- Run `./install.sh --sync` after config changes.
+- Keep credentials outside this repo. Config may reference environment
+  variables but must never contain credential values.
 
 ## Skill import policy
 
