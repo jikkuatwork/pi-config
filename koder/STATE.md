@@ -1,11 +1,17 @@
 ---
-updated_at: "15 Aug 2026 | 12:42 PM IST"
+updated_at: "15 Aug 2026 | 01:05 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 15 Aug 2026: diagnosed the direct Anthropic regression without a live billed
+  request. The pre-versioned runtime backup explicitly selected
+  `$ANTHROPIC_API_KEY_ORGINAL`; the authoritative catalog removed that
+  machine-local override, so built-in Anthropic now selects
+  `$ANTHROPIC_API_KEY`. Both variables exist but differ. The owner chose to
+  update the standard key locally; no repository config change is needed.
 - 15 Aug 2026: commit `c671608` simplified to plain Pi. Versioned
   `.pi/models.json` owns custom public provider/model definitions using
   environment credential refs; `.pi/settings.base.json` holds stable settings
@@ -71,13 +77,15 @@ updated_at: "15 Aug 2026 | 12:42 PM IST"
   `open`/`close` skills are excluded from global install to avoid collisions.
 - Real local models match source exactly; provider discovery passed. Pre-change
   local settings/models remain in `*.bak-pre-versioned` backups.
+- Pi 0.84.2 still discovers all three enabled Anthropic models; only the local
+  standard-key update and process restart remain.
 - `ux` and koder-pattern remain canonical. SDK Queue `#002` remains unauthorized
   pending Harnex `#57`/`#59`; imported-skill routing smokes remain outstanding.
 
 ## Future
 
-- Restart the already-open Pi process once more; verify no skill-collision notice
-  and confirm `foundry-zyt/gpt-5.6-sol:max` is selected.
+- After the owner updates `ANTHROPIC_API_KEY`, restart Pi and smoke one direct
+  Anthropic request if needed; do not expose or commit the key.
 - Separately validate Kimi image/tool loops and imported-skill routing if needed.
 - On the next authorized queue, file runner defects in Harnex rather than
   masking them.
