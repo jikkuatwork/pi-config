@@ -1,11 +1,18 @@
 ---
-updated_at: "11 Aug 2026 | 07:01 PM IST"
+updated_at: "15 Aug 2026 | 12:42 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 15 Aug 2026: commit `c671608` simplified to plain Pi. Versioned
+  `.pi/models.json` owns custom public provider/model definitions using
+  environment credential refs; `.pi/settings.base.json` holds stable settings
+  and the Sol/max default while generated local settings preserve machine-local
+  metadata. External dotfiles commit `dc13a18` removed `pi-zyt`/`pi-or`;
+  commands commit `fbc3bdb` removed the credential scrubber. Real and sandbox
+  sync, idempotency, JSON, shell, secret, and 14-target discovery checks passed.
 - 11 Aug 2026: built a portable fresh-machine setup for pi: `install.sh`
   (auto-detects pi, symlinks settings/AGENTS/extensions/skills into
   `~/.pi/agent/`, generates `models.json`, checks env keys), `.pi/providers.json`
@@ -54,41 +61,23 @@ updated_at: "11 Aug 2026 | 07:01 PM IST"
 
 ## Present
 
-- Fresh-machine setup is now one command: clone the repo and run
-  `./install.sh`; it skips the npm install when pi is already present and only
-  adds the `openai` override when `OPENAI_API_KEY` + `OPENAI_BASEURL` are both
-  set. `~/.pi/agent/models.json` here is unchanged (install.sh keeps existing
-  files unless `--force`).
-- Baseten models now carry real cost metadata in `~/.pi/agent/models.json`
-  (Kimi K3 $3/$15/$0.30, GLM 5.2 Fast $2.10/$6.60/$0.21, DeepSeek V4 Flash
-  $0.13/$0.26/$0.028 per M tokens); pi shows these in the footer and `/usage`
-  after the next `/model` reload.
-- The shared cycle default is now `baseten`/`deepseek-ai/DeepSeek-V4-Flash-0731`
-  (committed `e434fcf`); OpenRouter DeepSeek `:exacto` remains enabled.
-- Global user-local provider `baseten` points at
-  `https://inference.baseten.co/v1`, uses `openai-completions`, and keeps its
-  credential as the `$BASETEN_API_KEY` environment reference; no key was copied.
-- `.pi/settings.json` remains the shared cycle authority through the global
-  settings symlink; the scope resolves 13 models.
-- The message-bar extension and Pi-global instructions are enabled through
-  source-of-truth symlinks under `~/.pi/agent/`. The current `pi-zyt` process
-  predates its new tool allowlist, so a full restart is still required before
-  the agent can call `message_bar`; the manual `/message-bar` UI path works.
-- The current Pi process does not inherit `BASETEN_API_KEY`; the same fresh
-  process is required before selecting Baseten interactively.
-- `ux` remains canonical and mechanically clean. Koder-pattern contract v1 is
-  canonical; SDK Queue `#002` remains unauthorized pending Harnex `#57`/`#59`.
-- `threejs-graphics` and imported-skill routing smoke checks remain outstanding.
+- `./install.sh` installs or syncs versioned config; `./install.sh --sync` skips
+  installation. Generated `~/.pi/agent/settings.json` is writable and no longer
+  aliases a tracked file; the versioned default is Foundry GPT-5.6 Sol/max.
+- `.pi/models.json` includes Foundry, Sakana, curated OpenRouter routes, and
+  Baseten. Every custom credential is an environment reference; no key copied.
+- Fresh shells resolve plain Pi through mise. No `pi-zyt`, `pi-or`, forced tool
+  allowlist, forced trust, or ambient-credential scrubber remains. Repo-specific
+  `open`/`close` skills are excluded from global install to avoid collisions.
+- Real local models match source exactly; provider discovery passed. Pre-change
+  local settings/models remain in `*.bak-pre-versioned` backups.
+- `ux` and koder-pattern remain canonical. SDK Queue `#002` remains unauthorized
+  pending Harnex `#57`/`#59`; imported-skill routing smokes remain outstanding.
 
 ## Future
 
-- Run `/quit`, `source ~/dotfiles/pi-modes.zsh`, and `pi-zyt -c`; verify the 13
-  scoped models through `/model` and `Ctrl+P`, confirm Baseten costs render in
-  the footer/`/usage`, then ask the agent to set and clear a `message_bar` test
-  before choosing any default model changes.
-- Separately validate Kimi image input and coding tool-call loops if needed;
-  re-check Baseten cost metadata if rates change.
-- Invoke `/skill:ux` and smoke-check review, accessibility, motion, prototyping,
-  and library-selection boundaries; also check imported-skill and Three.js routing.
-- On the next authorized queue, measure product, quality, process, worker-count,
-  and wall-time deltas; file runner defects in Harnex rather than masking them.
+- Restart the already-open Pi process once more; verify no skill-collision notice
+  and confirm `foundry-zyt/gpt-5.6-sol:max` is selected.
+- Separately validate Kimi image/tool loops and imported-skill routing if needed.
+- On the next authorized queue, file runner defects in Harnex rather than
+  masking them.
