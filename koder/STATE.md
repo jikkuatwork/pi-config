@@ -1,11 +1,15 @@
 ---
-updated_at: "15 Aug 2026 | 01:05 PM IST"
+updated_at: "15 Aug 2026 | 01:23 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 15 Aug 2026: external dotfiles commit `1e65bcb` made plain `pi` default to
+  `foundry-zyt/gpt-5.6-sol:max`, preserved package/auth subcommands, and kept
+  explicit later model flags as one-session overrides. Zsh syntax, stubbed argv,
+  Pi metadata/catalog, diff, and credential-value checks passed.
 - 15 Aug 2026: diagnosed the direct Anthropic regression without a live billed
   request. The pre-versioned runtime backup explicitly selected
   `$ANTHROPIC_API_KEY_ORGINAL`; the authoritative catalog removed that
@@ -72,9 +76,10 @@ updated_at: "15 Aug 2026 | 01:05 PM IST"
   aliases a tracked file; the versioned default is Foundry GPT-5.6 Sol/max.
 - `.pi/models.json` includes Foundry, Sakana, curated OpenRouter routes, and
   Baseten. Every custom credential is an environment reference; no key copied.
-- Fresh shells resolve plain Pi through mise. No `pi-zyt`, `pi-or`, forced tool
-  allowlist, forced trust, or ambient-credential scrubber remains. Repo-specific
-  `open`/`close` skills are excluded from global install to avoid collisions.
+- Fresh shells expose only plain `pi`; external dotfiles pin its default launch
+  to Foundry GPT-5.6 Sol/max while allowing explicit overrides. No `pi-zyt`,
+  `pi-or`, forced tool allowlist/trust, or credential scrubber remains.
+  Repo-specific `open`/`close` skills stay local to avoid collisions.
 - Real local models match source exactly; provider discovery passed. Pre-change
   local settings/models remain in `*.bak-pre-versioned` backups.
 - Pi 0.84.2 still discovers all three enabled Anthropic models; only the local
