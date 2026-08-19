@@ -1,96 +1,53 @@
 ---
-updated_at: "15 Aug 2026 | 01:23 PM IST"
+updated_at: "19 Aug 2026 | 01:11 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
-- 15 Aug 2026: external dotfiles commit `1e65bcb` made plain `pi` default to
-  `foundry-zyt/gpt-5.6-sol:max`, preserved package/auth subcommands, and kept
-  explicit later model flags as one-session overrides. Zsh syntax, stubbed argv,
-  Pi metadata/catalog, diff, and credential-value checks passed.
-- 15 Aug 2026: diagnosed the direct Anthropic regression without a live billed
-  request. The pre-versioned runtime backup explicitly selected
-  `$ANTHROPIC_API_KEY_ORGINAL`; the authoritative catalog removed that
-  machine-local override, so built-in Anthropic now selects
-  `$ANTHROPIC_API_KEY`. Both variables exist but differ. The owner chose to
-  update the standard key locally; no repository config change is needed.
-- 15 Aug 2026: commit `c671608` simplified to plain Pi. Versioned
-  `.pi/models.json` owns custom public provider/model definitions using
-  environment credential refs; `.pi/settings.base.json` holds stable settings
-  and the Sol/max default while generated local settings preserve machine-local
-  metadata. External dotfiles commit `dc13a18` removed `pi-zyt`/`pi-or`;
-  commands commit `fbc3bdb` removed the credential scrubber. Real and sandbox
-  sync, idempotency, JSON, shell, secret, and 14-target discovery checks passed.
-- 11 Aug 2026: built a portable fresh-machine setup for pi: `install.sh`
-  (auto-detects pi, symlinks settings/AGENTS/extensions/skills into
-  `~/.pi/agent/`, generates `models.json`, checks env keys), `.pi/providers.json`
-  (foundry + foundry-zyt defs wired to `$FOUNDRY_API_KEY`), and
-  `scripts/build-models.js` (injects an `openai` override from
-  `$OPENAI_API_KEY`/`$OPENAI_BASEURL` only when both are set). README gained a
-  "Setup On A Fresh Machine" section. bash 3.2-safe for macOS/Linux; sandbox
-  runs, idempotency, missing-env, and pi auto-detect paths all passed. Commit
-  `528b3ab`.
-- 11 Aug 2026: populated Baseten cost metadata for Kimi K3, GLM 5.2 Fast,
-  and DeepSeek V4 Flash 0731 in `~/.pi/agent/models.json` from the live
-  `/v1/models` API. This corrects the earlier "Baseten published no rates"
-  finding — the endpoint does return per-token `pricing` (input/output/
-  cache-read). Commit `e434fcf` set the shared cycle default to
-  `baseten/deepseek-ai/DeepSeek-V4-Flash-0731`.
-- 06 Aug 2026: commit `6e16c3c` added a Pi-only persistent message bar with
-  six agent-selected variants, a strict sub-160-character display, session
-  restore, manual control, and global Pi guidance. Dotfiles commit `c9a01f2`
-  added `message_bar` to the `pi-zyt` tool allowlist; TUI, restore, RPC load,
-  and explicit allowlist activation smokes passed.
-- 06 Aug 2026: commit `787811e` added Baseten-hosted Kimi K3, GLM 5.2
-  Fast, and DeepSeek V4 Flash 0731 to the shared 13-model Pi scope. The
-  user-local global provider resolves `$BASETEN_API_KEY`; discovery, direct
-  Chat Completions, and max-thinking Pi streaming smokes passed for all three.
-- 06 Aug 2026: commit `7ffa1fc` replaced `ui-ux-pro-max` with one extensible,
-  docs-only `.pi/skills/ux/` umbrella. It retains the BFBB/Holm core and adapts
-  `jakubkrehel/skills@a673333` plus `emilkowalski/skills@de33dbe` into 12 routed
-  capability modules. Install/plugin surfaces were omitted, risky mutations are
-  gated, source conflicts were reconciled, and all three MIT notices remain.
-- 05 Aug 2026: commit `1c7a248` pinned the isolated OpenRouter DeepSeek route to
-  `deepseek/deepseek-v4-flash-0731:exacto`; pi 0.83.0 resolved it verbatim and a
-  minimal live glow test passed. Close commit: `894c1eb`.
-- 03 Aug 2026: `.pi/settings.json` became the ten-model shared cycle authority;
-  `~/.pi/agent/settings.json` now symlinks to it. Primary `pi` and `pi-zyt` share
-  the same scope; dotfiles commit `7db28d0` removed the launcher override.
-- 03 Aug 2026: koder-pattern contract v1 gained a fail-closed close-time scratch
-  invariant, retention ledger, precedence rules, init/doctor validation, and
-  passing scaffold/cross-harness smoke coverage (`f845dae`).
-- 03 Aug 2026: vendored docs-only `write-skill` and `git-worktree`; skipped
-  redundant or tool-bound skills from `davidondrej/skills`.
-- 31 Jul 2026: imported the docs-only `threejs-graphics` umbrella with 23 topic
-  modules and 27 deep references (`2e6995e`); runtime/install/assets were omitted.
+- 19 Aug 2026: commit `f336b4d` promoted bounded project-history adoption to
+  koder-pattern contract v2. Setup/upgrade preserves existing changelog or
+  release-note surfaces, creates a safe root `CHANGELOG.md` only when none
+  exists, and limits generated `open` history loading to 100 lines. Gomux synced
+  as the first v2 consumer in commit `7e28a76`.
+- 15 Aug 2026: plain Pi became the portable default with versioned
+  `.pi/models.json`, stable `.pi/settings.base.json`, generated writable local
+  settings, and Foundry GPT-5.6 Sol/max as the canonical launch default
+  (`c671608`; external dotfiles `1e65bcb`).
+- 11 Aug 2026: `install.sh` gained portable fresh-machine setup and sync, while
+  Baseten model pricing/default metadata was populated (`528b3ab`, `e434fcf`).
+- 06 Aug 2026: added the persistent Pi message bar, Baseten-hosted models, and
+  the docs-only `ux` umbrella (`6e16c3c`, `787811e`, `7ffa1fc`).
+- 03 Aug 2026: koder-pattern contract v1 added the fail-closed scratch retention
+  gate and cross-harness scaffold validation (`f845dae`).
 - 15 Jul 2026: SDK Queue `#002` review consolidated delivery-first orchestration,
-  one mode authority, queue-global budgets, adapter preflight, and Harnex-owned
-  receipts. Session handoffs and sparse `state:` history remain active.
+  queue-global budgets, adapter preflight, and Harnex-owned receipts.
 
 ## Present
 
 - `./install.sh` installs or syncs versioned config; `./install.sh --sync` skips
-  installation. Generated `~/.pi/agent/settings.json` is writable and no longer
-  aliases a tracked file; the versioned default is Foundry GPT-5.6 Sol/max.
+  installation. Generated `~/.pi/agent/settings.json` is writable and the
+  versioned default remains Foundry GPT-5.6 Sol/max.
 - `.pi/models.json` includes Foundry, Sakana, curated OpenRouter routes, and
-  Baseten. Every custom credential is an environment reference; no key copied.
-- Fresh shells expose only plain `pi`; external dotfiles pin its default launch
-  to Foundry GPT-5.6 Sol/max while allowing explicit overrides. No `pi-zyt`,
-  `pi-or`, forced tool allowlist/trust, or credential scrubber remains.
-  Repo-specific `open`/`close` skills stay local to avoid collisions.
-- Real local models match source exactly; provider discovery passed. Pre-change
-  local settings/models remain in `*.bak-pre-versioned` backups.
-- Pi 0.84.2 still discovers all three enabled Anthropic models; only the local
-  standard-key update and process restart remain.
-- `ux` and koder-pattern remain canonical. SDK Queue `#002` remains unauthorized
-  pending Harnex `#57`/`#59`; imported-skill routing smokes remain outstanding.
+  Baseten using environment credential references; no credential value is
+  versioned.
+- Fresh shells expose only plain `pi`; repo-specific `open`/`close` skills stay
+  local, while global `koder-pattern` resolves to this repository.
+- Koder-pattern v2 smoke coverage passes for fresh setup, existing release
+  tracking, explicit opt-out, safe Git-history aggregation, and existing
+  consumer synchronization. Scratch-invariant smoke and Gomux doctor also pass.
+- `./install.sh --sync` completed its writes but exits `1` when no credential is
+  missing because its final false conditional becomes the script status.
+- SDK Queue `#002` remains unauthorized pending Harnex `#57`/`#59`; imported
+  skill routing and selected model/tool loops remain optional follow-ups.
 
 ## Future
 
+- Fix the successful-sync exit status in `install.sh`, then rerun its sandbox and
+  idempotency checks.
 - After the owner updates `ANTHROPIC_API_KEY`, restart Pi and smoke one direct
-  Anthropic request if needed; do not expose or commit the key.
+  Anthropic request if needed; never expose or commit the key.
 - Separately validate Kimi image/tool loops and imported-skill routing if needed.
 - On the next authorized queue, file runner defects in Harnex rather than
   masking them.
