@@ -14,7 +14,9 @@
     "openrouter-free/tencent/hy3:free",
     "baseten/moonshotai/Kimi-K3",
     "baseten/zai-org/GLM-5.2-Fast",
-    "baseten/deepseek-ai/DeepSeek-V4-Flash-0731"
+    "baseten/deepseek-ai/DeepSeek-V4-Flash-0731",
+    "baseten/deepseek-ai/DeepSeek-V4-Pro-0813",
+    "zai/glm-5.3"
   ],
   "extensions": [],
   "retry": {
