@@ -39,6 +39,6 @@ Stop Gate     `<hard boundary>`
 - Keep the stat block compact and aligned. Omit fields whose facts are unavailable rather than inventing values.
 - Use inline code for branches, commits, issue numbers, and file paths.
 - Omit **Notes** when the tree is clean, upstream is synchronized, and the hand-off has no warning.
-- **Past**, **Present**, and **Future** come from `koder/STATE.md`; they are not a substitute for live Git facts.
+- **Past**, **Present**, and **Future** come primarily from `koder/STATE.md`. Bounded project history may clarify **Past** only; it never overrides the hand-off, live Git facts, authorization, or current validation.
 - **Window**, **Mode**, and **Stop Gate** come from `koder/STATE.md` plus `koder/docs/EXECUTION.md`; omit them when no bounded execution contract exists. When Mode is `blind orchestrator`, the suggestion must say the primary routes isolated workers and does not read implementation detail.
 - The final judgment is an interpretation, not another status list. Prefer the active bounded window from **Future**, include its stop condition, and phrase the suggestion so “yes” is enough.

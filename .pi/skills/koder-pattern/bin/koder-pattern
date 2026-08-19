@@ -22,15 +22,19 @@ Init options:
   --no-codex    Do not create Codex adapters.
   --agents      Alias for --codex.
   --no-agents   Alias for --no-codex.
-  --all         Create Pi, Codex, and Claude adapters (the default).
-  --no-commit   Do not initialize git or create the default state: init commit.
-  --dry-run     Print actions without writing files or committing.
+  --all          Create Pi, Codex, and Claude adapters (the default).
+  --no-changelog Do not create CHANGELOG.md when no equivalent history surface exists.
+  --no-commit    Do not initialize git or create the default state: init commit.
+  --dry-run      Print actions without writing files or committing.
   -h, --help    Show this help.
 
 The init command is conservative: it creates missing files/symlinks and skips
-anything that already exists. By default, any created scaffold paths are committed
-with a path-scoped `state: init - koder pattern scaffold` commit; unrelated dirty
-or staged work is not swept into that commit.
+anything that already exists. It preserves an established changelog, history, or
+release-notes surface; otherwise it creates a concise root CHANGELOG.md unless
+--no-changelog is set. By default, a fresh scaffold uses a path-scoped
+`state: init - koder pattern scaffold` commit; an existing consumer uses a normal
+create-only synchronization commit. Unrelated dirty or staged work is not swept
+into either commit.
 EOF
 }
 
@@ -138,6 +142,99 @@ EOF
   record_path "$dest"
 }
 
+find_history_surface() {
+  local root="$1"
+  local base candidate
+
+  for base in "$root" "$root/docs"; do
+    [ -d "$base" ] || continue
+    candidate="$(find "$base" -maxdepth 1 -type f \( \
+      -iname 'CHANGELOG' -o -iname 'CHANGELOG.*' -o \
+      -iname 'CHANGES' -o -iname 'CHANGES.*' -o \
+      -iname 'HISTORY' -o -iname 'HISTORY.*' -o \
+      -iname 'NEWS' -o -iname 'NEWS.*' -o \
+      -iname 'RELEASE_NOTES' -o -iname 'RELEASE_NOTES.*' -o \
+      -iname 'RELEASE-NOTES' -o -iname 'RELEASE-NOTES.*' -o \
+      -iname 'RELEASENOTES' -o -iname 'RELEASENOTES.*' -o \
+      -iname 'RELEASES' -o -iname 'RELEASES.*' \
+    \) -print -quit 2>/dev/null || true)"
+    if [ -n "$candidate" ]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  done
+
+  for base in "$root" "$root/docs"; do
+    [ -d "$base" ] || continue
+    candidate="$(find "$base" -maxdepth 1 -type d \( \
+      -iname '.changeset' -o -iname 'release-notes' -o -iname 'releases' \
+    \) -print -quit 2>/dev/null || true)"
+    if [ -n "$candidate" ]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+create_changelog() {
+  local root="$1"
+  local dest="$root/CHANGELOG.md"
+  local surface stamp count first_date latest_date commit_noun
+
+  if surface="$(find_history_surface "$root")"; then
+    say "preserve history surface ${surface#"$root"/}; skip CHANGELOG.md"
+    return 0
+  fi
+
+  stamp="$(date '+%Y-%m-%d')"
+  run_mkdir "$(dirname "$dest")"
+  if [ "$DRY_RUN" -eq 1 ]; then
+    say "create $dest (no changelog/release-notes/history surface found)"
+    record_path "$dest"
+    return 0
+  fi
+
+  count="$(git -C "$root" rev-list --count HEAD 2>/dev/null || printf '0')"
+  first_date=""
+  latest_date=""
+  if [ "$count" -gt 0 ]; then
+    first_date="$(git -C "$root" log --format='%cs' | tail -n 1)"
+    latest_date="$(git -C "$root" log -1 --format='%cs')"
+    commit_noun="commits"
+    if [ "$count" -eq 1 ]; then
+      commit_noun="commit"
+    fi
+  fi
+
+  cat >"$dest" <<EOF
+# Changelog
+
+This is a concise, newest-first record of meaningful project changes. Keep
+umbrella milestones rather than mirroring every commit. Current readiness belongs
+in \`koder/STATE.md\`, live Git state, and current validation.
+
+## $stamp — Koder-pattern adoption
+
+- Added durable operator handoff and shared session skills under \`koder/\`.
+EOF
+
+  if [ "$count" -gt 0 ]; then
+    cat >>"$dest" <<EOF
+
+## Earlier history
+
+- Before adoption, this repository recorded $count $commit_noun from $first_date through
+  $latest_date. Git remains authoritative; during agent-assisted adoption, replace
+  this summary with no more than 10 verified umbrella entries when useful.
+EOF
+  fi
+
+  say "created $dest"
+  record_path "$dest"
+}
+
 create_gitkeep_dir() {
   local dir="$1"
   local keep="$dir/.gitkeep"
@@ -211,9 +308,10 @@ rel_to_git_root() {
   esac
 }
 
-commit_init_state() {
+commit_created_paths() {
   local root="$1"
   local commit_enabled="$2"
+  local fresh_setup="$3"
 
   if [ "$commit_enabled" -eq 0 ]; then
     say "commit skipped (--no-commit)"
@@ -227,7 +325,11 @@ commit_init_state() {
 
   if [ "$DRY_RUN" -eq 1 ]; then
     say "would initialize git if needed"
-    say "would commit: state: init - koder pattern scaffold"
+    if [ "$fresh_setup" -eq 1 ]; then
+      say "would commit: state: init - koder pattern scaffold"
+    else
+      say "would commit: chore(koder-pattern): add missing scaffold paths"
+    fi
     say "would commit paths:"
     local dry_path
     for dry_path in "${CREATED_PATHS[@]}"; do
@@ -263,9 +365,11 @@ commit_init_state() {
     return 0
   fi
 
-  local msgfile
+  local msgfile subject
   msgfile="$(mktemp)"
-  cat >"$msgfile" <<'EOF'
+  if [ "$fresh_setup" -eq 1 ]; then
+    subject="state: init - koder pattern scaffold"
+    cat >"$msgfile" <<'EOF'
 state: init - koder pattern scaffold
 
 State event: init
@@ -277,18 +381,32 @@ Scaffold:
 - koder/issues/
 - koder/skills/open/
 - koder/skills/close/
+- CHANGELOG.md when no equivalent project-history surface exists
 
 Delta:
 - Repository now has koder-pattern durable operator state.
 - Agent surfaces point at koder-owned instructions/skills where possible.
+- Project-history tracking was preserved, initialized, or explicitly skipped.
 EOF
+  else
+    subject="chore(koder-pattern): add missing scaffold paths"
+    cat >"$msgfile" <<'EOF'
+chore(koder-pattern): add missing scaffold paths
+
+Koder-pattern synchronization: create-only
+
+Delta:
+- Added only missing canonical scaffold or project-history paths.
+- Existing instructions, skills, state, and history tracking were preserved.
+EOF
+  fi
 
   if git -C "$git_root" commit -F "$msgfile" -- "${rel_paths[@]}"; then
     rm -f "$msgfile"
-    say "committed state: init - koder pattern scaffold"
+    say "committed $subject"
   else
     rm -f "$msgfile"
-    fail "state init commit failed; scaffold paths may be staged but unrelated dirty work was not intentionally staged"
+    fail "koder-pattern commit failed; created paths may be staged but unrelated dirty work was not intentionally staged"
   fi
 }
 
@@ -297,6 +415,7 @@ init_cmd() {
   local pi=1
   local claude=1
   local codex=1
+  local changelog=1
   local commit_enabled=1
   local positional=0
 
@@ -309,6 +428,7 @@ init_cmd() {
       --codex|--agents) codex=1 ;;
       --no-codex|--no-agents) codex=0 ;;
       --all) pi=1; claude=1; codex=1 ;;
+      --no-changelog) changelog=0 ;;
       --no-commit) commit_enabled=0 ;;
       --dry-run) DRY_RUN=1 ;;
       -h|--help) usage; return 0 ;;
@@ -333,6 +453,11 @@ init_cmd() {
     root="$target"
   else
     root="$(cd "$target" >/dev/null 2>&1 && pwd -P)"
+  fi
+
+  local fresh_setup=1
+  if [ -e "$root/koder/STATE.md" ] || [ -L "$root/koder/STATE.md" ]; then
+    fresh_setup=0
   fi
 
   say "initializing thin koder scaffold in $root"
@@ -361,7 +486,13 @@ init_cmd() {
     create_skill_adapters "$root" ".agents"
   fi
 
-  commit_init_state "$root" "$commit_enabled"
+  if [ "$changelog" -eq 1 ]; then
+    create_changelog "$root"
+  else
+    say "changelog creation skipped (--no-changelog)"
+  fi
+
+  commit_created_paths "$root" "$commit_enabled" "$fresh_setup"
 
   say "done"
   say "next: read $root/koder/STATE.md, then use the shared open/close skills from Pi, Codex, or Claude."
@@ -409,6 +540,17 @@ check_symlink() {
   fi
   say "missing $label"
   return 1
+}
+
+check_history_surface() {
+  local root="$1"
+  local surface
+
+  if surface="$(find_history_surface "$root")"; then
+    say "ok      project history (${surface#"$root"/})"
+  else
+    say "note    no local changelog/release-notes/history surface"
+  fi
 }
 
 check_skill_router() {
@@ -460,6 +602,7 @@ doctor_cmd() {
   check_symlink ".agents/skills/close" "$root/.agents/skills/close" "../../koder/skills/close" || failures=$((failures + 1))
   check_symlink ".claude/skills/open" "$root/.claude/skills/open" "../../koder/skills/open" || failures=$((failures + 1))
   check_symlink ".claude/skills/close" "$root/.claude/skills/close" "../../koder/skills/close" || failures=$((failures + 1))
+  check_history_surface "$root"
 
   if [ "$failures" -eq 0 ]; then
     say "doctor: ok"

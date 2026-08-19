@@ -59,6 +59,14 @@ Evaluate whether to adapt these DocFlow ideas into `koder-pattern`:
 8. Tests mirroring DocFlow's idempotency, special-character, link-check, and
    hook-safety coverage.
 
+## Partial Outcome (2026-08-19)
+
+- Promoted DocFlow's useful “newest changelog” idea as koder-pattern contract v2 without importing its docs taxonomy.
+- Setup and upgrade now preserve existing changelog/release-note/history tracking; only repositories without an equivalent receive root `CHANGELOG.md`.
+- Agent-assisted adoption curates at most 10 verified umbrella entries and 100 initial lines. Deterministic `init` writes only a safe adoption/history aggregate and never copies raw commit prose.
+- Generated `open` reads at most 100 lines from one newest history entrypoint while keeping `koder/STATE.md`, Git, authorization, and validation authoritative.
+- Executable coverage lives in `.pi/skills/koder-pattern/tests/cross-harness-smoke.sh`; maps, portals, packaging, and broader DocFlow analysis remain open.
+
 ## Key Questions
 
 - Which DocFlow ideas improve `koder-pattern` without weakening its durable

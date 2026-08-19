@@ -1,7 +1,7 @@
 ---
 title: Koder Pattern Contract
-updated: 2026-08-03
-contract_version: 1
+updated: 2026-08-19
+contract_version: 2
 ---
 
 # Koder Pattern Contract
@@ -16,6 +16,10 @@ Contract versions are plain integers. Increment the integer whenever a normative
 
 Version 1 adds the executable close-time scratch gate, JSONL retention ledger, deterministic matching precedence, machine-readable report, and fail-closed close hook described below. The portable implementation ships at `templates/koder/skills/close/bin/scratch-invariant.sh`.
 
+### v2 (2026-08-19) — bounded project-history adoption
+
+Version 2 inherits v1 and adds conservative project-history adoption: preserve an established changelog/release-notes/history surface, create root `CHANGELOG.md` only when no equivalent exists, and give `open` no more than 100 lines of newest historical grounding without displacing live state.
+
 ## v1 guarantees
 
 A repository declaring v1 promises all of the following:
@@ -28,6 +32,18 @@ A repository declaring v1 promises all of the following:
 
 The pattern defaults are `koder/scratch`, `koder/SCRATCH_RETAIN.jsonl`, and no excluded basenames. Portable overrides are `KODER_SCRATCH_DIR`, `KODER_SCRATCH_RETAIN_PATH`, and comma-separated `KODER_SCRATCH_EXCLUDE`.
 
+## v2 guarantees
+
+A repository declaring v2 promises all v1 guarantees plus:
+
+1. **Preservation.** Setup and upgrade reuse an established root or `docs/` changelog, changes, history, news, releases, release-notes, or changeset surface. They never create a competing `CHANGELOG.md`, rename the existing archive, or copy it into `koder/`.
+2. **Fallback.** When no equivalent exists, setup creates root `CHANGELOG.md`. Agent-assisted adoption of an established repository curates no more than 10 verified, newest-first umbrella entries and at most 100 initial lines; deterministic init writes only a safe adoption/history aggregate and never copies raw commit prose. Explicit `--no-changelog` remains available for repositories that intentionally keep no local history surface.
+3. **Bounded open.** `open` reads no more than 100 lines from one newest history entrypoint or release file. It does not ingest the full archive.
+4. **Authority.** Project history supplies chronology only. `koder/STATE.md`, live Git facts, execution authorization, and current validation remain authoritative for present readiness.
+5. **Upgrade safety.** `init` stays create-only. Existing consumer upgrades merge templates deliberately, preserve local policy, and use a normal logical commit rather than replaying `state: init`.
+
+The portable detection/starter implementation ships at `bin/koder-pattern`; generated policy and open behavior ship under `templates/koder/`.
+
 ## Consumers
 
 This table is the only consumer-version declaration. Do not mirror it in consumer repositories.
@@ -37,6 +53,7 @@ Holm is the v1 reference implementation at `scripts/session/scratch-invariant.sh
 | Repo | Contract version | Deviations | Last synced |
 | --- | ---: | --- | --- |
 | Holm | v1 | Excludes `TICK.md`; uses `HOLM_*` environment names; ledger behavior is validated by `scripts/session/test_smoke.sh` | 2026-08-03 |
+| Gomux | v2 | Preserves its legacy `koder/` tree; commit `7e28a76` reconstructed eight umbrella entries and synced bounded open behavior | 2026-08-19 |
 
 ## Two-way flow rules
 

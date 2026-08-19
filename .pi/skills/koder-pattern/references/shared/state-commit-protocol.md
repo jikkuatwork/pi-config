@@ -1,6 +1,6 @@
 ---
 title: Koder State Commit Protocol
-updated: 2026-07-14
+updated: 2026-08-19
 ---
 
 # Koder State Commit Protocol
@@ -26,7 +26,7 @@ the normal explicit escape hatch for changes that otherwise need a commit.
 Use one when the state change is independently meaningful and has no better
 logical commit:
 
-- initializing the koder scaffold;
+- initializing the koder scaffold in a repository that does not already have durable koder state;
 - updating `koder/STATE.md` during a real session close/handoff;
 - filing into this repo from another repo/session;
 - recording an owner authorization, acceptance, block, resolution, or comparable
@@ -44,7 +44,10 @@ Do **not** create a standalone commit merely for:
 
 A logical implementation or review commit may include its directly related
 `koder/` artifact changes and keep its normal `feat:`, `fix:`, `test:`, `review:`,
-or repo-local subject. Dry-runs and read-only inspections are not state movement.
+or repo-local subject. Existing-consumer template upgrades and project-history
+adoption also use one normal logical commit rather than replaying `state: init`,
+unless the handoff itself is the milestone. Dry-runs and read-only inspections
+are not state movement.
 
 ## When to update `koder/STATE.md`
 
@@ -98,10 +101,12 @@ Scaffold:
 - koder/issues/
 - koder/skills/open/
 - koder/skills/close/
+- CHANGELOG.md when no equivalent project-history surface exists
 
 Delta:
 - Repository now has koder-pattern durable operator state.
 - Agent surfaces point at koder-owned instructions/skills where possible.
+- Project-history tracking was preserved, initialized, or explicitly skipped.
 ```
 
 ### Close

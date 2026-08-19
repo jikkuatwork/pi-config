@@ -1,6 +1,6 @@
 ---
 title: Koder Pattern Eval Prompts
-updated: 2026-07-14
+updated: 2026-08-19
 ---
 
 # Koder Pattern Eval Prompts
@@ -27,7 +27,7 @@ window produces process artifacts rather than product code.
 
    > Set up koder-pattern in this repo.
 
-   Expected: load router, setup leaf, and state-commit protocol; prefer `bin/koder-pattern init`; create one canonical `koder/skills/{open,close}/` copy with relative adapters for Pi (`.pi/skills`), Codex (`.agents/skills`), and Claude (`.claude/skills`), plus `AGENTS.md`/`CLAUDE.md` instruction links; initialize git if needed and commit created scaffold paths with `state: init - koder pattern scaffold` unless explicitly told not to commit.
+   Expected: load router, setup leaf, and state-commit protocol; prefer `bin/koder-pattern init`; create one canonical `koder/skills/{open,close}/` copy with relative adapters for Pi (`.pi/skills`), Codex (`.agents/skills`), and Claude (`.claude/skills`), plus `AGENTS.md`/`CLAUDE.md` instruction links. Preserve existing changelog/release-notes/history tracking; otherwise create root `CHANGELOG.md`, curating established Git history into no more than 10 verified umbrella entries and at most 100 initial lines. Initialize git if needed and commit created scaffold paths with `state: init - koder pattern scaffold` unless explicitly told not to commit.
 
 3. **Issue filing**
 
@@ -111,6 +111,12 @@ window produces process artifacts rather than product code.
    Expected: load mode selection and use direct or supervised execution. Queue
    existence alone must not select blind mode or a governor hierarchy.
 
+16. **Existing consumer upgrade with release notes**
+
+   > Upgrade this repo to the current koder-pattern. It already keeps release notes under `docs/releases/`.
+
+   Expected: load the setup/upgrade route; do not treat `init` as an overwriting updater; deliberately merge newer canonical templates while preserving repo customizations. Reuse `docs/releases/` and teach `open` to read at most 100 lines from its newest entry; do not create root `CHANGELOG.md`. Commit as one logical upgrade, not `state: init`, and leave `koder/STATE.md` for close unless an explicit handoff update was requested.
+
 ## Should not trigger unless explicitly loaded
 
 1. **Ordinary code implementation**
@@ -139,7 +145,10 @@ window produces process artifacts rather than product code.
 
 ## Edge cases
 
-- User says “set up koder-pattern” in a folder without `.git/`: create the thin scaffold, initialize git, and make `state: init - koder pattern scaffold` unless explicitly told not to commit.
+- User says “set up koder-pattern” in a folder without `.git/`: create the thin scaffold and a concise root `CHANGELOG.md` unless explicitly opted out, initialize git, and make `state: init - koder pattern scaffold` unless explicitly told not to commit.
+- Existing `CHANGELOG.md`, `HISTORY.md`, release-notes file, `.changeset/`, or release archive: preserve it and do not create a duplicate root changelog; generated `open` reads no more than 100 lines of newest content.
+- Existing repo has Git history but no history surface: summarize verified commits into at most 10 newest-first umbrella entries rather than copying raw log lines or sensitive commit prose.
+- Existing koder consumer asks for upgrade: merge templates deliberately because `init` skips existing files; do not overwrite local policy or use `state: init`.
 - User says “file a ticket” in a repo without `koder/`: ask whether to create `koder/` artifacts or use the repo's existing tracker.
 - Existing flat issue files: preserve legacy format unless creating a new artifact.
 - Duplicate numbers: route by full path and avoid renumbering history.
@@ -159,7 +168,10 @@ window produces process artifacts rather than product code.
 - [ ] `SKILL.md` routes through both `metadata.references.index` and a tiny standard body link to `references/INDEX.md`, so Pi, Codex, and Claude can all follow the front door.
 - [ ] Skill description always matches explicit `koder-pattern` naming and remains narrow enough not to catch ordinary unnamed coding, planning, review, research, or repo opening.
 - [ ] Setup flow prefers the init script, creates one canonical thin `koder/` scaffold plus default Pi/Codex/Claude symlink adapters, preserves existing files, and commits created scaffold paths with `state: init - koder pattern scaffold` by default.
+- [ ] Setup/upgrade preserves established changelog/release-notes/history tracking; when none exists it creates root `CHANGELOG.md`, curates established history into no more than 10 safe umbrella entries and 100 initial lines, and never duplicates another release archive.
+- [ ] Existing consumer upgrades merge templates deliberately because `init` is create-only; they use one logical upgrade commit rather than `state: init` and preserve local policy.
 - [ ] Generated `open`/`close` entrypoints include a tiny standard body link to `references/INDEX.md`, so Claude can route the skill even when it ignores custom metadata.
+- [ ] Generated `open` reads at most 100 lines from the newest established project-history content, uses it only as historical grounding, and keeps state/Git/validation authoritative.
 - [ ] Main router loads only nested routers/leaves and the shared state-commit protocol when state changes are requested.
 - [ ] New artifacts have stable paths and frontmatter.
 - [ ] Source-of-truth hierarchy is respected: live repo conventions beat cached refs.

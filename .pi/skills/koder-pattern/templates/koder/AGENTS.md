@@ -17,6 +17,13 @@ This repo uses the koder pattern for durable agent handoff and project memory.
 - Keep `koder/STATE.md` short and current; update it at init, close, explicit handoff requests, or external-origin filings into this repo.
 - Do not put secrets, private payloads, full prompts, credentials, or large copied source/output into `koder/`.
 
+## Project history
+
+- Reuse the repository's established changelog, release-notes, or equivalent history surface; never create a competing `CHANGELOG.md` when one already exists.
+- When no equivalent exists, maintain root `CHANGELOG.md` as a concise, newest-first record of meaningful project milestones. Use umbrella entries rather than mirroring every commit or session.
+- During `open`, read no more than 100 lines from the newest history content. It provides historical grounding only; `koder/STATE.md`, live Git facts, and current validation remain authoritative for present readiness.
+- Update project history for material product, compatibility, documentation, or repository-operations milestones—not routine handoff-only or metadata-only changes.
+
 ## Commits and state
 
 - Routine artifact/status changes ride with the logical work commit or a batched resumable checkpoint; do not create one commit per queue row, review approval, or frontmatter edit.

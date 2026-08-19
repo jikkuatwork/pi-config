@@ -62,10 +62,16 @@ awk '
 ' "$SKILL_ROOT/SKILL.md" || fail "koder-pattern has no cross-harness body route to references/INDEX.md"
 grep -Fq 'with koder-pattern' "$SKILL_ROOT/SKILL.md" || fail "koder-pattern description lacks explicit natural-language trigger wording"
 grep -Fq 'Do not trigger for ordinary coding, planning, review, research' "$SKILL_ROOT/SKILL.md" || fail "koder-pattern description still catches ordinary work"
+grep -Fq 'contract_version: 2' "$SKILL_ROOT/references/meta/pattern-contract.md" || fail "project-history guarantee did not bump the pattern contract"
+grep -Fq 'Bounded open' "$SKILL_ROOT/references/meta/pattern-contract.md" || fail "v2 contract lacks bounded project-history loading"
 
 repo="$TMP_ROOT/repo"
 "$KODER_PATTERN" init --no-commit "$repo" >/dev/null
 "$KODER_PATTERN" doctor "$repo" >/dev/null
+
+[ -f "$repo/CHANGELOG.md" ] || fail "init did not create CHANGELOG.md when project history was absent"
+[ "$(wc -l <"$repo/CHANGELOG.md")" -le 100 ] || fail "starter CHANGELOG.md exceeds 100 lines"
+grep -Fq 'Koder-pattern adoption' "$repo/CHANGELOG.md" || fail "starter CHANGELOG.md lacks adoption milestone"
 
 assert_link "$repo" "AGENTS.md" "koder/AGENTS.md"
 assert_link "$repo" "CLAUDE.md" "koder/AGENTS.md"
@@ -89,16 +95,68 @@ grep -Fq 'A queue does not imply blind mode' "$repo/koder/AGENTS.md" || fail "ge
 grep -Fq 'Do not dispatch metadata-finalizer workers' "$repo/koder/AGENTS.md" || fail "generated AGENTS lacks direct metadata ownership"
 grep -Fq 'Two no-op/boot/permission attempts' "$repo/koder/AGENTS.md" || fail "generated AGENTS lacks dispatch circuit breaker"
 grep -Fq 'Routine artifact/status changes ride with the logical work commit' "$repo/koder/AGENTS.md" || fail "generated AGENTS lacks commit-economy rule"
+grep -Fq 'never create a competing `CHANGELOG.md`' "$repo/koder/AGENTS.md" || fail "generated AGENTS lacks existing-history preservation"
+grep -Fq 'read no more than 100 lines' "$repo/koder/AGENTS.md" || fail "generated AGENTS lacks bounded project-history loading"
 if grep -Fq 'Every intentional `koder/` state transition' "$repo/koder/AGENTS.md"; then
   fail "generated AGENTS still mandates one commit per koder transition"
 fi
 grep -Fq 'koder/docs/EXECUTION.md' "$repo/koder/skills/open/references/INDEX.md" || fail "generated open skill does not surface execution windows"
+grep -Fq 'read no more than 100 lines' "$repo/koder/skills/open/references/INDEX.md" || fail "generated open skill does not bound project-history loading"
+grep -Fq 'Do not invent a second history surface' "$repo/koder/skills/open/references/INDEX.md" || fail "generated open skill can duplicate existing history tracking"
+grep -Fq 'Bounded project history may clarify **Past** only' "$repo/koder/skills/open/references/FORMAT.md" || fail "generated open format lets history override live handoff state"
 grep -Fq 'Mode' "$repo/koder/skills/open/references/FORMAT.md" || fail "generated open format does not surface orchestration mode"
 grep -Fq 'Stop Gate' "$repo/koder/skills/open/references/FORMAT.md" || fail "generated open format does not surface the stop gate"
 
 # A second init must preserve the same links and remain valid.
 "$KODER_PATTERN" init --no-commit "$repo" >/dev/null
 "$KODER_PATTERN" doctor "$repo" >/dev/null
+
+# Existing release tracking must be preserved without creating a competing changelog.
+history_repo="$TMP_ROOT/history-repo"
+mkdir -p "$history_repo/docs"
+printf '%s\n' '# Existing release notes' >"$history_repo/docs/RELEASE_NOTES.md"
+"$KODER_PATTERN" init --no-commit "$history_repo" >/dev/null
+[ ! -e "$history_repo/CHANGELOG.md" ] || fail "init duplicated existing release notes with CHANGELOG.md"
+grep -Fq '# Existing release notes' "$history_repo/docs/RELEASE_NOTES.md" || fail "init changed existing release notes"
+"$KODER_PATTERN" doctor "$history_repo" >/dev/null
+
+# Explicit opt-out must leave a repository without local history tracking valid.
+no_history_repo="$TMP_ROOT/no-history-repo"
+"$KODER_PATTERN" init --no-commit --no-changelog "$no_history_repo" >/dev/null
+[ ! -e "$no_history_repo/CHANGELOG.md" ] || fail "--no-changelog still created CHANGELOG.md"
+"$KODER_PATTERN" doctor "$no_history_repo" >/dev/null
+
+# Established Git history receives a safe aggregate summary, not copied commit prose.
+git_repo="$TMP_ROOT/git-repo"
+mkdir -p "$git_repo"
+git -C "$git_repo" init -q
+git -C "$git_repo" -c user.name=Smoke -c user.email=smoke@example.invalid commit --allow-empty -m 'seed project' -q
+"$KODER_PATTERN" init --no-commit "$git_repo" >/dev/null
+grep -Fq 'recorded 1 commit from' "$git_repo/CHANGELOG.md" || fail "starter changelog lacks pre-adoption Git summary"
+if grep -Fq 'seed project' "$git_repo/CHANGELOG.md"; then
+  fail "starter changelog copied raw commit prose"
+fi
+
+# Fresh default init must commit the conditional changelog with the state scaffold.
+fresh_commit_repo="$TMP_ROOT/fresh-commit-repo"
+GIT_AUTHOR_NAME=Smoke GIT_AUTHOR_EMAIL=smoke@example.invalid \
+GIT_COMMITTER_NAME=Smoke GIT_COMMITTER_EMAIL=smoke@example.invalid \
+  "$KODER_PATTERN" init "$fresh_commit_repo" >/dev/null
+[ "$(git -C "$fresh_commit_repo" log -1 --format='%s')" = 'state: init - koder pattern scaffold' ] || fail "fresh init lacks state: init commit"
+git -C "$fresh_commit_repo" ls-files --error-unmatch CHANGELOG.md >/dev/null || fail "fresh init did not commit CHANGELOG.md"
+[ -z "$(git -C "$fresh_commit_repo" status --porcelain)" ] || fail "fresh init left a dirty repository"
+
+# Rerunning init against an existing consumer must not replay state: init.
+upgrade_repo="$TMP_ROOT/upgrade-repo"
+mkdir -p "$upgrade_repo/koder"
+printf '%s\n' '# Existing state' >"$upgrade_repo/koder/STATE.md"
+git -C "$upgrade_repo" init -q
+git -C "$upgrade_repo" add koder/STATE.md
+git -C "$upgrade_repo" -c user.name=Smoke -c user.email=smoke@example.invalid commit -m 'seed koder consumer' -q
+GIT_AUTHOR_NAME=Smoke GIT_AUTHOR_EMAIL=smoke@example.invalid \
+GIT_COMMITTER_NAME=Smoke GIT_COMMITTER_EMAIL=smoke@example.invalid \
+  "$KODER_PATTERN" init "$upgrade_repo" >/dev/null
+[ "$(git -C "$upgrade_repo" log -1 --format='%s')" = 'chore(koder-pattern): add missing scaffold paths' ] || fail "existing consumer replayed state: init"
 
 # Doctor must reject an older frontmatter-only router that Claude cannot route.
 awk '

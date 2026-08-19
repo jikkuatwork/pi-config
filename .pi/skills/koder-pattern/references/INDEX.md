@@ -1,6 +1,6 @@
 ---
 title: Koder Pattern Router
-updated: 2026-08-03
+updated: 2026-08-19
 ---
 
 # Koder Pattern Router
@@ -10,7 +10,7 @@ Thin router for setting up durable `koder/` repo memory, managing `koder/` artif
 ## Start
 
 1. Read live repo instructions (`AGENTS.md`, `CLAUDE.md`, etc.) and `koder/STATE.md` when present.
-2. If the user asked to set up/install/bootstrap koder-pattern in a repo, load the setup route first and prefer the `bin/koder-pattern init` script.
+2. If the user asked to set up/install/bootstrap koder-pattern in a repo, load the setup route first and prefer the `bin/koder-pattern init` script. For adoption or upgrade of an existing consumer, use the same route but merge template changes deliberately; `init` is create-only and never overwrites existing files.
 3. Inspect nearby live artifacts before creating a new one; live convention beats this cached guide.
 4. Choose the narrowest route below and load only those files.
 
@@ -18,7 +18,7 @@ Thin router for setting up durable `koder/` repo memory, managing `koder/` artif
 
 | Need | Load |
 | --- | --- |
-| Set up/install/bootstrap koder-pattern in a repo | `references/setup.md`, then `references/shared/state-commit-protocol.md`, then `references/shared/safety-validation.md` |
+| Set up/install/bootstrap/adopt/upgrade koder-pattern in a repo | `references/setup.md`, then `references/shared/state-commit-protocol.md`, then `references/shared/safety-validation.md` |
 | Paths, numbering, source-of-truth, turns, status vocabulary | `references/shared/artifact-model.md` |
 | State commit ledger, dirty repo guardrails, commit body schemas | `references/shared/state-commit-protocol.md` |
 | Issue kinds, seam/slice ledgers, queue progress accounting | `references/shared/slice-accounting.md` |
@@ -45,7 +45,7 @@ Thin router for setting up durable `koder/` repo memory, managing `koder/` artif
 
 ## Defaults
 
-- Setup is a thin, conservative scaffold: `koder/AGENTS.md`, `koder/STATE.md`, `koder/issues/`, and complete `koder/skills/{open,close}/` front doors. One canonical skill copy is exposed by relative symlinks to Pi (`.pi/skills`), Codex (`.agents/skills`), and Claude (`.claude/skills`) by default; `AGENTS.md` and `CLAUDE.md` point to `koder/AGENTS.md`. Setup initializes git if needed and commits created scaffold paths with `state: init - koder pattern scaffold` unless explicitly told not to commit.
+- Setup is a thin, conservative scaffold: `koder/AGENTS.md`, `koder/STATE.md`, `koder/issues/`, and complete `koder/skills/{open,close}/` front doors. One canonical skill copy is exposed by relative symlinks to Pi (`.pi/skills`), Codex (`.agents/skills`), and Claude (`.claude/skills`) by default; `AGENTS.md` and `CLAUDE.md` point to `koder/AGENTS.md`. Preserve any established changelog/release-notes/history surface; otherwise initialize root `CHANGELOG.md`, and during agent-assisted adoption summarize existing Git history into no more than 10 newest-first umbrella entries. Setup initializes git if needed and commits created scaffold paths with `state: init - koder pattern scaffold` unless explicitly told not to commit.
 - Keep durable non-code operator/docs files under `koder/`; `README.md` is the normal root documentation exception. Folder-first artifacts: `koder/<type>/NNN_slug/INDEX.md`; reviews are numbered files under `koder/reviews/NNN_slug/`. Use `koder/proposals/` for RFC-scale ideas that should converge before issues/plans are extracted.
 - `INDEX.md` is canonical; `turns/` is history. Update canonical state when a turn changes decisions/status. For issues with frontmatter `converged: turns/...`, the pointed turn is the current self-contained planning source while `status` remains independent.
 - Delivery is the invariant. `references/queues/mode-selection.md` is the canonical gate and the single home of the delivery-first rule, disclosure contract, circuit breakers, proof ownership, and progress-delta reporting; load it before choosing any machinery and do not restate its rules elsewhere.
