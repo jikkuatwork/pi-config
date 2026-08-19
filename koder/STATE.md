@@ -1,11 +1,14 @@
 ---
-updated_at: "19 Aug 2026 | 01:11 PM IST"
+updated_at: "20 Aug 2026 | 12:29 AM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 20 Aug 2026: commit `44e9fc3` added Baseten DeepSeek V4 Pro 0813 and ZAI
+  GLM 5.3 to the shared Pi model cycle. Both bundled catalog entries resolve,
+  and the generated runtime settings were synced without storing credentials.
 - 19 Aug 2026: commit `f336b4d` promoted bounded project-history adoption to
   koder-pattern contract v2. Setup/upgrade preserves existing changelog or
   release-note surfaces, creates a safe root `CHANGELOG.md` only when none
@@ -29,21 +32,27 @@ updated_at: "19 Aug 2026 | 01:11 PM IST"
 - `./install.sh` installs or syncs versioned config; `./install.sh --sync` skips
   installation. Generated `~/.pi/agent/settings.json` is writable and the
   versioned default remains Foundry GPT-5.6 Sol/max.
+- `.pi/settings.base.json` scopes Baseten DeepSeek V4 Pro 0813 and direct ZAI
+  GLM 5.3 alongside the existing curated model cycle.
 - `.pi/models.json` includes Foundry, Sakana, curated OpenRouter routes, and
-  Baseten using environment credential references; no credential value is
-  versioned.
+  Baseten using environment credential references; built-in ZAI resolves
+  `ZAI_API_KEY`, and no credential value is versioned.
+- The current `ZAI_API_KEY` is present but both ZAI global API endpoints reject
+  it with HTTP `401 Authentication Failed`; catalog/config checks still pass.
 - Fresh shells expose only plain `pi`; repo-specific `open`/`close` skills stay
   local, while global `koder-pattern` resolves to this repository.
 - Koder-pattern v2 smoke coverage passes for fresh setup, existing release
   tracking, explicit opt-out, safe Git-history aggregation, and existing
   consumer synchronization. Scratch-invariant smoke and Gomux doctor also pass.
-- `./install.sh --sync` completed its writes but exits `1` when no credential is
+- `./install.sh --sync` completes its writes but exits `1` when no credential is
   missing because its final false conditional becomes the script status.
 - SDK Queue `#002` remains unauthorized pending Harnex `#57`/`#59`; imported
   skill routing and selected model/tool loops remain optional follow-ups.
 
 ## Future
 
+- Replace or refresh `ZAI_API_KEY` with a valid Global ZAI Coding Plan key,
+  restart Pi, and smoke GLM 5.3 without exposing or committing the credential.
 - Fix the successful-sync exit status in `install.sh`, then rerun its sandbox and
   idempotency checks.
 - After the owner updates `ANTHROPIC_API_KEY`, restart Pi and smoke one direct
