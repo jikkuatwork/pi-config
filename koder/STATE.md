@@ -1,11 +1,15 @@
 ---
-updated_at: "20 Aug 2026 | 12:29 AM IST"
+updated_at: "21 Aug 2026 | 05:18 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 21 Aug 2026: commit `04f9c1b` added OpenRouter Ox Alpha to the shared
+  model cycle with live catalog metadata and the existing zero-price gate.
+  Config generation, runtime sync, model resolution, and a live low-reasoning
+  prompt passed.
 - 20 Aug 2026: commit `44e9fc3` added Baseten DeepSeek V4 Pro 0813 and ZAI
   GLM 5.3 to the shared Pi model cycle. Both bundled catalog entries resolve,
   and the generated runtime settings were synced without storing credentials.
@@ -32,11 +36,12 @@ updated_at: "20 Aug 2026 | 12:29 AM IST"
 - `./install.sh` installs or syncs versioned config; `./install.sh --sync` skips
   installation. Generated `~/.pi/agent/settings.json` is writable and the
   versioned default remains Foundry GPT-5.6 Sol/max.
-- `.pi/settings.base.json` scopes Baseten DeepSeek V4 Pro 0813 and direct ZAI
-  GLM 5.3 alongside the existing curated model cycle.
+- `.pi/settings.base.json` scopes OpenRouter Ox Alpha, Baseten DeepSeek V4 Pro
+  0813, and direct ZAI GLM 5.3 alongside the existing curated model cycle.
 - `.pi/models.json` includes Foundry, Sakana, curated OpenRouter routes, and
-  Baseten using environment credential references; built-in ZAI resolves
-  `ZAI_API_KEY`, and no credential value is versioned.
+  Baseten using environment credential references. Ox Alpha has a 1M context,
+  image input, mandatory low/high/max reasoning, and max-price-zero routing;
+  built-in ZAI resolves `ZAI_API_KEY`, and no credential value is versioned.
 - The current `ZAI_API_KEY` is present but both ZAI global API endpoints reject
   it with HTTP `401 Authentication Failed`; catalog/config checks still pass.
 - Fresh shells expose only plain `pi`; repo-specific `open`/`close` skills stay
@@ -57,6 +62,8 @@ updated_at: "20 Aug 2026 | 12:29 AM IST"
   idempotency checks.
 - After the owner updates `ANTHROPIC_API_KEY`, restart Pi and smoke one direct
   Anthropic request if needed; never expose or commit the key.
-- Separately validate Kimi image/tool loops and imported-skill routing if needed.
+- Separately validate Ox Alpha and Kimi image/tool loops plus imported-skill
+  routing if needed; recheck Ox Alpha identity and pricing while it remains an
+  alpha model.
 - On the next authorized queue, file runner defects in Harnex rather than
   masking them.
