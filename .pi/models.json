@@ -678,6 +678,32 @@
       },
       "models": [
         {
+          "id": "stealth/ox-alpha",
+          "name": "Ox Alpha (OpenRouter)",
+          "reasoning": true,
+          "input": [
+            "text",
+            "image"
+          ],
+          "contextWindow": 1048576,
+          "maxTokens": 131072,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": null,
+            "high": "high",
+            "xhigh": null,
+            "max": "max"
+          }
+        },
+        {
           "id": "tencent/hy3:free",
           "name": "Tencent Hy3 Free (OpenRouter)",
           "reasoning": true,
