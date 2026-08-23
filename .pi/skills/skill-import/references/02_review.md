@@ -26,4 +26,4 @@ rg -n "(api[_-]?key|secret|token|password|BEGIN [A-Z ]*PRIVATE KEY|sk-[A-Za-z0-9
 - Runnable/installable present: omit by default; warn user and ask before running or importing runtime pieces.
 - Suspicious or unclear license/provenance: do not vendor; summarize risk and ask.
 
-Record review notes in `references/provenance.md`.
+Record review notes in the canonical skill's `references/90_provenance.md`.

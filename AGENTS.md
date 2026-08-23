@@ -36,9 +36,10 @@ Use the local `.pi/skills/skill-import/` skill for third-party skill discovery, 
 
 Hard rules:
 
+- `~/Projects/pi/.pi/skills/` is the canonical source for reusable skills the user explicitly asks to adopt or import, even when the request originates in another repo.
+- In the requesting repo, add a relative `.pi/skills/<name>` symlink to the canonical tree for testing. Do not maintain duplicate skill copies. Repo-owned skills such as `open`/`close` remain local exceptions.
 - Never install or invoke Vercel's Skills CLI (`npx skills`, `skills add`, `npm install -g skills`, etc.).
-- Always manually copy/vendor reviewed skill files into this repo.
-- Prefer project-local skills under `.pi/skills/`; do not install globally unless explicitly requested.
+- Always manually copy/vendor reviewed skill files into this repo; do not globally promote the skill or run `install.sh` solely for testing unless explicitly requested.
 - Review for executables, installers, dependency setup, MCP/plugin hooks, package scripts, and binaries.
 - If an imported skill includes anything runnable or installable, warn and ask permission before running/installing it.
 - Keep imported skill entrypoints frontmatter-only by default, routing through `metadata.references.index` / `references/INDEX.md`; add body text only for exceptional safety/compatibility needs. Use underscore paths, flat `NN_label.md` references by default, and folders only for multi-file topics/assets. For large domains, create one top-level umbrella skill and move sub-skills into `references/modules/*/GUIDE.md` instead of nested `SKILL.md` files.

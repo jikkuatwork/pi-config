@@ -5,7 +5,7 @@ Build a tiny discoverable entrypoint and put everything else behind references.
 ## Default layout
 
 ```text
-.pi/skills/<skill_name>/
+~/Projects/pi/.pi/skills/<skill_name>/
   SKILL.md
   references/
     INDEX.md
@@ -37,6 +37,25 @@ references/modules/<module>/GUIDE.md
 ```
 
 Never keep nested `SKILL.md` files; pi discovers them recursively.
+
+## Project test adapter
+
+When the adoption/import request originates in another trusted repository, keep
+the files above canonical and add only a relative symlink in the requesting repo:
+
+```bash
+CANONICAL="$HOME/Projects/pi/.pi/skills/<skill_name>"
+PROJECT_ROOT="$(git rev-parse --show-toplevel)"
+LINK="$PROJECT_ROOT/.pi/skills/<skill_name>"
+mkdir -p "$(dirname "$LINK")"
+[ ! -e "$LINK" ] && [ ! -L "$LINK" ]
+ln -s "$(realpath --relative-to="$(dirname "$LINK")" "$CANONICAL")" "$LINK"
+```
+
+Do not replace an existing path blindly. Do not create this adapter when the
+current repo is `~/Projects/pi` or when the skill is intentionally repo-owned.
+A test adapter does not imply global promotion; `./install.sh --sync` remains a
+separate, intentional step.
 
 ## Frontmatter-only SKILL.md template
 
@@ -78,7 +97,7 @@ body instruction. Prefer frontmatter-only `SKILL.md`; metadata remains the canon
 
 When done, report:
 
-- Files created/changed.
+- Canonical files created/changed and any project-local test symlink.
 - Source/provenance and safety findings.
 - What was intentionally omitted.
 - Eval prompts/checks run.

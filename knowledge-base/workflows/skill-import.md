@@ -19,8 +19,9 @@ Start at `.pi/skills/skill-import/references/INDEX.md`.
 ## Non-negotiable rules
 
 - Never install or invoke Vercel's Skills CLI: no `npx skills`, `skills add`, `npm install -g skills`, or equivalent wrappers.
-- Always manually copy/vendor reviewed files into this repo.
-- Prefer project-local skills under `.pi/skills/`; do not install global skills unless explicitly requested.
+- Always manually copy/vendor reviewed files into `~/Projects/pi/.pi/skills/`, the canonical synced skill home.
+- When adoption/import originates in another repo, add a relative `.pi/skills/<name>` symlink there for testing; do not duplicate the skill tree.
+- Keep repo-owned skills such as `open`/`close` local, and do not globally promote an imported skill unless explicitly requested.
 - Review every imported source before use. Skills/instructions can tell the agent to run commands or alter files.
 - Check for executables, installers, dependency setup, MCP/plugin hooks, package scripts, and binaries.
 - If runnable/installable content is present, warn and ask permission before running or importing runtime pieces.
@@ -42,7 +43,7 @@ metadata:
 Flat references by default:
 
 ```text
-.pi/skills/<skill_name>/
+~/Projects/pi/.pi/skills/<skill_name>/
   SKILL.md                         # frontmatter-only by default
   references/
     INDEX.md                       # pointer map

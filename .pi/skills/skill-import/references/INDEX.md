@@ -5,8 +5,10 @@ Use this index as the first loaded reference for every import/adaptation.
 ## Goal
 
 Convert any useful source — existing agent skill, docs, workflow, blog, website,
-README, prompt, policy, or instruction set — into a reviewed local pi skill with
-minimal always-loaded context.
+README, prompt, policy, or instruction set — into a reviewed skill in the
+canonical synced home, `~/Projects/pi/.pi/skills/`, with minimal always-loaded
+context. When the request originates elsewhere, expose it there through a
+relative project-local symlink for testing rather than another copy.
 
 ## Route
 
@@ -19,7 +21,7 @@ minimal always-loaded context.
 ## Default output tree
 
 ```text
-.pi/skills/<skill_name>/
+~/Projects/pi/.pi/skills/<skill_name>/
   SKILL.md                         # frontmatter-only by default; one discoverable entrypoint
   references/
     INDEX.md                       # pointer map for humans/agents
@@ -64,7 +66,9 @@ Pi mechanically needs `name` and `description`. Custom metadata is visible to th
 ## Hard rules
 
 - Do not use `npx skills`, `skills add`, `npm install -g skills`, or any Vercel Skills CLI path.
-- Prefer project-local `.pi/skills/<name>/`.
+- Put reusable adopted/imported skills in `~/Projects/pi/.pi/skills/<name>/`, regardless of the requesting repo. Repo-owned skills such as `open`/`close` are exceptions.
+- If the request came from another trusted repo, create `.pi/skills/<name>` there as a relative symlink to the canonical tree for testing; never maintain duplicate copies.
+- Do not globally promote the skill or run the Pi config sync solely for testing unless the user explicitly requests it.
 - Do not run/install third-party code unless the user explicitly approves after review.
 - Do not commit secrets, credentials, caches, generated output, dependency dirs, or private state.
 - Keep `SKILL.md` frontmatter-only by default. If body text is added, keep it exceptional and tiny; if total file grows past ~40 lines, split.

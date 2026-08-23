@@ -10,7 +10,9 @@ Capture only what is needed to adapt the source safely.
 - Trigger phrases and near-miss non-triggers.
 - Expected output style/contract.
 - Runtime expectation: docs-only by default; scripts only if deterministic and approved.
-- Scope limits: what not to import, run, or preserve.
+- Canonical destination: default to `~/Projects/pi/.pi/skills/<name>/` for reusable adopted/imported skills.
+- Test adapter: record the requesting repo that should receive a relative `.pi/skills/<name>` symlink; skip only when already in the canonical repo or the skill is inherently repo-owned.
+- Scope limits: what not to import, run, preserve, or globally promote.
 
 ## Source types
 

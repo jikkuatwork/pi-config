@@ -4,15 +4,18 @@ Use this index as the first loaded reference for this skill.
 
 # Find Skills
 
-Discover, vet, and add agent skills to this pi project **without installing or invoking the Skills CLI**.
+Discover, vet, and adopt agent skills into the canonical synced home at
+`~/Projects/pi/.pi/skills/` **without installing or invoking the Skills CLI**.
 
-Before importing skills, use the local `skill-import` workflow: read `.pi/skills/skill-import/references/INDEX.md`.
+Before importing skills, use the canonical `skill-import` workflow: read
+`~/Projects/pi/.pi/skills/skill-import/references/INDEX.md`.
 
 ## Hard Rules
 
 - **Never** install or invoke Vercel's Skills CLI: no `npx skills ...`, `npm install -g skills`, `skills add`, or equivalent Skills CLI command.
-- **Always** manually copy/vendor skill files into this repo; prefer project-local installation under `.pi/skills/<skill-name>/` with a frontmatter-only `SKILL.md` routing to `metadata.references.index` / `references/INDEX.md`.
-- Do **not** install third-party skills globally by default.
+- **Always** manually copy/vendor reusable adopted skills into `~/Projects/pi/.pi/skills/<skill-name>/`, with a frontmatter-only `SKILL.md` routing to `metadata.references.index` / `references/INDEX.md`.
+- When the request originates in another trusted repo, add a relative `.pi/skills/<skill-name>` symlink there for testing; do not duplicate the skill tree. Repo-owned skills such as `open`/`close` are exceptions.
+- Do **not** globally promote third-party skills or run the Pi config sync merely for testing unless explicitly requested.
 - Review skill content before adding it. Skills may instruct the agent to run code.
 - Check whether the skill includes executable scripts, dependency installers, or setup commands. If it does, warn the user and ask for explicit permission before running or installing anything.
 - Do not commit secrets, credentials, caches, generated outputs, or dependency directories.
@@ -98,10 +101,10 @@ print(json.dumps(json.load(urllib.request.urlopen(url, timeout=30)), indent=2)[:
 PY
 
 # Secret-ish scan after download
-rg -n "(api[_-]?key|secret|token|password|BEGIN [A-Z ]*PRIVATE KEY|sk-[A-Za-z0-9])" .pi/skills/<skill-name> || true
+rg -n "(api[_-]?key|secret|token|password|BEGIN [A-Z ]*PRIVATE KEY|sk-[A-Za-z0-9])" /tmp/pi-skill-review-<skill-name> || true
 ```
 
-## Add a skills.sh Skill Locally to Pi
+## Download a skills.sh Candidate for Review
 
 Given a URL like:
 
@@ -109,7 +112,7 @@ Given a URL like:
 https://www.skills.sh/<owner>/<repo>/<skill>
 ```
 
-install it locally by downloading the skill directory from GitHub, not by using the CLI:
+download it into `/tmp` for review from GitHub, without using the CLI:
 
 ```bash
 python3 - 'https://www.skills.sh/<owner>/<repo>/<skill>' <<'PY'
@@ -121,7 +124,7 @@ if not match:
     raise SystemExit("Expected https://www.skills.sh/<owner>/<repo>/<skill>")
 owner, repo, skill = match.groups()
 
-dest = pathlib.Path(".pi/skills") / skill
+dest = pathlib.Path("/tmp") / f"pi-skill-review-{skill}"
 if dest.exists():
     raise SystemExit(f"Destination already exists: {dest}")
 
@@ -171,16 +174,23 @@ print(f"Downloaded {owner}/{repo}/{skill} ({branch}:{root_path}) to {dest}")
 PY
 ```
 
-After download, use the pi `read` tool to inspect `.pi/skills/<skill-name>/SKILL.md`, then run:
+After download, use the pi `read` tool to inspect
+`/tmp/pi-skill-review-<skill-name>/SKILL.md`, then run:
 
 ```bash
-find .pi/skills/<skill-name> -maxdepth 3 -type f | sort
-find .pi/skills/<skill-name> -type f -perm /111 -print
-rg -n "(^#!|package.json|install\.sh|setup|npm install|pnpm install|yarn install|bun install|pip install|curl|wget|chmod|sudo|rm -rf|eval|exec|spawn|child_process)" .pi/skills/<skill-name> || true
-rg -n "(api[_-]?key|secret|token|password|BEGIN [A-Z ]*PRIVATE KEY|sk-[A-Za-z0-9])" .pi/skills/<skill-name> || true
+CANDIDATE="/tmp/pi-skill-review-<skill-name>"
+find "$CANDIDATE" -maxdepth 3 -type f | sort
+find "$CANDIDATE" -type f -perm /111 -print
+rg -n "(^#!|package.json|install\.sh|setup|npm install|pnpm install|yarn install|bun install|pip install|curl|wget|chmod|sudo|rm -rf|eval|exec|spawn|child_process)" "$CANDIDATE" || true
+rg -n "(api[_-]?key|secret|token|password|BEGIN [A-Z ]*PRIVATE KEY|sk-[A-Za-z0-9])" "$CANDIDATE" || true
 ```
 
-If the skill is safe and useful, update `koder/STATE.md` to mention it. It will be available after pi reload/restart.
+If the candidate is safe and useful, adapt it with `skill-import` into
+`~/Projects/pi/.pi/skills/<skill-name>/`. If the request came from another repo,
+add a relative `.pi/skills/<skill-name>` symlink there for testing. Update the
+appropriate handoff state; Pi must be reloaded/restarted to discover a new skill.
+Do not run `~/Projects/pi/install.sh --sync` solely for this test unless the user
+also requests global promotion.
 
 ## Present Recommendations
 
@@ -190,12 +200,12 @@ When recommending skills, include:
 - What it does and why it matches the user request
 - Popularity/source-health signals when available
 - Link to skills.sh
-- Local pi install plan, explicitly avoiding the Skills CLI
+- Canonical adoption and project-test symlink plan, explicitly avoiding the Skills CLI
 
 Example:
 
 ```text
 I found `owner/repo/skill`, which matches your request because ...
 Signals: 12.3K installs on skills.sh, repo has 1.2K stars, MIT license.
-I can vendor it into `.pi/skills/skill` by downloading the GitHub skill directory directly; I will not use `npx skills`.
+I can review it in `/tmp`, adapt it into `~/Projects/pi/.pi/skills/skill`, and symlink it into this repo for testing; I will not use `npx skills` or globally promote it without your request.
 ```

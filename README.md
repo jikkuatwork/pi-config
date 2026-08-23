@@ -59,23 +59,19 @@ More detail: [`extensions/README.md`](extensions/README.md)
 
 Source: [`.pi/skills/`](.pi/skills/)
 
-Skills land here first.
+This is the canonical, synced home for reusable skills I adopt or import. When a
+request starts in another repo, the reviewed skill is built here and that repo
+gets a relative `.pi/skills/<name>` symlink for testing—not a duplicate copy.
+Inherently repo-specific skills such as `open` and `close` stay with their repo.
 
 Flow:
 
 - find or write
-- vendor locally
-- review manually
-- check runnable parts
-- check install steps
-- trim noisy behavior
-- promote only after review
-
-Possible promotion targets:
-
-- another repo
-- project-local `.pi/skills/`
-- global/user-level pi config
+- review provenance, license, executables, and install steps
+- adapt under `.pi/skills/` with a frontmatter-only `SKILL.md`
+- route details through `references/INDEX.md` to keep startup context small
+- symlink into the requesting repo for testing
+- globally promote with `./install.sh --sync` only when intended
 
 ## Source Of Truth
 
