@@ -1,11 +1,15 @@
 ---
-updated_at: "21 Aug 2026 | 05:18 PM IST"
+updated_at: "23 Aug 2026 | 11:01 AM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 23 Aug 2026: established `~/Projects/pi/.pi/skills/` as the canonical synced
+  home for reusable adopted/imported skills, with tiny front doors and relative
+  requesting-repo test symlinks; promoted the reviewed LottieFiles
+  `motion-design` skill from the lab into that home.
 - 21 Aug 2026: commit `04f9c1b` added OpenRouter Ox Alpha to the shared
   model cycle with live catalog metadata and the existing zero-price gate.
   Config generation, runtime sync, model resolution, and a live low-reasoning
@@ -33,6 +37,9 @@ updated_at: "21 Aug 2026 | 05:18 PM IST"
 
 ## Present
 
+- Explicit adopt/import work now lands canonically in this repo even when begun
+  elsewhere. The requesting repo gets only a relative `.pi/skills/<name>` test
+  symlink; global promotion remains a separate explicit sync decision.
 - `./install.sh` installs or syncs versioned config; `./install.sh --sync` skips
   installation. Generated `~/.pi/agent/settings.json` is writable and the
   versioned default remains Foundry GPT-5.6 Sol/max.
@@ -56,6 +63,9 @@ updated_at: "21 Aug 2026 | 05:18 PM IST"
 
 ## Future
 
+- Reload Pi before testing newly discovered skills. Evaluate `motion-design`
+  through the lab adapter; run `./install.sh --sync` only when global promotion
+  is intended.
 - Replace or refresh `ZAI_API_KEY` with a valid Global ZAI Coding Plan key,
   restart Pi, and smoke GLM 5.3 without exposing or committing the credential.
 - Fix the successful-sync exit status in `install.sh`, then rerun its sandbox and
