@@ -1,6 +1,6 @@
 ---
 title: Koder Pattern Contract
-updated: 2026-08-19
+updated: 2026-08-23
 contract_version: 2
 ---
 
@@ -54,6 +54,7 @@ Holm is the v1 reference implementation at `scripts/session/scratch-invariant.sh
 | --- | ---: | --- | --- |
 | Holm | v1 | Excludes `TICK.md`; uses `HOLM_*` environment names; ledger behavior is validated by `scripts/session/test_smoke.sh` | 2026-08-03 |
 | Gomux | v2 | Preserves its legacy `koder/` tree; commit `7e28a76` reconstructed eight umbrella entries and synced bounded open behavior | 2026-08-19 |
+| Lab | v2 | Preserves analysis-lab policy and the existing plural `koder/queues/` path; synced bounded open, clean close, scratch gate, project history, and all three harness adapters | 2026-08-23 |
 
 ## Two-way flow rules
 
