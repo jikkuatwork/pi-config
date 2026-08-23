@@ -1,11 +1,12 @@
 ---
-updated_at: "23 Aug 2026 | 11:01 AM IST"
+updated_at: "23 Aug 2026 | 01:23 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 23 Aug 2026: adopted the docs-only `web-art-direction` umbrella from the MIT-licensed MengTo/Skills snapshot `4c716b5`; it routes art direction, layout, surface, motion/scroll, interaction, and delivery guidance through one tiny entrypoint.
 - 23 Aug 2026: established `~/Projects/pi/.pi/skills/` as the canonical synced
   home for reusable adopted/imported skills, with tiny front doors and relative
   requesting-repo test symlinks; promoted the reviewed LottieFiles
@@ -37,6 +38,7 @@ updated_at: "23 Aug 2026 | 11:01 AM IST"
 
 ## Present
 
+- `web-art-direction` is canonical under `.pi/skills/`, contains no runtime code or dependency, and is exposed to the lab only through a relative test symlink; it has not been globally promoted with `install.sh --sync`.
 - Explicit adopt/import work now lands canonically in this repo even when begun
   elsewhere. The requesting repo gets only a relative `.pi/skills/<name>` test
   symlink; global promotion remains a separate explicit sync decision.
@@ -63,9 +65,8 @@ updated_at: "23 Aug 2026 | 11:01 AM IST"
 
 ## Future
 
-- Reload Pi before testing newly discovered skills. Evaluate `motion-design`
-  through the lab adapter; run `./install.sh --sync` only when global promotion
-  is intended.
+- Reload Pi before testing `web-art-direction` or `motion-design` through their
+  lab adapters; run `./install.sh --sync` only when global promotion is intended.
 - Replace or refresh `ZAI_API_KEY` with a valid Global ZAI Coding Plan key,
   restart Pi, and smoke GLM 5.3 without exposing or committing the credential.
 - Fix the successful-sync exit status in `install.sh`, then rerun its sandbox and
