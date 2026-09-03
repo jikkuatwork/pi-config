@@ -1,11 +1,16 @@
 ---
-updated_at: "03 Sep 2026 | 08:07 AM IST"
+updated_at: "03 Sep 2026 | 01:01 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 03 Sep 2026: imported the docs-only `fal` skill at `.pi/skills/fal` from
+  owner-provided MiniMax H3 Max API notes. It adds explicit paid/media-egress
+  authorization, no-automatic-retry, validation, and actual-cost measurement;
+  `movie_planet` has a relative test adapter. No Fal request ran and no secret
+  entered the repository.
 - 03 Sep 2026: commit `aa58245` added OpenRouter Claude Fable 5.1 to Pi's
   enabled cycle with a local fallback catalog entry, 1M context, image input,
   mandatory low-through-max reasoning, and a practical 32K output cap. Runtime
@@ -34,6 +39,8 @@ updated_at: "03 Sep 2026 | 08:07 AM IST"
 - `archify`, `web-art-direction`, and `motion-design` remain canonical but are
   not globally promoted; reload/testing and `install.sh --sync` are explicit
   owner choices.
+- `fal` is canonical, docs-only, and linked into `movie_planet` for a future
+  one-job cost trial; it has not been globally promoted or used for paid work.
 - Explicit imports land canonically here; requesting repositories receive only
   relative test symlinks. Repo-owned `open`/`close` skills stay local.
 - The configured ZAI key is still rejected by provider endpoints. No credential
@@ -47,6 +54,9 @@ updated_at: "03 Sep 2026 | 08:07 AM IST"
 
 ## Future
 
+- On explicit owner authorization, run one controlled Fal H3 Max trial from
+  `movie_planet`, validate the video, and measure an uncached before/after Fal
+  accounting delta without persisting private account state.
 - Resume `~/Projects/graphily` only with explicit approval to execute third-party
   code: run `uv sync --frozen`, targeted and full tests, then `graphify update .`;
   decide whether to add fail-closed non-browser offline mode and remove skill
