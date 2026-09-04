@@ -1,11 +1,16 @@
 ---
-updated_at: "03 Sep 2026 | 01:01 PM IST"
+updated_at: "04 Sep 2026 | 12:06 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 04 Sep 2026: commit `74cafb0` pinned the built-in OpenRouter provider to
+  OpenAI Chat Completions at `/api/v1`. A refreshed catalog had mixed an
+  Anthropic-style base URL with OpenRouter's OpenAI adapter, producing HTML
+  `404`s at `/api/chat/completions`; the configured key was valid, runtime sync
+  passed, and a live Fable 5.1 smoke returned `OK`.
 - 03 Sep 2026: imported the docs-only `fal` skill at `.pi/skills/fal` from
   owner-provided MiniMax H3 Max API notes. It adds explicit paid/media-egress
   authorization, no-automatic-retry, validation, and actual-cost measurement;
@@ -34,8 +39,9 @@ updated_at: "03 Sep 2026 | 01:01 PM IST"
 
 - Foundry GPT-5.6 Sol/max remains the versioned default. Runtime
   `~/.pi/agent/{settings,models}.json` matches the repository sources.
-- OpenRouter Fable 5.1 resolves in Pi and is live. The custom 32K cap avoids the
-  full 128K output reservation while preserving the provider's 1M context.
+- OpenRouter Fable 5 and 5.1 remain enabled. The provider route is explicitly
+  pinned against catalog drift; Fable 5.1 keeps its 1M context and practical
+  32K output cap.
 - `archify`, `web-art-direction`, and `motion-design` remain canonical but are
   not globally promoted; reload/testing and `install.sh --sync` are explicit
   owner choices.
@@ -63,6 +69,8 @@ updated_at: "03 Sep 2026 | 01:01 PM IST"
   auto-install/upgrade behavior.
 - Fix `install.sh --sync` successful-write exit status and rerun sandbox plus
   idempotency checks.
+- Monitor Pi's OpenRouter catalog/composer fix; remove the local route pin only
+  after Fable resolves to `/api/v1/chat/completions` without it.
 - Refresh the ZAI credential only outside the repo, then restart Pi and smoke
   GLM 5.3 without exposing the value.
 - Promote or visually retest canonical skills only when explicitly requested;
