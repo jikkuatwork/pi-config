@@ -620,6 +620,8 @@
       ]
     },
     "openrouter": {
+      "baseUrl": "https://openrouter.ai/api/v1",
+      "api": "openai-completions",
       "models": [
         {
           "id": "anthropic/claude-fable-5.1",
