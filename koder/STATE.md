@@ -1,11 +1,16 @@
 ---
-updated_at: "04 Sep 2026 | 12:06 PM IST"
+updated_at: "06 Sep 2026 | 09:51 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 06 Sep 2026: commit `9ff2cec` enabled `azure-openai-responses/gpt-6-astra`
+  in Pi. The sponsored guard and Direct-from-Azure coverage passed; an exact
+  `2026-09-03` GlobalStandard deployment succeeded and a live low-reasoning Pi
+  smoke returned `ASTRA_OK`. No direct OpenAI inference route was enabled or
+  used.
 - 04 Sep 2026: commit `74cafb0` pinned the built-in OpenRouter provider to
   OpenAI Chat Completions at `/api/v1`. A refreshed catalog had mixed an
   Anthropic-style base URL with OpenRouter's OpenAI adapter, producing HTML
@@ -37,8 +42,12 @@ updated_at: "04 Sep 2026 | 12:06 PM IST"
 
 ## Present
 
-- Foundry GPT-5.6 Sol/max remains the versioned default. Runtime
-  `~/.pi/agent/{settings,models}.json` matches the repository sources.
+- Foundry GPT-5.6 Sol/max remains the versioned default. Astra is enabled only
+  through Azure OpenAI Responses; runtime `~/.pi/agent/{settings,models}.json`
+  matches the repository sources.
+- Astra version `2026-09-03` is documented as Direct from Azure and the
+  sponsored guard passes. Final account-specific meter attribution still awaits
+  Cost Management lag; keep all Astra inference off direct OpenAI.
 - OpenRouter Fable 5 and 5.1 remain enabled. The provider route is explicitly
   pinned against catalog drift; Fable 5.1 keeps its 1M context and practical
   32K output cap.
@@ -60,6 +69,9 @@ updated_at: "04 Sep 2026 | 12:06 PM IST"
 
 ## Future
 
+- Recheck Astra's first Cost Management meter after reporting lag; if its Azure
+  attribution is clean, benchmark coding and tool loops against Sol without
+  changing the default unless requested.
 - On explicit owner authorization, run one controlled Fal H3 Max trial from
   `movie_planet`, validate the video, and measure an uncached before/after Fal
   accounting delta without persisting private account state.
