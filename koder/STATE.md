@@ -1,5 +1,5 @@
 ---
-updated_at: "06 Sep 2026 | 09:51 PM IST"
+updated_at: "07 Sep 2026 | 04:38 PM IST"
 ---
 
 # Koder State
@@ -60,8 +60,8 @@ updated_at: "06 Sep 2026 | 09:51 PM IST"
   relative test symlinks. Repo-owned `open`/`close` skills stay local.
 - The configured ZAI key is still rejected by provider endpoints. No credential
   value is versioned.
-- `./install.sh --sync` completes writes but returns `1` when all credentials are
-  present because the final false conditional becomes the script status.
+- Fresh-machine sync is verified: runtime settings/models are generated files,
+  global instructions/extensions/skills are linked, and `install.sh --sync` exits 0.
 - SDK Queue `#002` remains unauthorized pending Harnex `#57`/`#59`.
 - `~/Projects/graphily` remains dirty by design: static asset/hash/TOML/Python
   checks pass, but dependency installation, project tests, `graphify update .`,
@@ -79,8 +79,6 @@ updated_at: "06 Sep 2026 | 09:51 PM IST"
   code: run `uv sync --frozen`, targeted and full tests, then `graphify update .`;
   decide whether to add fail-closed non-browser offline mode and remove skill
   auto-install/upgrade behavior.
-- Fix `install.sh --sync` successful-write exit status and rerun sandbox plus
-  idempotency checks.
 - Monitor Pi's OpenRouter catalog/composer fix; remove the local route pin only
   after Fable resolves to `/api/v1/chat/completions` without it.
 - Refresh the ZAI credential only outside the repo, then restart Pi and smoke

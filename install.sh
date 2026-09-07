@@ -197,4 +197,6 @@ Run plain Pi, then choose any configured model with /model or Ctrl+L:
   pi
 EOF
 
-[ "$missing" -eq 1 ] && printf '\n  \033[1;33mSet missing credentials in your shell environment, then restart Pi.\033[0m\n'
+if [ "$missing" -eq 1 ]; then
+  printf '\n  \033[1;33mSet missing credentials in your shell environment, then restart Pi.\033[0m\n'
+fi
