@@ -1,11 +1,16 @@
 ---
-updated_at: "07 Sep 2026 | 04:38 PM IST"
+updated_at: "18 Sep 2026 | 12:22 AM IST"
 ---
 
 # Koder State
 
 ## Past
 
+- 18 Sep 2026: commit `ef3ba56` added `gpt-6-astra` to the `foundry-zyt`
+  Responses catalog, moved the enabled Astra route off direct Azure, and reduced
+  the scoped picker to 12 Foundry/Baseten/OpenRouter models. Sakana/Fugu and
+  GLM/ZAI entries were removed from the custom catalog and enabled scope;
+  generated runtime config matches the versioned sources.
 - 06 Sep 2026: commit `9ff2cec` enabled `azure-openai-responses/gpt-6-astra`
   in Pi. The sponsored guard and Direct-from-Azure coverage passed; an exact
   `2026-09-03` GlobalStandard deployment succeeded and a live low-reasoning Pi
@@ -42,12 +47,12 @@ updated_at: "07 Sep 2026 | 04:38 PM IST"
 
 ## Present
 
-- Foundry GPT-5.6 Sol/max remains the versioned default. Astra is enabled only
-  through Azure OpenAI Responses; runtime `~/.pi/agent/{settings,models}.json`
-  matches the repository sources.
-- Astra version `2026-09-03` is documented as Direct from Azure and the
-  sponsored guard passes. Final account-specific meter attribution still awaits
-  Cost Management lag; keep all Astra inference off direct OpenAI.
+- Foundry GPT-5.6 Sol/max remains the versioned default. The enabled scope is
+  exactly 12 models backed by Foundry, Baseten, or OpenRouter; runtime
+  `~/.pi/agent/{settings,models}.json` matches the repository sources.
+- Astra is now `foundry-zyt/gpt-6-astra`, with the reviewed Responses metadata,
+  public short/long-context rates, 272K context, 128K output, and full reasoning
+  levels. The direct Azure Astra selector is no longer enabled.
 - OpenRouter Fable 5 and 5.1 remain enabled. The provider route is explicitly
   pinned against catalog drift; Fable 5.1 keeps its 1M context and practical
   32K output cap.
@@ -58,8 +63,6 @@ updated_at: "07 Sep 2026 | 04:38 PM IST"
   one-job cost trial; it has not been globally promoted or used for paid work.
 - Explicit imports land canonically here; requesting repositories receive only
   relative test symlinks. Repo-owned `open`/`close` skills stay local.
-- The configured ZAI key is still rejected by provider endpoints. No credential
-  value is versioned.
 - Fresh-machine sync is verified: runtime settings/models are generated files,
   global instructions/extensions/skills are linked, and `install.sh --sync` exits 0.
 - SDK Queue `#002` remains unauthorized pending Harnex `#57`/`#59`.
@@ -69,9 +72,8 @@ updated_at: "07 Sep 2026 | 04:38 PM IST"
 
 ## Future
 
-- Recheck Astra's first Cost Management meter after reporting lag; if its Azure
-  attribution is clean, benchmark coding and tool loops against Sol without
-  changing the default unless requested.
+- Restart Pi so the session-start model scope refreshes, then confirm `/model`
+  shows only the 12 intended Foundry/Baseten/OpenRouter entries.
 - On explicit owner authorization, run one controlled Fal H3 Max trial from
   `movie_planet`, validate the video, and measure an uncached before/after Fal
   accounting delta without persisting private account state.
@@ -81,8 +83,6 @@ updated_at: "07 Sep 2026 | 04:38 PM IST"
   auto-install/upgrade behavior.
 - Monitor Pi's OpenRouter catalog/composer fix; remove the local route pin only
   after Fable resolves to `/api/v1/chat/completions` without it.
-- Refresh the ZAI credential only outside the repo, then restart Pi and smoke
-  GLM 5.3 without exposing the value.
 - Promote or visually retest canonical skills only when explicitly requested;
   separately validate remaining Ox Alpha/Kimi image and tool loops if useful.
 - File future authorized runner defects in Harnex rather than masking them.
