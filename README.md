@@ -101,8 +101,7 @@ git clone git@github.com:jikkuatwork/pi-config.git && cd pi-config
 `install.sh` installs Pi when needed, generates writable `settings.json` and
 `models.json` under `~/.pi/agent/`, and links global instructions, extensions,
 and reviewed global skills. Repo-specific `open`/`close` skills stay local to
-avoid collisions. Custom providers read credentials from environment variables such
-as `FOUNDRY_API_KEY`, `OPENROUTER_API_KEY`, `SAKANA_API_KEY`, and
+avoid collisions. Custom providers read credentials from environment variables such as `FOUNDRY_API_KEY`, `OPENROUTER_API_KEY`, and
 `BASETEN_API_KEY`; no credential values belong in this repo.
 
 Use `./install.sh --sync` after editing versioned config. `--no-install` is an

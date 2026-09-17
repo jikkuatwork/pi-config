@@ -530,91 +530,47 @@
             "xhigh": "xhigh",
             "max": "max"
           }
-        }
-      ]
-    },
-    "sakana": {
-      "name": "Sakana AI (Chat Completions)",
-      "baseUrl": "https://api.sakana.ai/v1",
-      "api": "openai-completions",
-      "apiKey": "$SAKANA_API_KEY",
-      "compat": {
-        "maxTokensField": "max_tokens"
-      },
-      "models": [
-        {
-          "id": "fugu",
-          "name": "Fugu",
-          "reasoning": true,
-          "input": [
-            "text"
-          ],
-          "contextWindow": 128000,
-          "maxTokens": 16384,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cacheRead": 0,
-            "cacheWrite": 0
-          },
-          "thinkingLevelMap": {
-            "off": null,
-            "minimal": null,
-            "low": null,
-            "medium": null,
-            "high": "high",
-            "xhigh": "xhigh",
-            "max": "max"
-          }
         },
         {
-          "id": "fugu-ultra",
-          "name": "Fugu Ultra",
+          "id": "gpt-6-astra",
+          "name": "GPT-6 Astra",
           "reasoning": true,
           "input": [
-            "text"
+            "text",
+            "image"
           ],
-          "contextWindow": 128000,
-          "maxTokens": 16384,
+          "contextWindow": 272000,
+          "maxTokens": 128000,
           "cost": {
-            "input": 0,
-            "output": 0,
-            "cacheRead": 0,
-            "cacheWrite": 0
+            "input": 10,
+            "output": 50,
+            "cacheRead": 1,
+            "cacheWrite": 12.5,
+            "tiers": [
+              {
+                "inputTokensAbove": 272000,
+                "input": 20,
+                "output": 75,
+                "cacheRead": 2,
+                "cacheWrite": 25
+              }
+            ]
           },
           "thinkingLevelMap": {
             "off": null,
             "minimal": null,
-            "low": null,
-            "medium": null,
+            "low": "low",
+            "medium": "medium",
             "high": "high",
             "xhigh": "xhigh",
             "max": "max"
-          }
-        },
-        {
-          "id": "fugu-ultra-20260615",
-          "name": "Fugu Ultra (2026-06-15)",
-          "reasoning": true,
-          "input": [
-            "text"
-          ],
-          "contextWindow": 128000,
-          "maxTokens": 16384,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cacheRead": 0,
-            "cacheWrite": 0
           },
-          "thinkingLevelMap": {
-            "off": null,
-            "minimal": null,
-            "low": null,
-            "medium": null,
-            "high": "high",
-            "xhigh": "xhigh",
-            "max": "max"
+          "compat": {
+            "supportsStrictMode": true,
+            "supportsOpenAIGrammarTools": true,
+            "supportsAdditionalTools": true,
+            "supportsToolSearch": true,
+            "supportsExplicitPromptCacheMode": true
           }
         }
       ]
@@ -805,36 +761,6 @@
             "requiresReasoningContentOnAssistantMessages": true,
             "thinkingFormat": "openai",
             "deferredToolsMode": "kimi"
-          }
-        },
-        {
-          "id": "zai-org/GLM-5.2-Fast",
-          "name": "GLM 5.2 Fast",
-          "reasoning": true,
-          "input": [
-            "text"
-          ],
-          "contextWindow": 1000000,
-          "maxTokens": 128000,
-          "cost": {
-            "input": 2.1,
-            "output": 6.6,
-            "cacheRead": 0.21,
-            "cacheWrite": 0
-          },
-          "thinkingLevelMap": {
-            "off": null,
-            "minimal": null,
-            "low": null,
-            "medium": null,
-            "high": "high",
-            "xhigh": null,
-            "max": "max"
-          },
-          "compat": {
-            "supportsReasoningEffort": true,
-            "thinkingFormat": "zai",
-            "zaiToolStream": true
           }
         },
         {
