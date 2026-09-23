@@ -22,6 +22,7 @@ This directory is the source-of-truth for global pi extensions on this machine.
 - `footer-highlights.ts` - replaces the footer with colorized stats so cost and context usage are easier to scan.
 - `message-bar.ts` - gives the agent a compact, persistent, Pi-only message bar below the editor for meaningful progress, waits, blockers, completions, and notes.
 - `hide-clone-autocomplete.ts` - removes the built-in `/clone` command from slash autocomplete so `/skill:close` is easier to complete.
+- `secret-output-guard.ts` - redacts credential-bearing environment values and common secret formats before tool results are persisted, before historical context is replayed, and at the final provider-payload boundary. Image payloads are left intact; non-secret endpoint/config values are not treated as credentials.
 
 ## Optional experiments
 

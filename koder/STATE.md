@@ -1,5 +1,5 @@
 ---
-updated_at: "18 Sep 2026 | 12:22 AM IST"
+updated_at: "23 Sep 2026 | 02:40 AM +04"
 ---
 
 # Koder State
@@ -47,6 +47,11 @@ updated_at: "18 Sep 2026 | 12:22 AM IST"
 
 ## Present
 
+- A global `secret-output-guard` extension is staged after a failing Holm test
+  rendered its inherited environment into one private Foundry/ZDR model turn.
+  The guard redacts exact credential environment values plus recognized secret
+  formats at tool-result persistence, historical context replay, and final
+  provider payload. Four pure offline tests pass; install/reload is next.
 - Foundry GPT-5.6 Sol/max remains the versioned default. The enabled scope is
   exactly 12 models backed by Foundry, Baseten, or OpenRouter; runtime
   `~/.pi/agent/{settings,models}.json` matches the repository sources.
