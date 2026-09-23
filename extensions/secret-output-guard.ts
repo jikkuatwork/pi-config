@@ -34,6 +34,14 @@ function escapedVariant(value: string): string {
 	return JSON.stringify(value).slice(1, -1);
 }
 
+function looksLikeEnvironmentDump(text: string): boolean {
+	const names = new Set<string>();
+	for (const match of text.matchAll(/["']([A-Z][A-Z0-9_]{2,})["']\s*:/g)) names.add(match[1]);
+	for (const match of text.matchAll(/(?:^|\n)([A-Z][A-Z0-9_]{2,})=/g)) names.add(match[1]);
+	if (names.size < 8) return false;
+	return [...names].some(isSensitiveName);
+}
+
 export function collectEnvironmentSecrets(environment: Environment = process.env): SecretValue[] {
 	const byValue = new Map<string, string>();
 	for (const [name, value] of Object.entries(environment)) {
@@ -56,6 +64,9 @@ export function collectEnvironmentSecrets(environment: Environment = process.env
 }
 
 export function redactText(text: string, secrets: SecretValue[] = collectEnvironmentSecrets()): RedactionResult<string> {
+	if (looksLikeEnvironmentDump(text)) {
+		return { value: "[REDACTED:ENVIRONMENT_DUMP]", redactions: 1 };
+	}
 	let value = text;
 	let redactions = 0;
 	for (const secret of secrets) {

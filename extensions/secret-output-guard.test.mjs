@@ -45,6 +45,22 @@ test("redactText removes raw, escaped, encoded, and recognizable credential form
 	assert.deepEqual(redactText(result.value, secrets), { value: result.value, redactions: 0 });
 });
 
+test("redactText removes broad child-process environment dumps without knowing their values", () => {
+	const pythonDump = "AssertionError: key unexpectedly found in {'SHELL': '/bin/bash', 'HOME': '/home/test', 'PATH': '/bin', 'USER': 'test', 'PWD': '/tmp', 'TERM': 'xterm', 'LANG': 'C', 'CHILD_API_KEY': 'unknown-child-secret', 'SHLVL': '1'}";
+	const shellDump = [
+		"SHELL=/bin/bash",
+		"HOME=/home/test",
+		"PATH=/bin",
+		"USER=test",
+		"PWD=/tmp",
+		"TERM=xterm",
+		"LANG=C",
+		"CHILD_TOKEN=unknown-child-token",
+	].join("\n");
+	assert.deepEqual(redactText(pythonDump, []), { value: "[REDACTED:ENVIRONMENT_DUMP]", redactions: 1 });
+	assert.deepEqual(redactText(shellDump, []), { value: "[REDACTED:ENVIRONMENT_DUMP]", redactions: 1 });
+});
+
 test("redactValue recursively sanitizes text while leaving image payloads untouched", () => {
 	const secrets = collectEnvironmentSecrets({ TEST_API_KEY: DUMMY_SECRET });
 	const image = { type: "image", data: DUMMY_SECRET, mimeType: "image/png" };
