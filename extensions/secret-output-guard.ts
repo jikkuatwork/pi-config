@@ -18,8 +18,8 @@ const EXPLICIT_SENSITIVE_NAMES = new Set([
 const PATTERN_REDACTIONS: Array<[RegExp, (...args: unknown[]) => string]> = [
 	[/-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z0-9 ]*PRIVATE KEY-----/g, () => "[REDACTED:PRIVATE_KEY]"],
 	[/\bBearer\s+[A-Za-z0-9._~+/=-]{12,}/gi, () => "Bearer [REDACTED:BEARER_TOKEN]"],
-	[/(AccountKey=)[^;\s"']+/gi, (_match, prefix) => `${String(prefix)}[REDACTED:AZURE_ACCOUNT_KEY]`],
-	[/(SharedAccessSignature=)[^\s"']+/gi, (_match, prefix) => `${String(prefix)}[REDACTED:AZURE_SAS]`],
+	[/(AccountKey=)(?!\[REDACTED:AZURE_ACCOUNT_KEY\])[^;\s"']+/gi, (_match, prefix) => `${String(prefix)}[REDACTED:AZURE_ACCOUNT_KEY]`],
+	[/(SharedAccessSignature=)(?!\[REDACTED:AZURE_SAS\])[^\s"']+/gi, (_match, prefix) => `${String(prefix)}[REDACTED:AZURE_SAS]`],
 	[/\bAIza[A-Za-z0-9_-]{20,}\b/g, () => "[REDACTED:GOOGLE_API_KEY]"],
 	[/\b(?:sk|gsk|xai|hf|sbp|fnd|tvly|rubygems|ctx7sk|fish|swai)[-_][A-Za-z0-9._~+/=-]{12,}\b/gi, () => "[REDACTED:API_TOKEN]"],
 	[/\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\b/g, () => "[REDACTED:JWT]"],

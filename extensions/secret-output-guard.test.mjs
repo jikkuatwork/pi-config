@@ -42,6 +42,7 @@ test("redactText removes raw, escaped, encoded, and recognizable credential form
 	assert.equal(result.value.includes(DUMMY_JWT), false);
 	assert.match(result.value, /AccountKey=\[REDACTED:AZURE_ACCOUNT_KEY\]/);
 	assert.ok(result.redactions >= 6);
+	assert.deepEqual(redactText(result.value, secrets), { value: result.value, redactions: 0 });
 });
 
 test("redactValue recursively sanitizes text while leaving image payloads untouched", () => {

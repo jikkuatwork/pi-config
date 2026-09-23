@@ -47,11 +47,14 @@ updated_at: "23 Sep 2026 | 02:40 AM +04"
 
 ## Present
 
-- A global `secret-output-guard` extension is staged after a failing Holm test
-  rendered its inherited environment into one private Foundry/ZDR model turn.
-  The guard redacts exact credential environment values plus recognized secret
-  formats at tool-result persistence, historical context replay, and final
-  provider payload. Four pure offline tests pass; install/reload is next.
+- Global `secret-output-guard` is installed after a failing Holm test rendered
+  its inherited environment into the owner-controlled Foundry/ZDR model path.
+  It redacts exact credential environment values plus recognized secret formats
+  at tool-result persistence, historical context replay, and final provider
+  payload. Four offline tests, idempotency, import, and Pi extension loading pass;
+  the affected local session JSONL is sanitized to zero recognized residuals.
+  Foundry app logs have zero rows and the bounded Holm service-log tail has zero
+  credential signatures, so there was no durable Foundry log record to delete.
 - Foundry GPT-5.6 Sol/max remains the versioned default. The enabled scope is
   exactly 12 models backed by Foundry, Baseten, or OpenRouter; runtime
   `~/.pi/agent/{settings,models}.json` matches the repository sources.
