@@ -51,7 +51,9 @@ updated_at: "23 Sep 2026 | 02:40 AM +04"
   its inherited environment into the owner-controlled Foundry/ZDR model path.
   It redacts exact credential environment values plus recognized secret formats
   at tool-result persistence, historical context replay, and final provider
-  payload. Four offline tests, idempotency, import, and Pi extension loading pass;
+  payload, including whole-output suppression for broad child-process environment
+  dumps whose values are not present in Pi's parent environment. Five offline
+  tests, idempotency, import, and Pi extension loading pass;
   the affected local session JSONL is sanitized to zero recognized residuals.
   Foundry app logs have zero rows and the bounded Holm service-log tail has zero
   credential signatures, so there was no durable Foundry log record to delete.
