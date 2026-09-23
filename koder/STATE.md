@@ -1,5 +1,5 @@
 ---
-updated_at: "23 Sep 2026 | 02:40 AM +04"
+updated_at: "23 Sep 2026 | 06:42 PM +04"
 ---
 
 # Koder State
@@ -52,9 +52,13 @@ updated_at: "23 Sep 2026 | 02:40 AM +04"
   It redacts exact credential environment values plus recognized secret formats
   at tool-result persistence, historical context replay, and final provider
   payload, including whole-output suppression for broad child-process environment
-  dumps whose values are not present in Pi's parent environment. Five offline
-  tests, idempotency, import, and Pi extension loading pass;
-  the affected local session JSONL is sanitized to zero recognized residuals.
+  dumps whose values are not present in Pi's parent environment. A follow-up
+  recovery fix preserves opaque provider cryptography byte-for-byte and omits
+  legacy reasoning ciphertext already damaged by redaction during replay. Seven
+  offline tests, idempotency, import, and Pi extension loading pass. Live reload
+  omitted exactly three damaged blocks; the affected Holm session answered a
+  no-tool probe, compacted from 471,106 tokens, and answered again from its clean
+  checkpoint. Its local JSONL retains zero recognized credential residuals.
   Foundry app logs have zero rows and the bounded Holm service-log tail has zero
   credential signatures, so there was no durable Foundry log record to delete.
 - Foundry GPT-5.6 Sol/max remains the versioned default. The enabled scope is

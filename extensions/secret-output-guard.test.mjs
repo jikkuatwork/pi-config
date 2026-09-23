@@ -115,3 +115,71 @@ test("extension sanitizes tool persistence, historical context, and final provid
 		else process.env.TEST_GUARD_API_KEY = previous;
 	}
 });
+
+test("opaque provider cryptography is preserved byte-for-byte", () => {
+	const ciphertext = "gAAAAA-hf_randomCiphertextCharacters1234567890==";
+	const thinkingSignature = JSON.stringify({
+		id: "rs_test",
+		type: "reasoning",
+		content: [],
+		encrypted_content: ciphertext,
+	});
+	const input = {
+		thinkingSignature,
+		textSignature: "hf_randomTextSignatureCharacters1234567890",
+		thoughtSignature: "sk-randomThoughtSignatureCharacters1234567890",
+		signature: "xai-randomProviderSignatureCharacters1234567890",
+		encrypted_content: ciphertext,
+	};
+
+	const result = redactValue(input, []);
+	assert.equal(result.value, input);
+	assert.equal(result.redactions, 0);
+});
+
+test("extension omits already-redacted reasoning while preserving surrounding history", () => {
+	const handlers = new Map();
+	const notifications = [];
+	const pi = {
+		on(name, handler) {
+			handlers.set(name, handler);
+		},
+	};
+	secretOutputGuard(pi);
+
+	const corruptedSignature = JSON.stringify({
+		id: "rs_corrupted",
+		type: "reasoning",
+		content: [],
+		encrypted_content: "gAAAAA[REDACTED:API_TOKEN]==",
+	});
+	const text = { type: "text", text: "keep this response" };
+	const toolCall = { type: "toolCall", id: "call_test|fc_test", name: "bash", arguments: { command: "true" } };
+	const contextResult = handlers.get("context")(
+		{
+			messages: [
+				{
+					role: "assistant",
+					content: [{ type: "thinking", thinking: "", thinkingSignature: corruptedSignature }, text, toolCall],
+				},
+			],
+		},
+		{ hasUI: true, ui: { notify: (...args) => notifications.push(args) } },
+	);
+	assert.equal("thinkingSignature" in contextResult.messages[0].content[0], false);
+	assert.equal(contextResult.messages[0].content[1], text);
+	assert.equal(contextResult.messages[0].content[2], toolCall);
+	assert.equal(notifications.length, 1);
+
+	const payloadResult = handlers.get("before_provider_request")({
+		payload: {
+			input: [
+				{ type: "reasoning", id: "rs_corrupted", encrypted_content: "gAAAAA[REDACTED:API_TOKEN]==" },
+				{ role: "user", content: [{ type: "input_text", text: "continue" }] },
+			],
+		},
+	});
+	assert.deepEqual(payloadResult.input, [
+		{ role: "user", content: [{ type: "input_text", text: "continue" }] },
+	]);
+});
