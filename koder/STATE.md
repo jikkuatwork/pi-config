@@ -1,5 +1,5 @@
 ---
-updated_at: "23 Sep 2026 | 06:42 PM +04"
+updated_at: "26 Sep 2026 | 10:52 PM +04"
 ---
 
 # Koder State
@@ -61,20 +61,17 @@ updated_at: "23 Sep 2026 | 06:42 PM +04"
   checkpoint. Its local JSONL retains zero recognized credential residuals.
   Foundry app logs have zero rows and the bounded Holm service-log tail has zero
   credential signatures, so there was no durable Foundry log record to delete.
-- Foundry GPT-5.6 Sol/max remains the versioned default. The enabled scope is
-  exactly 12 models backed by Foundry, Baseten, or OpenRouter; runtime
-  `~/.pi/agent/{settings,models}.json` matches the repository sources.
-- Astra is now `foundry-zyt/gpt-6-astra`, with the reviewed Responses metadata,
-  public short/long-context rates, 272K context, 128K output, and full reasoning
-  levels. The direct Azure Astra selector is no longer enabled.
+- Foundry GPT-5.6 Sol/max remains the versioned default; generated runtime
+  `~/.pi/agent/{settings,models}.json` matches the working sources.
+  Unrelated model/picker edits remain uncommitted.
+- Astra (Foundry Responses): 1,050,000 context; 32,768 output; 958,000 reserve
+  (compaction >92K). Its 272K pricing boundary is unchanged; offline checks pass.
 - OpenRouter Fable 5 and 5.1 remain enabled. The provider route is explicitly
   pinned against catalog drift; Fable 5.1 keeps its 1M context and practical
   32K output cap.
-- `archify`, `web-art-direction`, and `motion-design` remain canonical but are
-  not globally promoted; reload/testing and `install.sh --sync` are explicit
-  owner choices.
-- `fal` is canonical, docs-only, and linked into `movie_planet` for a future
-  one-job cost trial; it has not been globally promoted or used for paid work.
+- Runtime skill/extension links already match versioned source; this sync
+  changed no link targets and ran no skill code. Fal remains docs-only;
+  no paid Fal trial was run or newly authorized.
 - Explicit imports land canonically here; requesting repositories receive only
   relative test symlinks. Repo-owned `open`/`close` skills stay local.
 - Fresh-machine sync is verified: runtime settings/models are generated files,
@@ -86,8 +83,8 @@ updated_at: "23 Sep 2026 | 06:42 PM +04"
 
 ## Future
 
-- Restart Pi so the session-start model scope refreshes, then confirm `/model`
-  shows only the 12 intended Foundry/Baseten/OpenRouter entries.
+- Restart Pi to load Astra's corrected context metadata; retain the 92K
+  compaction safeguard unless a larger working-context budget is approved.
 - On explicit owner authorization, run one controlled Fal H3 Max trial from
   `movie_planet`, validate the video, and measure an uncached before/after Fal
   accounting delta without persisting private account state.

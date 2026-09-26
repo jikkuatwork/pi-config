@@ -623,7 +623,7 @@
             "text",
             "image"
           ],
-          "contextWindow": 272000,
+          "contextWindow": 1050000,
           "maxTokens": 32768,
           "cost": {
             "input": 10,
