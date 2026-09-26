@@ -27,6 +27,13 @@
       "maxRetryDelayMs": 15000
     }
   },
+  "compaction": {
+    "modelOverrides": {
+      "foundry-zyt/gpt-6-astra": {
+        "reserveTokens": 180000
+      }
+    }
+  },
   "hideThinkingBlock": false,
   "theme": "dark",
   "quietStartup": true,

@@ -624,7 +624,7 @@
             "image"
           ],
           "contextWindow": 272000,
-          "maxTokens": 128000,
+          "maxTokens": 32768,
           "cost": {
             "input": 10,
             "output": 50,
