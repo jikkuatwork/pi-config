@@ -31,6 +31,9 @@
     "modelOverrides": {
       "foundry-zyt/gpt-6-astra": {
         "reserveTokens": 180000
+      },
+      "foundry-zyt/gpt-6-sol": {
+        "reserveTokens": 180000
       }
     }
   },
