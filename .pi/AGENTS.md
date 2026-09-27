@@ -1,8 +1,8 @@
 # Global Pi Instructions
 
 - Only in Pi, and only when `message_bar` is available, use it for persistent user-useful state during long-running work—not routine narration.
-- Choose the fitting variant (`progress`, `working`, `waiting`, `blocked`, `complete`, or `note`), keep the whole bar at or below 156 characters, and update only at meaningful checkpoints.
-- Small-screen preference (owner, 2026-09-27): aim for 60 characters or fewer in message bars; use short status phrases, not full sentences.
+- Choose the fitting variant (`progress`, `working`, `waiting`, `blocked`, `complete`, or `note`), keep the whole bar at or below 120 characters, and update only at meaningful checkpoints.
+- Small-screen preference (owner, 2026-09-27): up to 120 characters is comfortable; stay terse without enforcing the earlier 60-character target or padding short updates.
 - Clear stale bars; never place secrets, credentials, private identifiers, or raw sensitive output in them.
 
 ## Agent dispatch visibility
