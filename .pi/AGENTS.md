@@ -4,6 +4,11 @@
 - Choose the fitting variant (`progress`, `working`, `waiting`, `blocked`, `complete`, or `note`), keep the whole bar under 160 characters, and update only at meaningful checkpoints.
 - Clear stale bars; never place secrets, credentials, private identifiers, or raw sensitive output in them.
 
+## Agent dispatch visibility
+
+- Owner directive (2026-09-27): launch delegated agents in visible, named tmux panes through harnex; match `--id` and `--tmux`. Do not use headless or hidden-background agent dispatches.
+- If isolation or configuration requirements cannot be preserved with a visible launch, stop and ask instead of silently switching to headless. This does not prohibit ordinary background test/validation commands.
+
 ## Canonical skill home
 
 - `~/Projects/pi/.pi/skills/` is the source of truth for reusable skills the user asks to adopt or import. Do not leave the canonical copy in the current product/research repo.
