@@ -1,5 +1,5 @@
 ---
-updated_at: "26 Sep 2026 | 10:52 PM +04"
+updated_at: "27 Sep 2026 | 01:05 PM +04"
 ---
 
 # Koder State
@@ -61,11 +61,11 @@ updated_at: "26 Sep 2026 | 10:52 PM +04"
   checkpoint. Its local JSONL retains zero recognized credential residuals.
   Foundry app logs have zero rows and the bounded Holm service-log tail has zero
   credential signatures, so there was no durable Foundry log record to delete.
-- Foundry GPT-5.6 Sol/max remains the versioned default; generated runtime
-  `~/.pi/agent/{settings,models}.json` matches the working sources.
-  Unrelated model/picker edits remain uncommitted.
-- Astra (Foundry Responses): 1,050,000 context; 32,768 output; 958,000 reserve
-  (compaction >92K). Its 272K pricing boundary is unchanged; offline checks pass.
+- Committed default remains Foundry GPT-5.6 Sol/max; working source/runtime
+  selects Astra/max. Unrelated default/model/picker edits remain uncommitted;
+  generated `~/.pi/agent/{settings,models}.json` matches the working sources.
+- Astra (Foundry Responses): 1,050,000 context; 32,768 output; 180,000 reserve
+  (compaction >870K, owner-approved). 272K pricing unchanged; offline checks pass.
 - OpenRouter Fable 5 and 5.1 remain enabled. The provider route is explicitly
   pinned against catalog drift; Fable 5.1 keeps its 1M context and practical
   32K output cap.
@@ -83,8 +83,8 @@ updated_at: "26 Sep 2026 | 10:52 PM +04"
 
 ## Future
 
-- Restart Pi to load Astra's corrected context metadata; retain the 92K
-  compaction safeguard unless a larger working-context budget is approved.
+- Restart Pi to load the approved Astra >870K compaction policy; monitor
+  normal usage for throttling and higher long-context cost. No inference probe ran.
 - On explicit owner authorization, run one controlled Fal H3 Max trial from
   `movie_planet`, validate the video, and measure an uncached before/after Fal
   accounting delta without persisting private account state.

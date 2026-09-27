@@ -30,7 +30,7 @@
   "compaction": {
     "modelOverrides": {
       "foundry-zyt/gpt-6-astra": {
-        "reserveTokens": 958000
+        "reserveTokens": 180000
       },
       "foundry-zyt/gpt-6-sol": {
         "reserveTokens": 180000
