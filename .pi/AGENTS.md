@@ -10,6 +10,12 @@
 - Owner directive (2026-09-27): launch delegated agents in visible, named tmux panes through harnex; match `--id` and `--tmux`. Do not use headless or hidden-background agent dispatches.
 - If isolation or configuration requirements cannot be preserved with a visible launch, stop and ask instead of silently switching to headless. This does not prohibit ordinary background test/validation commands.
 
+## Approved model route
+
+- Owner directive (2026-09-28): models through OpenRouter are explicitly allowed; do not request further per-run approval solely for this route, including task-authorized source/plan review prompts.
+- Ordinary configured provider retention is covered; do not invent a new ZDR approval gate. Keep credentials out of prompts/logs, verify the requested endpoint/model, and respect task budgets and any explicit narrower project data restriction.
+- This permits private inference, not public source sharing, separate data publication, or training/fine-tuning jobs. Do not claim retention or deletion guarantees that were not verified.
+
 ## Canonical skill home
 
 - `~/Projects/pi/.pi/skills/` is the source of truth for reusable skills the user asks to adopt or import. Do not leave the canonical copy in the current product/research repo.
