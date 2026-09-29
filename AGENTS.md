@@ -22,7 +22,7 @@ This repo is the staging area for pi configuration, extensions, and locally revi
 - Use plain `pi`; do not add provider-specific launcher functions.
 - `.pi/models.json` is the versioned custom provider/model catalog.
 - `.pi/settings.base.json` is stable versioned configuration with
-  `foundry-zyt/gpt-5.6-sol:max` as the canonical default;
+  `foundry-zyt/gpt-6-astra:max` as the canonical default;
   `~/.pi/agent/settings.json` is generated writable runtime state, never a
   symlink into this repo.
 - Keep repo-specific `open`/`close` skills project-local, not globally linked.

@@ -76,7 +76,7 @@ Flow:
 ## Source Of Truth
 
 Versioned configuration lives here. Writable Pi state is generated under
-`~/.pi/agent/`; credentials stay in the environment.
+`~/.pi/agent/`; credentials stay in the environment or private local `auth.json`.
 
 ```text
 <repo>
@@ -117,7 +117,7 @@ pi
 ## Generated Runtime Settings
 
 `.pi/settings.base.json` contains stable, portable settings, including the
-`foundry-zyt/gpt-5.6-sol:max` default. The generated
+`foundry-zyt/gpt-6-astra:max` default. The generated
 `~/.pi/agent/settings.json` is a normal local file, not a symlink. Pi may change
 its local default after model selection; sync restores the versioned default
 while preserving machine-local changelog/analytics metadata. Normal Pi usage
@@ -130,6 +130,46 @@ environment variables or `/login` authentication.
 
 `.pi/AGENTS.md` remains symlinked into `~/.pi/agent/` because Pi does not mutate
 that file.
+
+## Direct Anthropic and Harnex
+
+The saved model scope includes these built-in Anthropic models:
+
+- `anthropic/claude-opus-5-5`
+- `anthropic/claude-sonnet-5-5`
+- `anthropic/claude-fable-5-1`
+
+Use `/login anthropic` to connect a Claude account. Pi saves OAuth credentials
+in private local `~/.pi/agent/auth.json`, not this repository. Restart Pi after
+syncing the model scope, then choose an `[anthropic]` model in `/model`.
+`openrouter/anthropic/...` is a separate route and does not use that login.
+
+**Billing:** Pi 0.87.1 warns that third-party subscription authentication draws
+from paid Extra Usage, not the Claude plan's included allowance. Check
+[Claude usage settings](https://claude.ai/settings/usage) for account limits and
+Extra Usage spending before running prompts. `/session` reports session tokens,
+cache usage, and estimated cost, with a provider/model breakdown when multiple
+models were used. The footer's percentage is context fullness, not plan quota.
+
+Harnex's Pi adapter can use the same saved OAuth login when launched as the same
+user with the same Pi agent directory. No credential values belong in task
+briefs, model configuration, or dispatch metadata. Before a run, check
+`pi auth check --provider anthropic --json --no-refresh` without credential-output
+flags; require `authType: oauth` if that is the intended route. A different
+user, container, or `PI_CODING_AGENT_DIR` needs its own approved auth setup.
+
+Harnex `--model anthropic/claude-opus-5-5 --effort high` maps to Pi startup
+controls and verifies the effective model/effort before prompting, without
+changing the saved default. Use visible, identically named `--id` / `--tmux`
+workers, a bounded task brief, an explicit project-trust choice, and a runtime
+budget. Harnex 0.14.0 / Pi 0.87.1 passed static compatibility checks; no Anthropic
+dispatch or paid inference test was run. Harnex dispatch history/receipts capture
+worker token/cost telemetry, not remaining account allowance or billing proof.
+
+The [koder-pattern dispatch policy](.pi/skills/koder-pattern/references/queues/model.md#dispatch-model-policy)
+still defaults automatic dispatches to GPT-family models. Claude needs explicit
+owner-approved `dispatch_models` permission in the queue; enabling it in Pi's
+picker does not authorize automatic workers or change that policy.
 
 ## Skill Import Policy
 
