@@ -1,99 +1,80 @@
 ---
-updated_at: "27 Sep 2026 | 01:05 PM +04"
+updated_at: "29 Sep 2026 | 05:21 PM IST"
 ---
 
 # Koder State
 
 ## Past
 
-- 18 Sep 2026: commit `ef3ba56` added `gpt-6-astra` to the `foundry-zyt`
-  Responses catalog, moved the enabled Astra route off direct Azure, and reduced
-  the scoped picker to 12 Foundry/Baseten/OpenRouter models. Sakana/Fugu and
-  GLM/ZAI entries were removed from the custom catalog and enabled scope;
-  generated runtime config matches the versioned sources.
-- 06 Sep 2026: commit `9ff2cec` enabled `azure-openai-responses/gpt-6-astra`
-  in Pi. The sponsored guard and Direct-from-Azure coverage passed; an exact
-  `2026-09-03` GlobalStandard deployment succeeded and a live low-reasoning Pi
-  smoke returned `ASTRA_OK`. No direct OpenAI inference route was enabled or
-  used.
-- 04 Sep 2026: commit `74cafb0` pinned the built-in OpenRouter provider to
-  OpenAI Chat Completions at `/api/v1`. A refreshed catalog had mixed an
-  Anthropic-style base URL with OpenRouter's OpenAI adapter, producing HTML
-  `404`s at `/api/chat/completions`; the configured key was valid, runtime sync
-  passed, and a live Fable 5.1 smoke returned `OK`.
-- 03 Sep 2026: imported the docs-only `fal` skill at `.pi/skills/fal` from
-  owner-provided MiniMax H3 Max API notes. It adds explicit paid/media-egress
-  authorization, no-automatic-retry, validation, and actual-cost measurement;
-  `movie_planet` has a relative test adapter. No Fal request ran and no secret
-  entered the repository.
-- 03 Sep 2026: commit `aa58245` added OpenRouter Claude Fable 5.1 to Pi's
-  enabled cycle with a local fallback catalog entry, 1M context, image input,
-  mandatory low-through-max reasoning, and a practical 32K output cap. Runtime
-  config, model resolution, the live provider catalog, and a low-reasoning prompt
-  passed.
-- 02 Sep 2026: audited Graphify `0.9.53` at `33362d9`, then created the external
-  offline fork at `~/Projects/graphily` on `offline-capability`. Koder-pattern was
-  initialized there in `baf53e1`; pinned HTML assets and offline hardening are
-  staged but intentionally uncommitted pending approval to run third-party code.
-- 01 Sep 2026: routed Claude Fable 5 and Opus 5 through OpenRouter with no direct
-  Anthropic model enabled; adopted Archify `2.16.0` as a canonical no-repo-data-
-  egress skill with its reviewed local renderer.
-- Aug 2026: established `.pi/skills/` as the canonical home for reusable adopted
-  skills, made plain Pi portable through versioned config plus generated writable
-  runtime settings, and promoted koder-pattern's project-history contract to v2.
-- Jul-Aug 2026: added Foundry, Baseten, ZAI, Sakana, and curated OpenRouter model
-  routes; the persistent message bar; docs-only UX/motion/art-direction skills;
-  and delivery-first queue/Harnex review guidance.
+- 29 Sep 2026: `289684a` enabled direct Anthropic Opus 5.5, Sonnet 5.5,
+  and Fable 5.1. It also committed owner-approved pre-existing Astra/max,
+  OpenRouter Opus 5.5, and Baseten model selections. Default documentation now
+  agrees with source/runtime; README records OAuth, billing, usage, and Harnex.
+- Sep 2026: `ef3ba56` routed Astra through Foundry and narrowed the picker;
+  `74cafb0` pinned OpenRouter to Chat Completions at `/api/v1` after catalog
+  drift caused HTML 404s. Earlier live route checks passed; none ran this session.
+- Sep 2026: global `secret-output-guard` redacts credential output, broad
+  environment dumps, replay, and provider payloads. `ba5c31a` preserves opaque
+  provider cryptography and omits damaged legacy reasoning blocks. Seven offline
+  tests and recovery probes passed when shipped; the affected session was cleaned.
+- Sep 2026: adopted docs-only Fal guidance and the reviewed local Archify
+  renderer. Fal has not had a paid trial; Graphily's offline fork remains paused
+  pending permission to run third-party dependencies/tests.
+- Aug 2026: established portable versioned Pi config, generated writable runtime
+  files, reviewed skill links, and durable koder/Harnex workflow guidance.
 
 ## Present
 
-- Global `secret-output-guard` is installed after a failing Holm test rendered
-  its inherited environment into the owner-controlled Foundry/ZDR model path.
-  It redacts exact credential environment values plus recognized secret formats
-  at tool-result persistence, historical context replay, and final provider
-  payload, including whole-output suppression for broad child-process environment
-  dumps whose values are not present in Pi's parent environment. A follow-up
-  recovery fix preserves opaque provider cryptography byte-for-byte and omits
-  legacy reasoning ciphertext already damaged by redaction during replay. Seven
-  offline tests, idempotency, import, and Pi extension loading pass. Live reload
-  omitted exactly three damaged blocks; the affected Holm session answered a
-  no-tool probe, compacted from 471,106 tokens, and answered again from its clean
-  checkpoint. Its local JSONL retains zero recognized credential residuals.
-  Foundry app logs have zero rows and the bounded Holm service-log tail has zero
-  credential signatures, so there was no durable Foundry log record to delete.
-- Committed default remains Foundry GPT-5.6 Sol/max; working source/runtime
-  selects Astra/max. Unrelated default/model/picker edits remain uncommitted;
-  generated `~/.pi/agent/{settings,models}.json` matches the working sources.
-- Astra (Foundry Responses): 1,050,000 context; 32,768 output; 180,000 reserve
-  (compaction >870K, owner-approved). 272K pricing unchanged; offline checks pass.
-- OpenRouter Fable 5 and 5.1 remain enabled. The provider route is explicitly
-  pinned against catalog drift; Fable 5.1 keeps its 1M context and practical
-  32K output cap.
-- Runtime skill/extension links already match versioned source; this sync
-  changed no link targets and ran no skill code. Fal remains docs-only;
-  no paid Fal trial was run or newly authorized.
-- Explicit imports land canonically here; requesting repositories receive only
-  relative test symlinks. Repo-owned `open`/`close` skills stay local.
-- Fresh-machine sync is verified: runtime settings/models are generated files,
-  global instructions/extensions/skills are linked, and `install.sh --sync` exits 0.
-- SDK Queue `#002` remains unauthorized pending Harnex `#57`/`#59`.
-- `~/Projects/graphily` remains dirty by design: static asset/hash/TOML/Python
-  checks pass, but dependency installation, project tests, `graphify update .`,
-  and browser visual evidence have not run. Chromium is unavailable.
+- Canonical default is `foundry-zyt/gpt-6-astra:max`. Astra retains 1,050,000
+  context, 32,768 output, and 180,000 reserve (compaction above 870K). Pricing
+  and retry/compaction policy were not changed in this session.
+- All 19 enabled model patterns resolve in the offline authenticated catalog.
+  JSON/diff checks, script syntax, runtime equality, credential hygiene, and
+  idempotent `install.sh --sync` pass. Auth remains private and unchanged.
+- Direct models: `anthropic/claude-opus-5-5`, `anthropic/claude-sonnet-5-5`,
+  and `anthropic/claude-fable-5-1`. Offline credential checks report
+  Anthropic OAuth ready; no custom provider or extra API key was added.
+- Billing caveat: Pi 0.87.1 warns that third-party subscription login draws paid
+  Extra Usage, not included Claude plan allowance. No Anthropic inference,
+  dispatch, account-spend lookup, or paid test was performed.
+- Harnex 0.14.0 / Pi 0.87.1 pass `harnex doctor --adapter pi`. Installed source
+  confirms exact `--model` / `--effort` become verified Pi startup controls.
+  Pure checks covered all three Anthropic models and reject provider mismatch;
+  this is static compatibility evidence, not a live Anthropic dispatch test.
+- Harnex Pi workers can reuse OAuth under the same local user/agent directory.
+  Use visible matching `--id` / `--tmux`, bounded briefs, explicit project trust,
+  runtime budgets, and receipt/artifact verification. Never copy credentials
+  into briefs, repositories, or dispatch metadata.
+- Koder-pattern automatic-dispatch policy remains GPT-family by default.
+  Claude workers require explicit owner-approved queue `dispatch_models`;
+  enabling picker entries does not authorize automatic use or change that policy.
+- `/session` shows tokens/cache/estimated costs and multi-model breakdowns;
+  footer percentages measure context fullness, not plan quota. Harnex receipts
+  provide worker telemetry, not billing proof. Actual account usage is at
+  `https://claude.ai/settings/usage`.
+- Runtime settings/models are generated files matching source. Extension/skill
+  links retain their targets; sync ran no skill code. Repo-owned open/close stay
+  local; reusable imports follow the canonical skill-home policy.
+- OpenRouter Fable 5/5.1 and Opus 5/5.5 remain enabled. The route pin remains;
+  Fable 5.1 retains its practical 32K output cap.
+- SDK Queue `#002` remains unauthorized. Its prior handoff cites Harnex
+  `#57`/`#59`; recheck live blocker status before considering a future run.
+- Graphily work was not resumed: dependency installation, tests, graph update,
+  and browser visual evidence still require the paused workflow's approvals.
 
 ## Future
 
-- Restart Pi to load the approved Astra >870K compaction policy; monitor
-  normal usage for throttling and higher long-context cost. No inference probe ran.
-- On explicit owner authorization, run one controlled Fal H3 Max trial from
-  `movie_planet`, validate the video, and measure an uncached before/after Fal
-  accounting delta without persisting private account state.
-- Resume `~/Projects/graphily` only with explicit approval to execute third-party
-  code: run `uv sync --frozen`, targeted and full tests, then `graphify update .`;
-  decide whether to add fail-closed non-browser offline mode and remove skill
-  auto-install/upgrade behavior.
-- Monitor Pi's OpenRouter catalog/composer fix; remove the local route pin only
-  after Fable resolves to `/api/v1/chat/completions` without it.
-- Promote or visually retest canonical skills only when explicitly requested;
-  separately validate remaining Ox Alpha/Kimi image and tool loops if useful.
-- File future authorized runner defects in Harnex rather than masking them.
+- Restart Pi to load the saved Anthropic scope; choose `[anthropic]`, not
+  `[openrouter]`, for OAuth. Do not assume included subscription allowance.
+- Before any automatic Claude worker, obtain queue-specific model/spend approval
+  and a bounded visible preflight dispatch. No global dispatch-policy change or
+  live Anthropic smoke was authorized by this configuration task.
+- Monitor normal Astra usage for throttling and long-context cost; no new probe
+  ran. Keep the OpenRouter route pin until catalog/composer behavior is verified.
+- Run a controlled Fal H3 Max trial from `movie_planet` only with explicit
+  approval, validating output and actual uncached before/after accounting.
+- Resume Graphily only with third-party execution approval: frozen dependency
+  sync, targeted/full tests, then graph update; decide fail-closed offline mode
+  and removal of automatic skill install/upgrade behavior.
+- Promote or visually retest skills only when requested; file authorized runner
+  defects in Harnex rather than adding workarounds here.
